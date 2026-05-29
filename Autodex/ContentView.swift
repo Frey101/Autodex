@@ -8,23 +8,21 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @State private var viewModel = CarViewModel()
+    @State private var searchText = ""
     
     var body : some View {
-        // On utilise une ZStack pour mettre un fond coloré sur tout l'écran
         ZStack {
-            // Fond gris clair standard iOS pour faire ressortir les éléments blancs
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 4) {
                 
-                // Titre
                 Text("AutoDex")
                     .font(.largeTitle)
                     .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
                     .fontWeight(.bold)
                 
-                // Texte recherche
                 Text("Faites votre choix de véhicules en comparant leur caractéristiques")
                     .font(.caption)
                     .padding(.bottom, 20)
@@ -32,8 +30,13 @@ struct ContentView: View {
                 // Barre de recherche
                 HStack {
                     Image(systemName: "magnifyingglass")
-                    TextField("Rechercher un véhicule", text: .constant(""))
+                    TextField("Rechercher un modèle (ex: clio, mustang...)", text: $searchText)
                         .font(.caption)
+                        .onSubmit {
+                            Task {
+                                await viewModel.fetchCars(searchQuery: searchText)
+                            }
+                        }
                     Spacer()
                 }
                 .padding(10)
@@ -42,13 +45,12 @@ struct ContentView: View {
                 .cornerRadius(25)
                 .padding(.bottom, 20)
                 
-                // Filtres
                 HStack {
                     Button("Populaires"){ }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 8)
                         .background(Color.yellow)
-                        .foregroundStyle(.black) // Texte lisible sur le jaune
+                        .foregroundStyle(.black)
                         .cornerRadius(30)
                     
                     Button("Nouveautés"){ }
@@ -56,23 +58,45 @@ struct ContentView: View {
                 }
                 .padding(.bottom, 15)
                 
-                // Liste des voitures déroulable
+                // Appel sur l'instance viewModel
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12){
-                        CarLigne(logoName: "tesla_logo", titre: "Tesla Model 3", sousTitre: "2023 - Electrique")
-                        CarLigne(logoName: "tesla_logo", titre: "Tesla Model 3", sousTitre: "2023 - Electrique")
-                        CarLigne(logoName: "tesla_logo", titre: "Tesla Model 3", sousTitre: "2023 - Electrique")
-                        CarLigne(logoName: "tesla_logo", titre: "Tesla Model 3", sousTitre: "2023 - Electrique")
-                        CarLigne(logoName: "tesla_logo", titre: "Tesla Model 3", sousTitre: "2023 - Electrique")
+                    VStack(spacing: 12) {
+                        if viewModel.isLoading {
+                            ProgressView("Chargement des véhicules...")
+                                .padding(.top, 40)
+                        } else if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.footnote)
+                                .padding(.top, 40)
+                        } else if viewModel.cars.isEmpty {
+                            Text("Aucun véhicule à afficher. Essayez un autre modèle.")
+                                .foregroundColor(.gray)
+                                .font(.footnote)
+                                .padding(.top, 40)
+                        } else {
+                            ForEach(viewModel.cars) { car in
+                                CarLigne(
+                                    logoName: "car.fill",
+                                    titre: car.displayName,
+                                    sousTitre: car.displaySubtitle
+                                )
+                            }
+                        }
                     }
-                    .padding(.bottom, 20) // Petit espace pour ne pas coller au niveau de la TabView
+                    .padding(.bottom, 20)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
         }
+        // Déclenchement de la requête au démarrage de l'écran
+        .task {
+            await viewModel.fetchTrendingCars()
+        }
     }
 }
+
 struct CarLigne: View {
     var logoName: String
     var titre: String
@@ -86,7 +110,7 @@ struct CarLigne: View {
                 .overlay(
                     Text(String(titre.prefix(1)))
                         .fontWeight(.bold)
-                        .foregroundColor(.white) // Mis en blanc pour une meilleure lisibilité sur fond gris
+                        .foregroundColor(.white)
                 )
             
             VStack(alignment: .leading, spacing: 4) {
@@ -111,7 +135,6 @@ struct CarLigne: View {
     }
 }
 
-// Correction des Labels et intégration de HomeView au bon endroit
 struct Navigationview: View {
     var body: some View {
         TabView {
@@ -138,6 +161,7 @@ struct Navigationview: View {
         .tint(Color.blue)
     }
 }
+
 #Preview {
     Navigationview()
 }

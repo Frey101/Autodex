@@ -1,28 +1,36 @@
 import Foundation
 
 struct Car: Codable, Identifiable {
-    // On génère un ID unique car l'API Ninjas n'en fournit pas, et SwiftUI en a besoin pour la liste
     var id: UUID { UUID() }
     
-    let make: String
-    let model: String
-    let year: Int
-    let fuel_type: String
+    // L'API NHTSA utilise ces noms exacts avec des underscores
+    let Make_Name: String?
+    let Model_Name: String?
     
-    // Propriété pour le titre
+    // L'API ne renvoyant pas l'année directement dans l'objet,
+    // on la stocke nous-mêmes pour l'affichage
+    var year: Int? = 2026
+    
+    enum CodingKeys: String, CodingKey {
+        case Make_Name
+        case Model_Name
+    }
+    
     var displayName: String {
-        return "\(make.capitalized) \(model.capitalized)"
+        let safeMake = Make_Name ?? "Inconnu"
+        let safeModel = Model_Name ?? ""
+        return "\(safeMake.capitalized) \(safeModel.capitalized)".trimmingCharacters(in: .whitespaces)
     }
     
-    // Propriété pour le sous-titre avec traduction du carburant
     var displaySubtitle: String {
-        let fuelFR: String
-        switch fuel_type {
-        case "gas": fuelFR = "Essence"
-        case "diesel": fuelFR = "Diesel"
-        case "electricity": fuelFR = "Électrique"
-        default: fuelFR = fuel_type.capitalized
-        }
-        return "\(year) - \(fuelFR)"
+        let safeYear = year != nil ? String(year!) : "N/A"
+        return "\(safeYear) - Spécification Standard"
     }
+}
+
+// L'enveloppe globale renvoyée par l'API NHTSA
+struct NHTSAResponse: Codable {
+    let Count: Int
+    let Message: String
+    let Results: [Car]
 }
