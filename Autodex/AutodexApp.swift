@@ -25,7 +25,7 @@ struct AutodexApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Navigationview()
         }
         .modelContainer(sharedModelContainer)
     }
