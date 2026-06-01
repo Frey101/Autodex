@@ -11,13 +11,16 @@ struct ContentView: View {
     @State private var viewModel = CarViewModel()
     @State private var searchText = ""
     
+    // SwiftData : Accès au contexte et récupération de la liste des favoris
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favoriteCars: [FavoriteCar]
+    
     var body : some View {
         ZStack {
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 4) {
-                
                 Text("AutoDex")
                     .font(.largeTitle)
                     .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
@@ -58,7 +61,6 @@ struct ContentView: View {
                 }
                 .padding(.bottom, 15)
                 
-                // Appel sur l'instance viewModel
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
                         if viewModel.isLoading {
@@ -76,10 +78,18 @@ struct ContentView: View {
                                 .padding(.top, 40)
                         } else {
                             ForEach(viewModel.cars) { car in
+                                // ID unique théorique pour vérifier si le favori existe déjà
+                                let carId = "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
+                                let isCarFavorite = favoriteCars.contains(where: { $0.id == carId })
+                                
                                 CarLigne(
-                                    logoName: "car.fill",
+                                    marque: car.Make_Name ?? "Inconnu",
                                     titre: car.displayName,
-                                    sousTitre: car.displaySubtitle
+                                    sousTitre: car.displaySubtitle,
+                                    isFavorite: isCarFavorite,
+                                    onFavoriteToggle: {
+                                        toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
+                                    }
                                 )
                             }
                         }
@@ -90,28 +100,43 @@ struct ContentView: View {
             .padding(.horizontal, 20)
             .padding(.top, 20)
         }
-        // Déclenchement de la requête au démarrage de l'écran
         .task {
             await viewModel.fetchTrendingCars()
         }
     }
+    
+    // Fonction ajout ou supprime le favori
+    private func toggleFavorite(for car: Car, isAlreadyFavorite: Bool, id: String) {
+        if isAlreadyFavorite {
+            if let index = favoriteCars.firstIndex(where: { $0.id == id }) {
+                modelContext.delete(favoriteCars[index])
+            }
+        } else {
+            let newFavorite = FavoriteCar(
+                make: car.Make_Name ?? "Inconnu",
+                model: car.Model_Name ?? "Inconnu",
+                year: car.year ?? 2026
+            )
+            modelContext.insert(newFavorite)
+        }
+    }
 }
-
 struct CarLigne: View {
-    var logoName: String
+    var marque: String
     var titre: String
     var sousTitre: String
+    var isFavorite: Bool
+    var onFavoriteToggle: () -> Void
     
     var body: some View {
         HStack(spacing: 15) {
-            Circle()
-                .fill(Color.gray)
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text(String(titre.prefix(1)))
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                )
+            Image(marque.lowercased())
+                .resizable()
+                .scaledToFit()
+                .frame(width : 40, height : 40)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.gray.opacity(0.2),lineWidth: 1))
+            
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(titre)
@@ -123,6 +148,14 @@ struct CarLigne: View {
             }
             
             Spacer()
+            
+            
+            Button(action: onFavoriteToggle) {
+                            Image(systemName: isFavorite ? "heart.fill" : "heart")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(isFavorite ? .red : Color(.systemGray3))
+                        }
+                        .buttonStyle(.plain)
             
             Image(systemName: "chevron.right")
                 .font(.system(size: 14, weight: .semibold))
@@ -136,6 +169,10 @@ struct CarLigne: View {
 }
 
 struct Navigationview: View {
+    // On récupère les favoris ici aussi
+    @Query private var favoriteCars: [FavoriteCar]
+    @Environment(\.modelContext) private var modelContext
+    
     var body: some View {
         TabView {
             ContentView()
@@ -145,18 +182,40 @@ struct Navigationview: View {
             
             Text("Deuxieme Tab")
                 .tabItem {
-                    Label("Véhicules", systemImage: "car")
-                }
-            
-            Text("Troisieme Tab")
-                .tabItem {
                     Label("Comparer", systemImage: "scalemass")
                 }
             
-            Text("Quatrieme Tab")
-                .tabItem {
-                    Label("Favoris", systemImage: "heart")
+            NavigationStack {
+                ZStack {
+                    Color(.systemGroupedBackground).ignoresSafeArea()
+                    
+                    if favoriteCars.isEmpty {
+                        ContentUnavailableView("Aucun favori", systemImage: "heart.slash", description: Text("Vos véhicules favoris s'afficheront ici."))
+                    } else {
+                        ScrollView {
+                            VStack(spacing: 12) {
+                                ForEach(favoriteCars) { favorite in
+                                    CarLigne(
+                                        marque: favorite.make,
+                                        titre: favorite.displayName,
+                                        sousTitre: favorite.displaySubtitle,
+                                        isFavorite: true,
+                                        onFavoriteToggle: {
+                                            // Permet de retirer des favoris directement depuis l'onglet Favoris
+                                            modelContext.delete(favorite)
+                                        }
+                                    )
+                                }
+                            }
+                            .padding()
+                        }
+                        .navigationTitle("Mes Favoris")
+                    }
                 }
+            }
+            .tabItem {
+                Label("Favoris", systemImage: "heart")
+            }
         }
         .tint(Color.blue)
     }

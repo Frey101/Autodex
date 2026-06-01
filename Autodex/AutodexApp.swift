@@ -27,6 +27,6 @@ struct AutodexApp: App {
         WindowGroup {
             Navigationview()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: FavoriteCar.self)
     }
 }
