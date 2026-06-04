@@ -26,13 +26,13 @@ struct DecouverteView: View {
             
             if let car = currentRandomCar {
                 // --- LA CARTE ---
-                VStack(spacing: 15) {
-                    Image(systemName: "car.side.fill")
+                VStack(spacing: 5) {
+                    Image("voiture")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 80)
+                        .frame(height: 200)
                         .foregroundColor(.blue)
-                        .padding(.bottom, 10)
+                        
                     
                     Text(car.Make_Name ?? "Inconnu")
                         .font(.title)
