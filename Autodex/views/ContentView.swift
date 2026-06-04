@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var detailVoiture = ""
     
-    // SwiftData : Accès au contexte et récupération de la liste des favoris
+    // Enregistrement des favoris
     @Environment(\.modelContext) private var modelContext
     @Query private var favoriteCars: [FavoriteCar]
     
@@ -182,7 +182,6 @@ struct CarLigne: View {
 }
 
 struct Navigationview: View {
-    // On récupère les favoris ici aussi
     @Query private var favoriteCars: [FavoriteCar]
     @Environment(\.modelContext) private var modelContext
     

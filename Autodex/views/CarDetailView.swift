@@ -32,7 +32,6 @@ struct CarDetailView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                // Enlève le fond par défaut de la cellule pour l'en-tête
                 .listRowBackground(Color.clear)
             }
             
@@ -67,7 +66,7 @@ struct CarDetailView: View {
                 }
             }
             
-            // Section 3 : Dimensions & Consommation (Si ton API le fournit)
+            // Section 3 : Dimensions & Consommation
             Section(header: Text("Efficacité")) {
                 if let cityMpg = car.cityMpg {
                     LabeledContent("Conso. Ville", value: "\(cityMpg) MPG")

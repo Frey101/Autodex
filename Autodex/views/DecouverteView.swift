@@ -9,11 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct DecouverteView: View {
-    // 1. La vue gère son propre ViewModel de manière autonome
     @State private var viewModel = CarViewModel()
     @State private var currentRandomCar: Car?
     
-    // 2. On prépare l'accès aux favoris (comme dans ton ContentView)
+    // Préparation de l'accès aux favoris 
     @Environment(\.modelContext) private var modelContext
     @Query private var favoriteCars: [FavoriteCar]
     

@@ -24,7 +24,7 @@ final class FavoriteCar {
         self.timestamp = Date()
     }
     
-    // Propriétés calculées pour correspondre à votre affichage actuel
+    // Affichage (toString)
     var displayName: String {
         return "\(make.capitalized) \(model.capitalized)".trimmingCharacters(in: .whitespaces)
     }

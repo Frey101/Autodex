@@ -11,11 +11,11 @@ struct NHTSAResponse: Codable{
 struct Car: Identifiable, Codable {
     var id: UUID { UUID() } // Génère un ID unique pour SwiftUI
     
-    // Champs de base (ex: API NHTSA)
+    // Champs de base de l'api
     let Make_Name: String?
     let Model_Name: String?
     
-    // Autres caractéristiques possibles (ex: API Ninjas Cars ou similaires)
+    // Autres caractéristiques possibles
     var year: Int?
     let vehicleClass: String?
     let fuelType: String?
@@ -38,12 +38,12 @@ struct Car: Identifiable, Codable {
         return vehicleClass?.capitalized ?? "Véhicule"
     }
     
-    // Mapping si les noms du JSON sont différents de tes variables Swift
+    // Mapping si les noms du JSON sont différents de des variables Swift
     enum CodingKeys: String, CodingKey {
         case Make_Name
         case Model_Name
         case year
-        case vehicleClass = "class" // Ex: si l'API renvoie "class", on le mappe sur "vehicleClass" car "class" est un mot réservé en Swift
+        case vehicleClass = "class" 
         case fuelType = "fuel_type"
         case cylinders
         case displacement

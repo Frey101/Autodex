@@ -19,20 +19,18 @@ class CarViewModel {
         await performRequest(urlString: urlString, defaultYear: targetYear)
     }
     
-    // Remplissage de l'écran d'accueil (Populaire)
-    // Remplissage de l'écran d'accueil (Populaire / Découverte)
-    // Remplissage de l'écran d'accueil (Mélange de plusieurs marques)
+    // Remplissage de l'écran d'accueil
     func fetchTrendingCars() async {
         self.isLoading = true
         self.errorMessage = nil
         
         let targetYear = 2026
-        // La liste des marques que tu veux mélanger
+        // La liste des marques mélangées
         let brandsToMix = ["bmw", "audi", "mercedes", "honda", "fiat", "nissan", "volkswagen","lamborghini", "porsche","toyota"]
         
         var allMixedCars: [Car] = []
         
-        // On utilise un TaskGroup pour télécharger toutes les marques en parallèle (très rapide)
+        // Utilisation d'un TaskGroup pour télécharger toutes les marques en parallèle
         await withTaskGroup(of: [Car].self) { group in
             for brand in brandsToMix {
                 let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/\(brand)/modelyear/\(targetYear)?format=json"
@@ -47,7 +45,7 @@ class CarViewModel {
                         let (data, _) = try await URLSession.shared.data(from: url)
                         let decodedResponse = try JSONDecoder().decode(NHTSAResponse.self, from: data)
                         
-                        // On associe l'année à chaque voiture
+                        // Association de l'année à chaque voiture
                         return decodedResponse.Results.map { car -> Car in
                             var updatedCar = car
                             updatedCar.year = targetYear
@@ -66,8 +64,7 @@ class CarViewModel {
             }
         }
         
-        // --- LE VRAI ALÉATOIRE ---
-        // .shuffled() mélange complètement le tableau final (les BMW, Audi, Fiat, etc. seront toutes mélangées)
+        // .shuffled() mélange complètement le tableau final
         let finalShuffledList = allMixedCars.shuffled()
         
         await MainActor.run {
