@@ -193,9 +193,9 @@ struct Navigationview: View {
                     Label("Accueil", systemImage: "house")
                 }
             
-            Text("Deuxieme Tab")
+            DecouverteView()
                 .tabItem {
-                    Label("Comparer", systemImage: "scalemass")
+                    Label("Découverte", systemImage: "sparkles")
                 }
             
             NavigationStack {
