@@ -10,95 +10,107 @@ import SwiftData
 struct ContentView: View {
     @State private var viewModel = CarViewModel()
     @State private var searchText = ""
+    @State private var detailVoiture = ""
     
     // SwiftData : Accès au contexte et récupération de la liste des favoris
     @Environment(\.modelContext) private var modelContext
     @Query private var favoriteCars: [FavoriteCar]
     
     var body : some View {
-        ZStack {
-            Color(.systemGroupedBackground)
-                .ignoresSafeArea()
+        
+        NavigationStack{
             
-            VStack(alignment: .leading, spacing: 4) {
-                Text("AutoDex")
-                    .font(.largeTitle)
-                    .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
-                    .fontWeight(.bold)
+            ZStack {
+                Color(.systemGroupedBackground)
+                    .ignoresSafeArea()
                 
-                Text("Faites votre choix de véhicules en comparant leur caractéristiques")
-                    .font(.caption)
-                    .padding(.bottom, 20)
-                
-                // Barre de recherche
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    TextField("Rechercher un modèle (ex: clio, mustang...)", text: $searchText)
-                        .font(.caption)
-                        .onSubmit {
-                            Task {
-                                await viewModel.fetchCars(searchQuery: searchText)
-                            }
-                        }
-                    Spacer()
-                }
-                .padding(10)
-                .foregroundStyle(.black)
-                .background(Color(red: 225/255, green: 225/255, blue: 225/255))
-                .cornerRadius(25)
-                .padding(.bottom, 20)
-                
-                HStack {
-                    Button("Populaires"){ }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 8)
-                        .background(Color.yellow)
-                        .foregroundStyle(.black)
-                        .cornerRadius(30)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("AutoDex")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
+                        .fontWeight(.bold)
                     
-                    Button("Nouveautés"){ }
-                        .foregroundStyle(.gray)
-                }
-                .padding(.bottom, 15)
-                
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12) {
-                        if viewModel.isLoading {
-                            ProgressView("Chargement des véhicules...")
-                                .padding(.top, 40)
-                        } else if let errorMessage = viewModel.errorMessage {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                                .font(.footnote)
-                                .padding(.top, 40)
-                        } else if viewModel.cars.isEmpty {
-                            Text("Aucun véhicule à afficher. Essayez un autre modèle.")
-                                .foregroundColor(.gray)
-                                .font(.footnote)
-                                .padding(.top, 40)
-                        } else {
-                            ForEach(viewModel.cars) { car in
-                                // ID unique théorique pour vérifier si le favori existe déjà
-                                let carId = "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
-                                let isCarFavorite = favoriteCars.contains(where: { $0.id == carId })
-                                
-                                CarLigne(
-                                    marque: car.Make_Name ?? "Inconnu",
-                                    titre: car.displayName,
-                                    sousTitre: car.displaySubtitle,
-                                    isFavorite: isCarFavorite,
-                                    onFavoriteToggle: {
-                                        toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
+                    Text("Faites votre choix de véhicules en comparant leur caractéristiques")
+                        .font(.caption)
+                        .padding(.bottom, 20)
+                    
+                    // Barre de recherche
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Rechercher un modèle (ex: clio, mustang...)", text: $searchText)
+                            .font(.caption)
+                            .onSubmit {
+                                Task {
+                                    await viewModel.fetchCars(searchQuery: searchText)
+                                }
+                            }
+                        Spacer()
+                    }
+                    .padding(10)
+                    .foregroundStyle(.black)
+                    .background(Color(red: 225/255, green: 225/255, blue: 225/255))
+                    .cornerRadius(25)
+                    .padding(.bottom, 20)
+                    
+                    HStack {
+                        Button("Populaires"){ }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 8)
+                            .background(Color.yellow)
+                            .foregroundStyle(.black)
+                            .cornerRadius(30)
+                        
+                        Button("Nouveautés"){ }
+                            .foregroundStyle(.gray)
+                    }
+                    .padding(.bottom, 15)
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 12) {
+                            if viewModel.isLoading {
+                                ProgressView("Chargement des véhicules...")
+                                    .padding(.top, 40)
+                            } else if let errorMessage = viewModel.errorMessage {
+                                Text(errorMessage)
+                                    .foregroundColor(.red)
+                                    .font(.footnote)
+                                    .padding(.top, 40)
+                            } else if viewModel.cars.isEmpty {
+                                Text("Aucun véhicule à afficher. Essayez un autre modèle.")
+                                    .foregroundColor(.gray)
+                                    .font(.footnote)
+                                    .padding(.top, 40)
+                            } else {
+                                ForEach(viewModel.cars) { car in
+                                    // ID unique théorique pour vérifier si le favori existe déjà
+                                    let carId = "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
+                                    let isCarFavorite = favoriteCars.contains(where: { $0.id == carId })
+                                    
+                                    NavigationLink(destination: CarDetailView(car: car)){
+                                        CarLigne(
+                                            marque: car.Make_Name ?? "Inconnu",
+                                            titre: car.displayName,
+                                            sousTitre: car.displaySubtitle,
+                                            isFavorite: isCarFavorite,
+                                            onFavoriteToggle: {
+                                                toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
+                                            }
+                                        )
+                                        
                                     }
-                                )
+                                    
+                                }
                             }
                         }
+                        .padding(.bottom, 20)
                     }
-                    .padding(.bottom, 20)
                 }
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+            
+        }
+        
+     
         }
         .task {
             await viewModel.fetchTrendingCars()
@@ -129,6 +141,7 @@ struct CarLigne: View {
     var onFavoriteToggle: () -> Void
     
     var body: some View {
+        
         HStack(spacing: 15) {
             Image(marque.lowercased())
                 .resizable()
