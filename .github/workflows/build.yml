@@ -3,13 +3,15 @@ name: Build Autodex Simulator
 on:
   workflow_dispatch:
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   build:
     runs-on: macos-14
-
     steps:
       - name: Checkout du code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Compilation pour simulateur iOS
         run: |
