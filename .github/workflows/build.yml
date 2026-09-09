@@ -1,0 +1,32 @@
+name: Build Autodex Simulator
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Compilation pour simulateur iOS
+        run: |
+          xcodebuild -project Autodex.xcodeproj \
+            -scheme Autodex \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Compression de l'application
+        run: |
+          cd build/Build/Products/Debug-iphonesimulator/
+          zip -r autodex-simulator.zip Autodex.app
+
+      - name: Sauvegarde du binaire
+        uses: actions/upload-artifact@v4
+        with:
+          name: autodex-simulator
+          path: build/Build/Products/Debug-iphonesimulator/autodex-simulator.zip
