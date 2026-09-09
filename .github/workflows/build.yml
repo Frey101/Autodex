@@ -3,32 +3,32 @@ name: Build Autodex Simulator
 on:
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: macos-14
 
     steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+      - name: Cloner le depot
+        run: |
+          git clone --depth=1 https://github.com/${{ github.repository }}.git .
 
-      - name: Compilation pour simulateur iOS
+      - name: Compilation de l'application
         run: |
           xcodebuild -project Autodex.xcodeproj \
             -scheme Autodex \
-            -sdk iphonesimulator \
+            -destination "generic/platform=iOS Simulator" \
             -configuration Debug \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
 
-      - name: Compression de l'application
+      - name: Compression en ZIP
         run: |
           cd build/Build/Products/Debug-iphonesimulator/
           zip -r autodex-simulator.zip Autodex.app
 
-      - name: Sauvegarde du binaire
+      - name: Exporter le ZIP
         uses: actions/upload-artifact@v4
         with:
           name: autodex-simulator
