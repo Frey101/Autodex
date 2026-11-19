@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CarDetailView: View {
     var car: Car
@@ -13,6 +14,18 @@ struct CarDetailView: View {
     // État pour les données Wikipédia asynchrones
     @State private var wikiDetail: DetailWikipedia? = nil
     @State private var estEnChargementWiki: Bool = false
+    
+    // Accès SwiftData aux favoris
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favoriteCars: [FavoriteCar]
+    
+    private var carId: String {
+        "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
+    }
+    
+    private var estFavori: Bool {
+        favoriteCars.contains(where: { $0.id == carId })
+    }
     
     var body: some View {
         List {
@@ -159,8 +172,35 @@ struct CarDetailView: View {
         }
         .navigationTitle("Fiche Technique")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: toggleFavori) {
+                    Image(systemName: estFavori ? "heart.fill" : "heart")
+                        .foregroundColor(estFavori ? .red : .primary)
+                        .font(.system(size: 18, weight: .semibold))
+                }
+                .accessibilityIdentifier("boutonLikeFicheDetail")
+            }
+        }
         .task {
             await chargerInfosWikipedia()
+        }
+    }
+    
+    // MARK: - Gestion des favoris
+    private func toggleFavori() {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        if estFavori {
+            if let index = favoriteCars.firstIndex(where: { $0.id == carId }) {
+                modelContext.delete(favoriteCars[index])
+            }
+        } else {
+            let newFavorite = FavoriteCar(
+                make: car.Make_Name ?? "Inconnu",
+                model: car.Model_Name ?? "Inconnu",
+                year: car.year ?? 2026
+            )
+            modelContext.insert(newFavorite)
         }
     }
     

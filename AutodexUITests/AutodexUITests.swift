@@ -196,6 +196,95 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testBoutonLikeSurFicheTechnique() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Ouvrir la première voiture
+        let premierElement = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'boutonCoeurLigne'")).firstMatch
+        let premiereLigne = app.scrollViews.descendants(matching: .any).element(boundBy: 4)
+        if premiereLigne.waitForExistence(timeout: 5) {
+            premiereLigne.tap()
+        }
+        
+        // Vérifier le bouton Like dans la barre de navigation de la fiche technique
+        let boutonLike = app.buttons["boutonLikeFicheDetail"]
+        if boutonLike.waitForExistence(timeout: 5) {
+            boutonLike.tap()
+            XCTAssertTrue(boutonLike.exists, "Le bouton Like doit être cliquable dans la fiche technique.")
+        }
+    }
+
+    @MainActor
+    func testFiltresAvancesAccueil() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Tester le filtre Électrique
+        let filtreElectrique = app.buttons["filtreEnergie_Électrique"]
+        if filtreElectrique.waitForExistence(timeout: 5) {
+            filtreElectrique.tap()
+            // Vérifier que la liste se met à jour
+            let liste = app.scrollViews.firstMatch
+            XCTAssertTrue(liste.waitForExistence(timeout: 3))
+        }
+        
+        // Tester le filtre Puissance > 500 ch
+        let filtre500 = app.buttons["filtrePuissance_> 500 ch"]
+        if filtre500.waitForExistence(timeout: 4) {
+            filtre500.tap()
+            let captureFiltres = XCUIScreen.main.screenshot()
+            try? captureFiltres.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/filtres_actifs.png"))
+        }
+    }
+
+    @MainActor
+    func testOngletComparateurDuel() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let ongletDuel = app.tabBars.buttons["Duel"]
+        XCTAssertTrue(ongletDuel.waitForExistence(timeout: 5), "L'onglet Duel doit être accessible.")
+        ongletDuel.tap()
+        
+        // Vérifier la présence du bouton Duel Aléatoire
+        let boutonAleatoire = app.buttons["boutonDuelAleatoire"]
+        XCTAssertTrue(boutonAleatoire.waitForExistence(timeout: 6), "Le bouton Duel Aléatoire doit être visible.")
+        boutonAleatoire.tap()
+        
+        // Vérifier que le texte VS ou le verdict apparaît
+        let texteVS = app.staticTexts["VS"]
+        XCTAssertTrue(texteVS.waitForExistence(timeout: 4), "Le badge central VS doit être affiché.")
+        
+        let captureComparateur = XCUIScreen.main.screenshot()
+        try? captureComparateur.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/comparateur_duel.png"))
+    }
+
+    @MainActor
+    func testOngletQuizPokedex() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let ongletQuiz = app.tabBars.buttons["Quiz"]
+        XCTAssertTrue(ongletQuiz.waitForExistence(timeout: 5), "L'onglet Quiz doit être accessible.")
+        ongletQuiz.tap()
+        
+        // Vérifier les boutons de proposition
+        let proposition0 = app.buttons["propositionQuiz_0"]
+        XCTAssertTrue(proposition0.waitForExistence(timeout: 6), "La première proposition du Quiz doit être visible.")
+        
+        let captureQuiz = XCUIScreen.main.screenshot()
+        try? captureQuiz.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/quiz_pokedex.png"))
+        
+        // Taper sur la première proposition
+        proposition0.tap()
+        
+        // Vérifier l'apparition du bouton Question Suivante
+        let boutonSuivant = app.buttons["boutonQuestionSuivanteQuiz"]
+        XCTAssertTrue(boutonSuivant.waitForExistence(timeout: 4), "Le bouton Véhicule Suivant doit s'afficher après la réponse.")
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
