@@ -143,21 +143,11 @@ struct CarLigne: View {
     var body: some View {
         
         HStack(spacing: 15) {
-            Group {
-                if UIImage(named: marque.lowercased()) != nil {
-                    Image(marque.lowercased())
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Image("voiture")
-                        .resizable()
-                        .scaledToFit()
-                }
-            }
-            .frame(width: 40, height: 40)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray.opacity(0.2), lineWidth: 1))
-            
+            LogoMarqueView(marque: marque, taille: 34)
+                .frame(width: 44, height: 44)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.gray.opacity(0.15), lineWidth: 1))
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(titre)

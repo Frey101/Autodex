@@ -139,4 +139,21 @@ final class AutodexTests: XCTestCase {
         let premierTitre = searchResponse.query?.search?.first?.title
         XCTAssertEqual(premierTitre, "Peugeot 508 II")
     }
+
+    // Test 7 : Génération et normalisation des URLs de logos de marques
+    func testGenerationUrlLogoMarque() throws {
+        let service = BrandLogoService.shared
+        
+        let urlFord = service.urlLogo(pour: "Ford")
+        XCTAssertEqual(urlFord?.lastPathComponent, "ford.png")
+        
+        let urlAlfa = service.urlLogo(pour: "Alfa Romeo")
+        XCTAssertEqual(urlAlfa?.lastPathComponent, "alfa-romeo.png")
+        
+        let urlAston = service.urlLogo(pour: "Aston Martin")
+        XCTAssertEqual(urlAston?.lastPathComponent, "aston-martin.png")
+        
+        let urlMercedes = service.urlLogo(pour: "Mercedes")
+        XCTAssertEqual(urlMercedes?.lastPathComponent, "mercedes-benz.png")
+    }
 }
