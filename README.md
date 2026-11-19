@@ -1,17 +1,17 @@
 # 🚗 Autodex
 
-**Autodex** est une application iOS interactive conçue comme le « Pokédex » de l'automobile. Elle permet de rechercher, découvrir et consulter les caractéristiques techniques de plus de 2 100 véhicules et constructeurs emblématiques.
+**Autodex** est une application iOS interactive conçue comme le « Pokédex » de l'automobile. Elle permet de rechercher, découvrir et consulter les caractéristiques techniques de plus de 2 150 véhicules et constructeurs emblématiques.
 
 ---
 
 ## 🚀 Fonctionnalités
 
-- **Catalogue local complet** : Plus de 2 100 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
+- **Catalogue local complet** : Plus de 2 150 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (avec cache mémoire).
 - **Logos officiels en plein cercle** : Récupération haute résolution transparente, mise à l'échelle optique plein format occupant 100 % du cercle sans marges parasites, et cache persistant (RAM + disque).
-- **Pagination fluide par 20 éléments** : Chargement progressif par tranches de 20 véhicules, défilement infini automatique et bouton manuel « Afficher plus de véhicules ».
-- **Onglet Nouveautés (sorties récentes)** : Filtrage dédié des modèles sortis ces 6 derniers mois (millésimes 2025 et 2026 : Ferrari F80, Bugatti Tourbillon, McLaren W1, Renault 5 E-Tech, Alpine A290, etc.).
+- **Pagination fluide par 20 éléments** : Chargement progressif par tranches de 20 véhicules sur les onglets Populaires, Nouveautés et la recherche, défilement infini automatique et bouton manuel « Afficher plus de véhicules ».
+- **Onglet Nouveautés (sorties récentes)** : Filtrage strict des modèles sortis ces 6 derniers mois (millésimes 2025 et 2026 : Ferrari F80, Bugatti Tourbillon, McLaren W1, Porsche Macan Turbo Electric, Audi SQ6 e-tron, BMW i5 M60, Renault 5 E-Tech, Alpine A290, etc.).
 - **Recherche dynamique en temps réel** : Filtrage instantané dès la frappe et lors de l'effacement de caractères, restauration automatique des modèles populaires et bouton d'effacement rapide.
 - **Véhicules populaires & Nouveautés** : Sélecteur d'onglets ergonomique en en-tête d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
@@ -49,7 +49,7 @@ Autodex/
 │   ├── DecouverteView.swift   # Écran de découverte aléatoire et par marque
 │   ├── CarDetailView.swift    # Fiche technique détaillée (Moteur, transmission, dimensions)
 │   └── LogoMarqueView.swift   # Composant d'affichage de logo avec cache et repli
-├── car_details.json          # Dataset local de 2 110 véhicules avec specs moteurs
+├── car_details.json          # Dataset local de 2 157 véhicules avec specs moteurs
 └── Assets.xcassets/          # Logos des marques, visuels et icônes
 ```
 
