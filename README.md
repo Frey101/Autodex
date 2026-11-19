@@ -9,8 +9,8 @@
 - **Catalogue local complet** : Plus de 2 100 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (avec cache mémoire).
-- **Logos officiels des constructeurs** : Récupération dynamique et mise en cache persistant (RAM + disque) de tous les logos de marques automobiles avec le composant `LogoMarqueView`.
-- **Recherche instantanée** : Filtrage en temps réel par marque ou modèle avec bascule automatique vers l'API NHTSA vPIC si besoin.
+- **Logos officiels & Échelle optimisée** : Récupération dynamique haute résolution, mise à l'échelle optique harmonisée (48x48) et mise en cache persistant (RAM + disque) avec `LogoMarqueView`.
+- **Recherche dynamique en temps réel** : Filtrage instantané dès la frappe et lors de l'effacement de caractères, restauration automatique des modèles populaires et bouton d'effacement rapide.
 - **Véhicules populaires** : Sélection dynamique et équilibrée de modèles emblématiques sur la page d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
 - **Favoris persistants** : Sauvegarde locale des modèles préférés via SwiftData.
