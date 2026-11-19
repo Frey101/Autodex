@@ -51849,5 +51849,396 @@
         ]
       }
     ]
+  },
+  {
+    "id": 30001,
+    "brand": "Ferrari",
+    "model": "F80",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Hybride essence"
+    ],
+    "engines": [
+      {
+        "name": "3.0L V6 Biturbo Hybride",
+        "power_hp": 1200.0,
+        "fuel": "Hybride essence",
+        "transmissions": [
+          "Automatique 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30002,
+    "brand": "McLaren",
+    "model": "W1",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Hybride essence"
+    ],
+    "engines": [
+      {
+        "name": "4.0L V8 Biturbo Hybride",
+        "power_hp": 1275.0,
+        "fuel": "Hybride essence",
+        "transmissions": [
+          "Automatique 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30003,
+    "brand": "Porsche",
+    "model": "911 (992.2) GTS T-Hybrid",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Hybride essence"
+    ],
+    "engines": [
+      {
+        "name": "3.6L Boxer-6 T-Hybrid",
+        "power_hp": 541.0,
+        "fuel": "Hybride essence",
+        "transmissions": [
+          "PDK 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30004,
+    "brand": "BMW",
+    "model": "M5 (G90)",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Berline"
+    ],
+    "fuel_types": [
+      "Hybride rechargeable"
+    ],
+    "engines": [
+      {
+        "name": "4.4L V8 M TwinPower Turbo Hybride",
+        "power_hp": 727.0,
+        "fuel": "Hybride rechargeable",
+        "transmissions": [
+          "M Steptronic 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30005,
+    "brand": "Lamborghini",
+    "model": "Temerario",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Hybride essence"
+    ],
+    "engines": [
+      {
+        "name": "4.0L V8 Biturbo Hybride",
+        "power_hp": 920.0,
+        "fuel": "Hybride essence",
+        "transmissions": [
+          "Double embrayage 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30006,
+    "brand": "Renault",
+    "model": "5 E-Tech",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Citadine"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique Synchrone 52 kWh",
+        "power_hp": 150.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Rapport unique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30007,
+    "brand": "Alpine",
+    "model": "A290 GTS",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Citadine sportive"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique 52 kWh",
+        "power_hp": 220.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Rapport unique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30008,
+    "brand": "Peugeot",
+    "model": "e-3008 GT",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Électrique Dual Motor 73 kWh",
+        "power_hp": 320.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30009,
+    "brand": "Audi",
+    "model": "A6 e-tron Performance",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Berline"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique 100 kWh",
+        "power_hp": 380.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30010,
+    "brand": "Alfa Romeo",
+    "model": "Junior Veloce",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV Compact"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Électrique 54 kWh",
+        "power_hp": 280.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30011,
+    "brand": "Aston Martin",
+    "model": "Vanquish",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé GT"
+    ],
+    "fuel_types": [
+      "Essence"
+    ],
+    "engines": [
+      {
+        "name": "5.2L V12 Twin-Turbo",
+        "power_hp": 835.0,
+        "fuel": "Essence",
+        "transmissions": [
+          "ZF 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30012,
+    "brand": "Chevrolet",
+    "model": "Corvette ZR1",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Essence"
+    ],
+    "engines": [
+      {
+        "name": "5.5L LT7 V8 Twin-Turbo",
+        "power_hp": 1064.0,
+        "fuel": "Essence",
+        "transmissions": [
+          "Double embrayage 8 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30014,
+    "brand": "Citroën",
+    "model": "ë-C3 Max",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Citadine"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique 44 kWh",
+        "power_hp": 113.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30015,
+    "brand": "Mercedes-Benz",
+    "model": "AMG GT 63 S E Performance",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupé"
+    ],
+    "fuel_types": [
+      "Hybride rechargeable"
+    ],
+    "engines": [
+      {
+        "name": "4.0L V8 Biturbo Hybride E Performance",
+        "power_hp": 816.0,
+        "fuel": "Hybride rechargeable",
+        "transmissions": [
+          "AMG SPEEDSHIFT 9 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30016,
+    "brand": "Mini",
+    "model": "Cooper John Cooper Works",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Citadine sportive"
+    ],
+    "fuel_types": [
+      "Essence"
+    ],
+    "engines": [
+      {
+        "name": "2.0L TwinPower Turbo",
+        "power_hp": 231.0,
+        "fuel": "Essence",
+        "transmissions": [
+          "Automatique 7 rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30017,
+    "brand": "Tesla",
+    "model": "Model 3 Performance Highland",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Berline"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor All-Wheel Drive",
+        "power_hp": 460.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Rapport unique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30018,
+    "brand": "Lotus",
+    "model": "Emeya R",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Berline GT"
+    ],
+    "fuel_types": [
+      "Électrique"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor 102 kWh",
+        "power_hp": 905.0,
+        "fuel": "Électrique",
+        "transmissions": [
+          "Automatique 2 rapports"
+        ]
+      }
+    ]
   }
 ]

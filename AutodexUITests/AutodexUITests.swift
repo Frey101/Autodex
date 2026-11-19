@@ -72,6 +72,24 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testOngletNouveautes() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let boutonNouveautes = app.buttons["Nouveautés"]
+        XCTAssertTrue(boutonNouveautes.waitForExistence(timeout: 5), "Le bouton Nouveautés doit exister.")
+        boutonNouveautes.tap()
+        
+        // Vérifier qu'un véhicule récent (2025 ou 2026) apparaît
+        let texteRecent = app.staticTexts.matching(NSPredicate(format: "label CONTAINS '2025' OR label CONTAINS '2026'")).firstMatch
+        XCTAssertTrue(texteRecent.waitForExistence(timeout: 4), "L'onglet Nouveautés doit afficher des modèles récents 2025-2026.")
+        
+        // Sauvegarder la capture d'écran pour vérification visuelle
+        let capture = XCUIScreen.main.screenshot()
+        try? capture.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/nouveautes.png"))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

@@ -15,6 +15,28 @@ class CarViewModel {
     var isLoading = false
     var errorMessage: String? = nil
     
+    // MARK: - Gestion de la Pagination (20 éléments par page)
+    var limitePagination: Int = 20
+    let taillePage: Int = 20
+    
+    // Véhicules actuellement découpés pour l'affichage paginé
+    var carsAffichees: [Car] {
+        Array(cars.prefix(limitePagination))
+    }
+    
+    var peutChargerPlus: Bool {
+        limitePagination < cars.count
+    }
+    
+    func chargerPageSuivante() {
+        guard peutChargerPlus else { return }
+        limitePagination += taillePage
+    }
+    
+    func reinitialiserPagination() {
+        limitePagination = taillePage
+    }
+    
     // Cache local de l'ensemble du catalogue embarqué
     private(set) var catalogueLocal: [Car] = []
     
@@ -50,6 +72,7 @@ class CarViewModel {
         
         self.isLoading = true
         self.errorMessage = nil
+        self.reinitialiserPagination()
         
         // 1. Recherche instantanée dans le catalogue local
         let resultatsLocaux = catalogueLocal.filter { car in
@@ -88,6 +111,7 @@ class CarViewModel {
     func fetchTrendingCars() async {
         self.isLoading = true
         self.errorMessage = nil
+        self.reinitialiserPagination()
         
         // Si le catalogue local est présent, sélection des marques emblématiques
         if !catalogueLocal.isEmpty {
@@ -118,7 +142,38 @@ class CarViewModel {
         await fetchTrendingCarsReseau()
     }
     
-    // MARK: - Fallback réseau (NHTSA)
+    // MARK: - Remplissage avec les nouveautés récentes (sorties des 6 derniers mois / 2024-2026)
+    func fetchNewReleases() async {
+        self.isLoading = true
+        self.errorMessage = nil
+        self.reinitialiserPagination()
+        
+        if !catalogueLocal.isEmpty {
+            // Sélection des modèles récents (2024, 2025 et 2026) triés par récence et puissance
+            let nouveautes = catalogueLocal.filter { car in
+                guard let annee = car.year else { return false }
+                return annee >= 2024
+            }.sorted { (c1, c2) in
+                let y1 = c1.year ?? 0
+                let y2 = c2.year ?? 0
+                if y1 != y2 {
+                    return y1 > y2
+                }
+                return (c1.horsepower ?? 0) > (c2.horsepower ?? 0)
+            }
+            
+            await MainActor.run {
+                self.cars = nouveautes
+                self.isLoading = false
+            }
+            return
+        }
+        
+        // Fallback réseau si le catalogue local est indisponible
+        let anneeCible = 2026
+        let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/porsche/modelyear/\(anneeCible)?format=json"
+        await effectuerRequeteReseau(urlString: urlString, anneeParDefaut: anneeCible)
+    }
     private func fetchTrendingCarsReseau() async {
         let targetYear = 2026
         let brandsToMix = ["bmw", "audi", "mercedes", "honda", "fiat", "nissan", "volkswagen", "lamborghini", "porsche", "toyota"]
