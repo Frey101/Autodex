@@ -90,6 +90,39 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testPaginationChargementPageSuivante() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Attendre que la liste charge les 20 premiers éléments
+        let premierElement = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'ch'")).firstMatch
+        XCTAssertTrue(premierElement.waitForExistence(timeout: 5), "Les véhicules initiaux doivent être affichés.")
+        
+        // Capture d'écran de l'état initial (page 1 : 20 éléments affichés)
+        let captureInitiale = XCUIScreen.main.screenshot()
+        try? captureInitiale.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/pagination_avant.png"))
+        
+        // Trouver la vue défilante
+        let scrollView = app.scrollViews.firstMatch
+        XCTAssertTrue(scrollView.waitForExistence(timeout: 5), "La liste défilante doit être présente.")
+        
+        // Défiler vers le bas pour charger automatiquement la suite ou atteindre le bouton
+        for _ in 0..<3 {
+            scrollView.swipeUp()
+        }
+        
+        // Recherche du bouton de pagination s'il est affiché
+        let boutonPagination = app.buttons["boutonPagination"]
+        if boutonPagination.waitForExistence(timeout: 4) && boutonPagination.isHittable {
+            boutonPagination.tap()
+        }
+        
+        // Capture d'écran après chargement (page 2 : 40 éléments affichés)
+        let captureApres = XCUIScreen.main.screenshot()
+        try? captureApres.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/pagination_apres.png"))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

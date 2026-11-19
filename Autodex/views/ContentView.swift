@@ -110,7 +110,7 @@ struct ContentView: View {
                     
                     // MARK: - Liste Paginée (20 éléments par page)
                     ScrollView(showsIndicators: false) {
-                        VStack(spacing: 12) {
+                        LazyVStack(spacing: 12) {
                             if viewModel.isLoading {
                                 ProgressView("Chargement des véhicules...")
                                     .padding(.top, 40)
@@ -166,6 +166,7 @@ struct ContentView: View {
                                         .padding(.vertical, 12)
                                         .frame(maxWidth: .infinity)
                                     }
+                                    .accessibilityIdentifier("boutonPagination")
                                 }
                             }
                         }

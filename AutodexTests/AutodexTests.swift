@@ -191,6 +191,69 @@ final class AutodexTests: XCTestCase {
         }
     }
 
+    // Test 8b : Incrémentations successives de pagination et réinitialisation
+    @MainActor
+    func testPaginationIncrementationConsecutiveEtReinitialisation() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchTrendingCars()
+        
+        XCTAssertEqual(viewModel.limitePagination, 20)
+        
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 40)
+        
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 60)
+        
+        viewModel.reinitialiserPagination()
+        XCTAssertEqual(viewModel.limitePagination, 20, "La réinitialisation doit restaurer la taille de page initiale de 20.")
+    }
+
+    // Test 8c : Réinitialisation automatique de la pagination lors d'une recherche ou changement d'onglet
+    @MainActor
+    func testPaginationReinitialiseeSurRechercheEtOnglets() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchTrendingCars()
+        
+        // Simule plusieurs scrolls
+        viewModel.chargerPageSuivante()
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 60)
+        
+        // Lancer une recherche avec beaucoup de résultats (> 20, ex: BMW avec 91 modèles)
+        await viewModel.fetchCars(searchQuery: "BMW")
+        XCTAssertEqual(viewModel.limitePagination, 20, "Une nouvelle recherche doit remettre la pagination à 20.")
+        XCTAssertEqual(viewModel.carsAffichees.count, 20, "Exactement 20 éléments doivent être affichés initialement.")
+        XCTAssertTrue(viewModel.peutChargerPlus, "BMW ayant 91 résultats, peutChargerPlus doit être vrai.")
+        
+        // Simuler un scroll sur la recherche BMW
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 40)
+        XCTAssertEqual(viewModel.carsAffichees.count, 40)
+        
+        // Basculer sur les nouveautés doit réinitialiser la pagination à 20
+        await viewModel.fetchNewReleases()
+        XCTAssertEqual(viewModel.limitePagination, 20, "Le basculement sur Nouveautés doit remettre la pagination à 20.")
+        XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 20)
+    }
+
+    // Test 8d : Comportement de la pagination avec un résultat inférieur à 20 (ex: Porsche avec 6 modèles)
+    @MainActor
+    func testPaginationResultatsInferieursAVingt() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchCars(searchQuery: "Porsche")
+        
+        let nombreVoitures = viewModel.cars.count
+        XCTAssertTrue(nombreVoitures > 0 && nombreVoitures < 20, "Le catalogue contient moins de 20 Porsche.")
+        XCTAssertEqual(viewModel.carsAffichees.count, nombreVoitures, "Toutes les voitures doivent être affichées.")
+        XCTAssertFalse(viewModel.peutChargerPlus, "Il ne doit pas être possible de charger plus d'éléments.")
+        
+        // Tenter de charger la page suivante ne doit pas modifier la pagination
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 20)
+        XCTAssertEqual(viewModel.carsAffichees.count, nombreVoitures)
+    }
+
     // Test 9 : Chargement des nouveautés récentes (2024-2026)
     @MainActor
     func testChargementNouveautesRecentes() async {
