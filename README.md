@@ -9,6 +9,7 @@
 - **Catalogue local complet** : Plus de 2 100 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (avec cache mémoire).
+- **Logos officiels des constructeurs** : Récupération dynamique et mise en cache persistant (RAM + disque) de tous les logos de marques automobiles avec le composant `LogoMarqueView`.
 - **Recherche instantanée** : Filtrage en temps réel par marque ou modèle avec bascule automatique vers l'API NHTSA vPIC si besoin.
 - **Véhicules populaires** : Sélection dynamique et équilibrée de modèles emblématiques sur la page d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
@@ -39,11 +40,13 @@ Autodex/
 ├── viewModels/
 │   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
 ├── services/
-│   └── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
+│   ├── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
+│   └── BrandLogoService.swift # Service de logos constructeurs et normalisation
 ├── views/
-│   ├── ContentView.swift     # Écran d'accueil (Recherche, Populaires, Liste)
-│   ├── DecouverteView.swift  # Écran de découverte aléatoire et par marque
-│   └── CarDetailView.swift   # Fiche technique détaillée (Moteur, transmission, dimensions)
+│   ├── ContentView.swift      # Écran d'accueil (Recherche, Populaires, Liste)
+│   ├── DecouverteView.swift   # Écran de découverte aléatoire et par marque
+│   ├── CarDetailView.swift    # Fiche technique détaillée (Moteur, transmission, dimensions)
+│   └── LogoMarqueView.swift   # Composant d'affichage de logo avec cache et repli
 ├── car_details.json          # Dataset local de 2 110 véhicules avec specs moteurs
 └── Assets.xcassets/          # Logos des marques, visuels et icônes
 ```
