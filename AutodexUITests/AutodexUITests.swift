@@ -48,6 +48,30 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testRechercheDynamiqueFrappeEtEffacement() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let champRecherche = app.textFields["Rechercher un modèle (ex: clio, mustang...)"]
+        XCTAssertTrue(champRecherche.waitForExistence(timeout: 5), "La barre de recherche doit être visible.")
+        
+        // 1. Frappe dynamique
+        champRecherche.tap()
+        champRecherche.typeText("911")
+        
+        // Vérification de la mise à jour dynamique de la liste
+        let textePorsche = app.staticTexts.matching(NSPredicate(format: "label CONTAINS '911'")).firstMatch
+        XCTAssertTrue(textePorsche.waitForExistence(timeout: 4), "La liste doit afficher les résultats dynamiquement dès la saisie.")
+        
+        // 2. Bouton d'effacement
+        let boutonEffacer = app.buttons["Effacer la recherche"]
+        if boutonEffacer.waitForExistence(timeout: 2) {
+            boutonEffacer.tap()
+            XCTAssertEqual(champRecherche.value as? String, "Rechercher un modèle (ex: clio, mustang...)", "Le champ doit être réinitialisé.")
+        }
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
