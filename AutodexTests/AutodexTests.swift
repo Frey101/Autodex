@@ -314,4 +314,71 @@ final class AutodexTests: XCTestCase {
             }
         }
     }
+
+    // Test 13 : Validation des filtres avancés Énergie et Puissance avec maintien de la pagination
+    @MainActor
+    func testFiltresAvancesEnergieEtPuissance() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchTrendingCars()
+        
+        let totalInitial = viewModel.cars.count
+        XCTAssertGreaterThan(totalInitial, 100, "La liste de base doit comporter plus de 100 modèles.")
+        
+        // 1. Filtrer par énergie Électrique
+        viewModel.appliquerFiltres(energie: .electrique)
+        XCTAssertFalse(viewModel.cars.isEmpty, "Il doit y avoir des véhicules électriques.")
+        let tousElectriques = viewModel.cars.allSatisfy {
+            let fuel = ($0.fuelType ?? "").lowercased()
+            return fuel.contains("electric") || fuel.contains("electrique")
+        }
+        XCTAssertTrue(tousElectriques, "Tous les résultats doivent être électriques.")
+        XCTAssertEqual(viewModel.limitePagination, 20, "La pagination doit être réinitialisée à 20.")
+        
+        // 2. Filtrer par puissance > 500 ch
+        viewModel.appliquerFiltres(puissance: .plusDe500)
+        let tousPlusDe500 = viewModel.cars.allSatisfy { ($0.horsepower ?? 0) >= 500 }
+        XCTAssertTrue(tousPlusDe500, "Tous les résultats doivent avoir au moins 500 ch.")
+        
+        // 3. Réinitialisation des filtres
+        viewModel.reinitialiserFiltres()
+        XCTAssertEqual(viewModel.cars.count, totalInitial, "La réinitialisation doit restaurer le catalogue source.")
+        XCTAssertEqual(viewModel.filtreEnergieActif, .tous)
+        XCTAssertEqual(viewModel.filtrePuissanceActif, .toutes)
+    }
+
+    // Test 14 : Logique du Comparateur Duel (Attribution correcte des vainqueurs par critère)
+    func testLogiqueComparateurDuel() {
+        let car1 = Car(Make_Name: "Porsche", Model_Name: "911 GT3", year: 2022, highwayMpg: 20, horsepower: 510)
+        let car2 = Car(Make_Name: "Ferrari", Model_Name: "F80", year: 2025, highwayMpg: 16, horsepower: 1200)
+        
+        let duel = ComparaisonVehicules(car1: car1, car2: car2)
+        
+        // Ferrari F80 a plus de puissance (1200 > 510)
+        XCTAssertEqual(duel.gagnantPuissance, 2, "La voiture 2 (Ferrari) doit remporter le critère puissance.")
+        
+        // Porsche 911 consomme moins sur autoroute (20 MPG > 16 MPG)
+        XCTAssertEqual(duel.gagnantConso, 1, "La voiture 1 (Porsche) doit remporter le critère consommation autoroute.")
+        
+        XCTAssertEqual(duel.scoreCar1, 1)
+        XCTAssertEqual(duel.scoreCar2, 1)
+        XCTAssertEqual(duel.verdictTexte, "Égalité parfaite entre les deux bolides !")
+    }
+
+    // Test 15 : Générateur de Question de Quiz Pokédex
+    @MainActor
+    func testGenerationQuestionQuizPokedex() {
+        let viewModel = CarViewModel()
+        let question = viewModel.genererQuestionQuiz()
+        
+        XCTAssertNotNil(question, "Une question de quiz doit être générée avec succès.")
+        if let q = question {
+            XCTAssertEqual(q.propositions.count, 4, "Le quiz doit proposer exactement 4 choix.")
+            XCTAssertTrue(q.bonneReponseIndex >= 0 && q.bonneReponseIndex < 4, "L'index de la bonne réponse doit être valide (0-3).")
+            XCTAssertEqual(q.propositions[q.bonneReponseIndex].id, q.voitureCible.id, "La bonne réponse doit correspondre au véhicule cible.")
+            
+            // Vérifier que toutes les 4 propositions sont distinctes
+            let idsUniques = Set(q.propositions.map { $0.id })
+            XCTAssertEqual(idsUniques.count, 4, "Les 4 propositions doivent être 4 véhicules distincts sans doublon.")
+        }
+    }
 }

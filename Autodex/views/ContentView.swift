@@ -110,7 +110,64 @@ struct ContentView: View {
                         
                         Spacer()
                     }
-                    .padding(.bottom, 15)
+                    .padding(.bottom, 10)
+                    
+                    // MARK: - Filtres Avancés (Énergie & Puissance)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            // Filtres Énergie
+                            ForEach(FiltreEnergie.allCases) { energie in
+                                let estActif = viewModel.filtreEnergieActif == energie
+                                Button(action: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        viewModel.appliquerFiltres(energie: energie)
+                                    }
+                                }) {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: energie.icone)
+                                            .font(.system(size: 11))
+                                        Text(energie.rawValue)
+                                            .font(.system(size: 12, weight: estActif ? .bold : .medium))
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(estActif ? Color(red: 131/255, green: 170/255, blue: 131/255) : Color(.systemGray6))
+                                    .foregroundColor(estActif ? .white : .primary)
+                                    .cornerRadius(18)
+                                }
+                                .accessibilityIdentifier("filtreEnergie_\(energie.rawValue)")
+                            }
+                            
+                            Divider()
+                                .frame(height: 18)
+                                .padding(.horizontal, 4)
+                            
+                            // Filtres Puissance
+                            ForEach(FiltrePuissance.allCases) { puissance in
+                                let estActif = viewModel.filtrePuissanceActif == puissance
+                                Button(action: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        viewModel.appliquerFiltres(puissance: puissance)
+                                    }
+                                }) {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "bolt.fill")
+                                            .font(.system(size: 11))
+                                        Text(puissance.rawValue)
+                                            .font(.system(size: 12, weight: estActif ? .bold : .medium))
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(estActif ? Color.orange : Color(.systemGray6))
+                                    .foregroundColor(estActif ? .white : .primary)
+                                    .cornerRadius(18)
+                                }
+                                .accessibilityIdentifier("filtrePuissance_\(puissance.rawValue)")
+                            }
+                        }
+                        .padding(.horizontal, 2)
+                    }
+                    .padding(.bottom, 12)
                     
                     // MARK: - Liste Paginée (20 éléments par page)
                     ScrollView(showsIndicators: false) {
@@ -287,6 +344,16 @@ struct Navigationview: View {
             DecouverteView()
                 .tabItem {
                     Label("Découverte", systemImage: "sparkles")
+                }
+            
+            ComparateurView()
+                .tabItem {
+                    Label("Duel", systemImage: "arrow.left.arrow.right")
+                }
+            
+            QuizView()
+                .tabItem {
+                    Label("Quiz", systemImage: "gamecontroller.fill")
                 }
             
             NavigationStack {
