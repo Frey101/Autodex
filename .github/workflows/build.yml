@@ -1,24 +1,28 @@
-name: Build Autodex Simulator
+name: CI / CD Autodex
 
 on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: macos-15
 
     steps:
-      - name: Cloner le depot
-        run: |
-          git clone --depth=1 https://github.com/${{ github.repository }}.git .
+      - name: Checkout du code
+        uses: actions/checkout@v4
 
       - name: Selectionner Xcode 16
         run: |
           sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
 
-      - name: Compilation de l'application
+      - name: Compilation et Tests
         run: |
-          xcodebuild -project Autodex.xcodeproj \
+          xcodebuild build-for-testing \
+            -project Autodex.xcodeproj \
             -scheme Autodex \
             -destination "generic/platform=iOS Simulator" \
             -configuration Debug \
@@ -32,7 +36,7 @@ jobs:
           cd build/Build/Products/Debug-iphonesimulator/
           zip -r autodex-simulator.zip Autodex.app
 
-      - name: Exporter le ZIP
+      - name: Exporter l'artefact de Build
         uses: actions/upload-artifact@v4
         with:
           name: autodex-simulator

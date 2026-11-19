@@ -1,0 +1,17 @@
+# Xcode & Apple
+build/
+DerivedData/
+*.xcuserstate
+project.xcworkspace/xcuserdata/
+*.xcuserdatad
+xcuserdata/
+*.xcscmblueprint
+
+# macOS
+.DS_Store
+*/.DS_Store
+
+# Agent & Tools exclusion (Règle projet stricte)
+.agent/
+.agents/
+tools/
