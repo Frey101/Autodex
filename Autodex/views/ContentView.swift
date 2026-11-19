@@ -133,17 +133,13 @@ struct ContentView: View {
                                     let carId = "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
                                     let isCarFavorite = favoriteCars.contains(where: { $0.id == carId })
                                     
-                                    NavigationLink(destination: CarDetailView(car: car)) {
-                                        CarLigne(
-                                            marque: car.Make_Name ?? "Inconnu",
-                                            titre: car.displayName,
-                                            sousTitre: car.displaySubtitle,
-                                            isFavorite: isCarFavorite,
-                                            onFavoriteToggle: {
-                                                toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
-                                            }
-                                        )
-                                    }
+                                    CarLigne(
+                                        car: car,
+                                        isFavorite: isCarFavorite,
+                                        onFavoriteToggle: {
+                                            toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
+                                        }
+                                    )
                                 }
                                 
                                 // Indicateur et bouton de pagination interactif avec déclenchement automatique
@@ -227,40 +223,46 @@ struct ContentView: View {
 
 // MARK: - Ligne de Véhicule dans la Liste
 struct CarLigne: View {
-    var marque: String
-    var titre: String
-    var sousTitre: String
+    var car: Car
     var isFavorite: Bool
     var onFavoriteToggle: () -> Void
     
     var body: some View {
         HStack(spacing: 15) {
-            // Le logo constructeur prend la totalité du cercle
-            LogoMarqueView(marque: marque, taille: 48)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(titre)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-                Text(sousTitre)
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
-                    .lineLimit(1)
+            NavigationLink(destination: CarDetailView(car: car)) {
+                HStack(spacing: 15) {
+                    LogoMarqueView(marque: car.Make_Name ?? "Inconnu", taille: 48)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(car.displayName)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                        Text(car.displaySubtitle)
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
+                            .lineLimit(1)
+                    }
+                    Spacer()
+                }
             }
-            
-            Spacer()
+            .buttonStyle(.plain)
             
             Button(action: onFavoriteToggle) {
                 Image(systemName: isFavorite ? "heart.fill" : "heart")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(isFavorite ? .red : Color(.systemGray3))
+                    .padding(8)
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("boutonCoeurLigne")
             
-            Image(systemName: "chevron.right")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color(.systemGray3))
+            NavigationLink(destination: CarDetailView(car: car)) {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color(.systemGray3))
+            }
+            .buttonStyle(.plain)
         }
         .padding()
         .background(Color.white)
@@ -273,6 +275,7 @@ struct CarLigne: View {
 struct Navigationview: View {
     @Query private var favoriteCars: [FavoriteCar]
     @Environment(\.modelContext) private var modelContext
+    @State private var viewModel = CarViewModel()
     
     var body: some View {
         TabView {
@@ -296,30 +299,50 @@ struct Navigationview: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(favoriteCars) { fav in
+                                    let car = viewModel.trouverVehicule(pour: fav)
                                     HStack(spacing: 15) {
-                                        LogoMarqueView(marque: fav.make, taille: 48)
-                                        
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text("\(fav.make) \(fav.model)")
-                                                .font(.headline)
-                                            Text("Modèle \(fav.year)")
-                                                .font(.subheadline)
-                                                .foregroundColor(.secondary)
+                                        NavigationLink(destination: CarDetailView(car: car)) {
+                                            HStack(spacing: 15) {
+                                                LogoMarqueView(marque: fav.make, taille: 48)
+                                                
+                                                VStack(alignment: .leading, spacing: 4) {
+                                                    Text("\(fav.make) \(fav.model)")
+                                                        .font(.system(size: 16, weight: .bold))
+                                                        .foregroundColor(.primary)
+                                                    Text(car.displaySubtitle)
+                                                        .font(.system(size: 12))
+                                                        .foregroundColor(.gray)
+                                                }
+                                                Spacer()
+                                            }
                                         }
-                                        
-                                        Spacer()
+                                        .buttonStyle(.plain)
+                                        .accessibilityIdentifier("favoriLink_\(fav.make)_\(fav.model)")
                                         
                                         Button(role: .destructive) {
-                                            modelContext.delete(fav)
+                                            withAnimation {
+                                                modelContext.delete(fav)
+                                            }
                                         } label: {
                                             Image(systemName: "trash")
                                                 .foregroundColor(.red)
+                                                .padding(8)
                                         }
+                                        .buttonStyle(.plain)
+                                        
+                                        NavigationLink(destination: CarDetailView(car: car)) {
+                                            Image(systemName: "chevron.right")
+                                                .font(.system(size: 14, weight: .semibold))
+                                                .foregroundColor(Color(.systemGray3))
+                                        }
+                                        .buttonStyle(.plain)
                                     }
                                     .padding()
                                     .background(Color.white)
                                     .cornerRadius(16)
                                     .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
+                                    .accessibilityElement(children: .contain)
+                                    .accessibilityIdentifier("favoriRow_\(fav.make)_\(fav.model)")
                                 }
                             }
                             .padding()

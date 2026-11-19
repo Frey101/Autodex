@@ -134,6 +134,68 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testDecouvertePageEtNavigationFicheTechnique() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        let ongletDecouverte = app.tabBars.buttons["Découverte"]
+        XCTAssertTrue(ongletDecouverte.waitForExistence(timeout: 5), "L'onglet Découverte doit être présent dans la TabBar.")
+        ongletDecouverte.tap()
+        
+        // Vérifier la présence de la carte et du bouton de consultation
+        let boutonConsulter = app.buttons["boutonConsulterFicheDecouverte"]
+        XCTAssertTrue(boutonConsulter.waitForExistence(timeout: 6), "Le bouton de consultation de fiche dans Découverte doit être visible.")
+        
+        // Capture d'écran de la nouvelle page Découverte
+        let captureDecouverte = XCUIScreen.main.screenshot()
+        try? captureDecouverte.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/decouverte_carte.png"))
+        
+        // Tap sur le bouton pour ouvrir la fiche technique
+        boutonConsulter.tap()
+        let barreNav = app.navigationBars["Fiche Technique"]
+        XCTAssertTrue(barreNav.waitForExistence(timeout: 5), "Taper sur la carte Découverte doit ouvrir la fiche technique.")
+        
+        // Retour à la page découverte
+        if app.navigationBars.buttons.element(boundBy: 0).exists {
+            app.navigationBars.buttons.element(boundBy: 0).tap()
+        }
+        
+        // Test de passage à la voiture suivante
+        let boutonPasser = app.buttons["boutonPasserDecouverte"]
+        if boutonPasser.waitForExistence(timeout: 3) {
+            boutonPasser.tap()
+        }
+    }
+
+    @MainActor
+    func testFavorisNavigationVersFicheDetail() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // 1. Ajouter un favori depuis l'accueil en tapant sur le bouton cœur de la première ligne
+        let boutonCoeur = app.buttons.matching(identifier: "boutonCoeurLigne").firstMatch
+        XCTAssertTrue(boutonCoeur.waitForExistence(timeout: 6), "Le bouton cœur de la première ligne doit être visible.")
+        boutonCoeur.tap()
+        
+        // 2. Aller sur l'onglet Favoris
+        let ongletFavoris = app.tabBars.buttons["Favoris"]
+        XCTAssertTrue(ongletFavoris.waitForExistence(timeout: 5), "L'onglet Favoris doit être accessible.")
+        ongletFavoris.tap()
+        
+        // 3. Attendre qu'une ligne de favori soit présente et cliquer dessus
+        let favoriLink = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'favoriLink_'")).firstMatch
+        XCTAssertTrue(favoriLink.waitForExistence(timeout: 6), "Le lien du favori ajouté doit apparaître dans l'onglet Favoris.")
+        favoriLink.tap()
+        
+        // 4. Vérifier que la fiche technique s'ouvre bien depuis l'onglet Favoris !
+        let barreNav = app.navigationBars["Fiche Technique"]
+        XCTAssertTrue(barreNav.waitForExistence(timeout: 5), "Cliquer sur une ligne de favori doit ouvrir la fiche technique détaillée.")
+        
+        let captureFavoriFiche = XCUIScreen.main.screenshot()
+        try? captureFavoriFiche.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/favori_detail.png"))
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
