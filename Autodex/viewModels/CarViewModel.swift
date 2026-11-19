@@ -1,36 +1,116 @@
+//
+//  CarViewModel.swift
+//  Autodex
+//
+//  Created by Alyssia Frey on 29/05/2026.
+//
+
 import Foundation
 import Observation
 
 @Observable
 class CarViewModel {
+    // Liste des véhicules affichés dans l'interface
     var cars: [Car] = []
     var isLoading = false
     var errorMessage: String? = nil
     
-
-    // Recherche par MARQUE
-    func fetchCars(searchQuery: String) async {
-        let cleanQuery = searchQuery.trimmingCharacters(in: .whitespaces)
-        guard !cleanQuery.isEmpty else { return }
-        
-        let targetYear = 2025
-        let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/\(cleanQuery)/modelyear/\(targetYear)?format=json"
-        
-        await performRequest(urlString: urlString, defaultYear: targetYear)
+    // Cache local de l'ensemble du catalogue embarqué
+    private(set) var catalogueLocal: [Car] = []
+    
+    init() {
+        chargerCatalogueLocal()
     }
     
-    // Remplissage de l'écran d'accueil
+    // MARK: - Chargement du catalogue local embarqué
+    func chargerCatalogueLocal() {
+        guard let url = Bundle.main.url(forResource: "car_details", withExtension: "json") else {
+            print("Fichier car_details.json introuvable dans le bundle.")
+            return
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let details = try JSONDecoder().decode([DetailVehiculeData].self, from: data)
+            self.catalogueLocal = details.map { Car(fromDetail: $0) }
+        } catch {
+            print("Erreur lors du décodage du catalogue local : \(error)")
+        }
+    }
+    
+    // MARK: - Recherche par marque ou modèle
+    func fetchCars(searchQuery: String) async {
+        let rechercheNettoyee = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard !rechercheNettoyee.isEmpty else { return }
+        
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        // 1. Recherche instantanée dans le catalogue local
+        let resultatsLocaux = catalogueLocal.filter { car in
+            let marque = car.Make_Name ?? ""
+            let modele = car.Model_Name ?? ""
+            let nomComplet = car.displayName
+            
+            return nomComplet.localizedCaseInsensitiveContains(rechercheNettoyee) ||
+                   marque.localizedCaseInsensitiveContains(rechercheNettoyee) ||
+                   modele.localizedCaseInsensitiveContains(rechercheNettoyee)
+        }
+        
+        if !resultatsLocaux.isEmpty {
+            await MainActor.run {
+                self.cars = resultatsLocaux
+                self.isLoading = false
+            }
+            return
+        }
+        
+        // 2. Si aucun résultat local, fallback sur l'API NHTSA
+        let anneeCible = 2025
+        let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/\(rechercheNettoyee)/modelyear/\(anneeCible)?format=json"
+        await effectuerRequeteReseau(urlString: urlString, anneeParDefaut: anneeCible)
+    }
+    
+    // MARK: - Remplissage de l'écran d'accueil avec les véhicules populaires
     func fetchTrendingCars() async {
         self.isLoading = true
         self.errorMessage = nil
         
-        let targetYear = 2026
-        // La liste des marques mélangées
-        let brandsToMix = ["bmw", "audi", "mercedes", "honda", "fiat", "nissan", "volkswagen","lamborghini", "porsche","toyota"]
+        // Si le catalogue local est présent, sélection des marques emblématiques
+        if !catalogueLocal.isEmpty {
+            let marquesPopulaires = [
+                "porsche", "bmw", "audi", "mercedes-benz", "ferrari",
+                "lamborghini", "ford", "renault", "peugeot", "volkswagen",
+                "honda", "toyota", "abarth", "aston martin", "alfa romeo", "alpine"
+            ]
+            
+            // Sélection d'échantillons variés par marque
+            var selectionPopulaire: [Car] = []
+            for marque in marquesPopulaires {
+                let vehiculesMarque = catalogueLocal.filter {
+                    ($0.Make_Name ?? "").lowercased() == marque
+                }
+                selectionPopulaire.append(contentsOf: vehiculesMarque.prefix(4))
+            }
+            
+            let listeFinale = selectionPopulaire.shuffled()
+            await MainActor.run {
+                self.cars = listeFinale
+                self.isLoading = false
+            }
+            return
+        }
         
+        // Fallback réseau si le fichier local n'était pas chargé
+        await fetchTrendingCarsReseau()
+    }
+    
+    // MARK: - Fallback réseau (NHTSA)
+    private func fetchTrendingCarsReseau() async {
+        let targetYear = 2026
+        let brandsToMix = ["bmw", "audi", "mercedes", "honda", "fiat", "nissan", "volkswagen", "lamborghini", "porsche", "toyota"]
         var allMixedCars: [Car] = []
         
-        // Utilisation d'un TaskGroup pour télécharger toutes les marques en parallèle
         await withTaskGroup(of: [Car].self) { group in
             for brand in brandsToMix {
                 let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/\(brand)/modelyear/\(targetYear)?format=json"
@@ -44,29 +124,23 @@ class CarViewModel {
                     do {
                         let (data, _) = try await URLSession.shared.data(from: url)
                         let decodedResponse = try JSONDecoder().decode(NHTSAResponse.self, from: data)
-                        
-                        // Association de l'année à chaque voiture
                         return decodedResponse.Results.map { car -> Car in
                             var updatedCar = car
                             updatedCar.year = targetYear
                             return updatedCar
                         }
                     } catch {
-                        print("Erreur pour la marque \(brand) : \(error)")
                         return []
                     }
                 }
             }
             
-            // On récupère les résultats de chaque marque au fur et à mesure
             for await brandCars in group {
                 allMixedCars.append(contentsOf: brandCars)
             }
         }
         
-        // .shuffled() mélange complètement le tableau final
         let finalShuffledList = allMixedCars.shuffled()
-        
         await MainActor.run {
             if finalShuffledList.isEmpty {
                 self.errorMessage = "Aucun résultat ou erreur de connexion."
@@ -77,37 +151,30 @@ class CarViewModel {
         }
     }
     
-    // Méthode réseau
-    private func performRequest(urlString: String, defaultYear: Int) async {
-        self.isLoading = true
-        self.errorMessage = nil
-        
+    private func effectuerRequeteReseau(urlString: String, anneeParDefaut: Int) async {
         guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedUrlString) else {
-            self.errorMessage = "Erreur : Recherche invalide."
-            self.isLoading = false
+            await MainActor.run {
+                self.errorMessage = "Erreur : Recherche invalide."
+                self.isLoading = false
+            }
             return
         }
         
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            
-            guard let httpResponse = response as? HTTPURLResponse else { return }
-            
-            if httpResponse.statusCode != 200 {
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 await MainActor.run {
-                    self.errorMessage = "Erreur serveur (Code \(httpResponse.statusCode))."
+                    self.errorMessage = "Erreur serveur ou véhicule introuvable."
                     self.isLoading = false
                 }
                 return
             }
             
-            // Décodage de la structure globale NHTSAResponse
             let decodedResponse = try JSONDecoder().decode(NHTSAResponse.self, from: data)
-            
             let finalCars = decodedResponse.Results.map { car -> Car in
                 var updatedCar = car
-                updatedCar.year = defaultYear
+                updatedCar.year = anneeParDefaut
                 return updatedCar
             }
             
@@ -115,11 +182,9 @@ class CarViewModel {
                 self.cars = finalCars
                 self.isLoading = false
             }
-            
         } catch {
-            print("Erreur de décodage ou réseau : \(error)")
             await MainActor.run {
-                self.errorMessage = "Aucun résultat ou erreur de connexion."
+                self.errorMessage = "Aucun véhicule trouvé pour cette recherche."
                 self.isLoading = false
             }
         }

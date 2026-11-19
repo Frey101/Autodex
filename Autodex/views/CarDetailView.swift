@@ -14,8 +14,13 @@ struct CarDetailView: View {
             // En-tête avec Logo et Titres
             Section {
                 VStack(spacing: 12) {
-                    if let marque = car.Make_Name?.lowercased() {
+                    if let marque = car.Make_Name?.lowercased(), UIImage(named: marque) != nil {
                         Image(marque)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 80)
+                    } else {
+                        Image("voiture")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 80)
@@ -49,6 +54,12 @@ struct CarDetailView: View {
             
             // Section 2 : Motorisation & Performances
             Section(header: Text("Moteur & Transmission")) {
+                if let engine = car.engineName {
+                    LabeledContent("Moteur", value: engine)
+                }
+                if let hp = car.horsepower {
+                    LabeledContent("Puissance", value: "\(hp) ch")
+                }
                 if let fuel = car.fuelType {
                     LabeledContent("Carburant", value: fuel.capitalized)
                 }
