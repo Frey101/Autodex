@@ -1,29 +1,75 @@
 # 🚗 Autodex
 
-**Autodex** est une application iOS interactive conçue comme un « Pokédex » automobile. Elle permet de découvrir, parcourir et consulter les fiches techniques et logos de différentes marques et modèles de voitures emblématiques.
+**Autodex** est une application iOS interactive conçue comme le « Pokédex » de l'automobile. Elle permet de rechercher, découvrir et consulter les caractéristiques techniques de plus de 2 100 véhicules et constructeurs emblématiques.
 
 ---
 
-##  Fonctionnalités
+## 🚀 Fonctionnalités
 
--  **Catalogue de marques** : Audi, BMW, Citroën, Fiat, Honda, Lamborghini, Lotus, Mercedes-Benz, Nissan, Porsche, etc.
--  **Fiches détaillées** : Visualisation des informations clés et des caractéristiques de chaque véhicule.
--  **Interface intuitive** : Navigation fluide et adaptée aux appareils iOS.
-
----
-
-##  Technologies utilisées
-
-- **Langage** : Swift
-- **Framework UI** : SwiftUI / UIKit
-- **Outil de développement** : Xcode
-- **Plateforme cible** : iOS
+- **Catalogue local complet** : Plus de 2 100 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
+- **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
+- **Recherche instantanée** : Filtrage en temps réel par marque ou modèle avec bascule automatique vers l'API NHTSA vPIC si besoin.
+- **Véhicules populaires** : Sélection dynamique et équilibrée de modèles emblématiques sur la page d'accueil.
+- **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
+- **Favoris persistants** : Sauvegarde locale des modèles préférés via SwiftData.
 
 ---
 
-##  Installation & Lancement
+## 🛠️ Stack Technique
+
+- **Langage** : Swift (Swift 5.9+)
+- **Interface** : SwiftUI (iOS 16+)
+- **Gestion d'état** : Framework Observation (`@Observable`)
+- **Persistance** : SwiftData
+- **Concurrence** : `async/await`, `TaskGroup`, `@MainActor`
+- **Tests** : XCTest (tests unitaires décodage, mapping et recherche)
+- **Données** : Dataset local embarqué (`car_details.json`) + API NHTSA vPIC
+
+---
+
+## 📂 Organisation du Code
+
+```text
+Autodex/
+├── AutodexApp.swift          # Point d'entrée de l'application (@main, ModelContainer)
+├── model/
+│   ├── Car.swift             # Modèle Car, spécifications moteurs et décodage
+│   └── FavoriteCar.swift     # Modèle persistant SwiftData pour les favoris
+├── viewModels/
+│   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
+├── views/
+│   ├── ContentView.swift     # Écran d'accueil (Recherche, Populaires, Liste)
+│   ├── DecouverteView.swift  # Écran de découverte aléatoire et par marque
+│   └── CarDetailView.swift   # Fiche technique détaillée (Moteur, transmission, dimensions)
+├── car_details.json          # Dataset local de 2 110 véhicules avec specs moteurs
+└── Assets.xcassets/          # Logos des marques, visuels et icônes
+```
+
+---
+
+## 🔧 Installation & Lancement
 
 1. **Cloner le dépôt** :
    ```bash
-   git clone [https://github.com/Frey101/Autodex.git](https://github.com/Frey101/Autodex.git)
+   git clone https://github.com/Frey101/Autodex.git
    cd Autodex
+   ```
+
+2. **Ouvrir le projet dans Xcode** :
+   ```bash
+   open Autodex.xcodeproj
+   ```
+
+3. **Lancer les tests unitaires en ligne de commande** :
+   ```bash
+   xcodebuild test -project Autodex.xcodeproj -scheme Autodex -destination "platform=iOS Simulator,name=iPhone 17"
+   ```
+
+---
+
+## 🌿 Gestion Git
+
+Le projet suit un **Git Flow** strict :
+- `main` : Branche stable de production (merges stricts depuis `dev`).
+- `dev` : Branche d'intégration continue des fonctionnalités validées.
+- `feature/*` : Branches de travail isolées pour chaque nouvelle fonctionnalité.
