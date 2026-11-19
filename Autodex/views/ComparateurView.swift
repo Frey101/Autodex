@@ -164,15 +164,15 @@ struct ComparateurView: View {
                                 
                                 ligneComparaisonNeutre(
                                     titre: "Énergie",
-                                    val1: (car1.fuelType ?? "N/A").capitalized,
-                                    val2: (car2.fuelType ?? "N/A").capitalized,
+                                    val1: car1.displayFuelType ?? "N/A",
+                                    val2: car2.displayFuelType ?? "N/A",
                                     icone: "fuelpump.fill"
                                 )
                                 
                                 ligneComparaisonNeutre(
                                     titre: "Transmission",
-                                    val1: car1.transmission == "a" ? "Auto" : car1.transmission == "m" ? "Manuelle" : (car1.transmission ?? "N/A").capitalized,
-                                    val2: car2.transmission == "a" ? "Auto" : car2.transmission == "m" ? "Manuelle" : (car2.transmission ?? "N/A").capitalized,
+                                    val1: car1.displayTransmission ?? "N/A",
+                                    val2: car2.displayTransmission ?? "N/A",
                                     icone: "gearshape.fill"
                                 )
                             }

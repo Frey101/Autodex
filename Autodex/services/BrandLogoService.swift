@@ -32,6 +32,7 @@ final class BrandLogoService: Sendable {
     // Génère l'URL directe du logo pour une marque donnée
     func urlLogo(pour marque: String) -> URL? {
         let marqueNettoyee = marque.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !marqueNettoyee.isEmpty else { return nil }
         
         // Vérification des correspondances spécifiques ou remplacement des espaces
         let slug = correspondancesMarques[marqueNettoyee] ?? marqueNettoyee.replacingOccurrences(of: " ", with: "-")

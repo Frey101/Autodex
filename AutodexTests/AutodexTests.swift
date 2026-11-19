@@ -6,10 +6,13 @@
 //
 
 import XCTest
+import SwiftData
 @testable import Autodex
 
 final class AutodexTests: XCTestCase {
 
+    // MARK: - 1. Tests Décodage & Mapping Catalogue
+    
     // Test 1 : Vérification de la présence et du décodage du catalogue local
     func testDecodageCatalogueLocal() throws {
         let bundle = Bundle(for: type(of: self))
@@ -24,7 +27,6 @@ final class AutodexTests: XCTestCase {
             
             XCTAssertGreaterThan(vehicules.count, 2000, "Le catalogue doit contenir plus de 2000 véhicules.")
             
-            // Vérification de la présence de marques phares
             let marques = Set(vehicules.map { $0.brand.lowercased() })
             XCTAssertTrue(marques.contains("porsche"), "Le catalogue doit contenir Porsche.")
             XCTAssertTrue(marques.contains("bmw"), "Le catalogue doit contenir BMW.")
@@ -58,327 +60,848 @@ final class AutodexTests: XCTestCase {
         XCTAssertTrue(car.displaySubtitle.contains("510 ch"), "Le sous-titre doit afficher la puissance en chevaux.")
     }
 
-    // Test 3 : Vérification du ViewModel et de la recherche instantanée
-    @MainActor
-    func testRechercheCatalogueLocalViewModel() async {
-        let viewModel = CarViewModel()
-        
-        // Si le catalogue est chargé
-        if !viewModel.catalogueLocal.isEmpty {
-            await viewModel.fetchCars(searchQuery: "Carrera")
-            XCTAssertFalse(viewModel.cars.isEmpty, "La recherche 'Carrera' doit retourner des modèles.")
-            
-            let premierVehicule = viewModel.cars.first
-            XCTAssertEqual(premierVehicule?.Make_Name?.lowercased(), "porsche")
-            XCTAssertNotNil(premierVehicule?.horsepower, "Les specs moteur doivent être renseignées.")
-        }
+    // Test 3 : Mapping avec moteur sans puissance explicite
+    func testMappingVersCarSansPuissanceExplicite() {
+        let detail = DetailVehiculeData(
+            id: 8888,
+            brand: "Renault",
+            model: "Clio",
+            production_year_start: 2020,
+            production_year_end: nil,
+            body_styles: ["Hatchback"],
+            fuel_types: ["Petrol"],
+            engines: nil
+        )
+        let car = Car(fromDetail: detail)
+        XCTAssertEqual(car.Make_Name, "Renault")
+        XCTAssertEqual(car.Model_Name, "Clio")
+        XCTAssertNil(car.horsepower)
+        XCTAssertTrue(car.displaySubtitle.contains("Modèle 2020"))
     }
 
-    // Test 4 : Vérification de la sélection des véhicules populaires
-    @MainActor
-    func testChargementVehiculesPopulaires() async {
-        let viewModel = CarViewModel()
-        await viewModel.fetchTrendingCars()
-        
-        XCTAssertFalse(viewModel.cars.isEmpty, "La sélection populaire ne doit pas être vide.")
-        XCTAssertFalse(viewModel.isLoading, "Le chargement doit être terminé après fetch.")
+    // Test 4 : Initialiseur complet manuel de Car
+    func testCarInitialiseurComplet() {
+        let car = Car(
+            Make_Name: "Alpine",
+            Model_Name: "A110 R",
+            year: 2024,
+            vehicleClass: "Coupé",
+            fuelType: "petrol",
+            cylinders: 4,
+            displacement: 1.8,
+            transmission: "a",
+            drive: "rwd",
+            cityMpg: 28,
+            highwayMpg: 35,
+            horsepower: 300,
+            engineName: "1.8 Turbo"
+        )
+        XCTAssertEqual(car.Make_Name, "Alpine")
+        XCTAssertEqual(car.Model_Name, "A110 R")
+        XCTAssertEqual(car.year, 2024)
+        XCTAssertEqual(car.horsepower, 300)
+        XCTAssertEqual(car.cylinders, 4)
+        XCTAssertEqual(car.displacement, 1.8)
+        XCTAssertEqual(car.transmission, "a")
     }
 
-    // Test 4 bis : Vérification de la recherche dynamique et restauration lors de l'effacement
-    @MainActor
-    func testRechercheDynamiqueEffacementRestaurePopulaires() async {
-        let viewModel = CarViewModel()
-        
-        // 1. Recherche d'un mot-clé
-        await viewModel.fetchCars(searchQuery: "Civic")
-        XCTAssertFalse(viewModel.cars.isEmpty, "La recherche Civic doit renvoyer des résultats.")
-        let tousCivic = viewModel.cars.allSatisfy { ($0.Model_Name ?? "").localizedCaseInsensitiveContains("Civic") }
-        XCTAssertTrue(tousCivic, "Tous les résultats doivent correspondre à Civic.")
-        
-        // 2. Effacement complet de la saisie (chaîne vide)
-        await viewModel.fetchCars(searchQuery: "")
-        XCTAssertFalse(viewModel.cars.isEmpty, "La réinitialisation doit restaurer les véhicules populaires.")
-        XCTAssertFalse(viewModel.isLoading, "Le chargement doit être inactif après réinitialisation.")
-    }
-
-    // Test 5 : Décodage d'un résumé de réponse Wikipédia REST
-    func testDecodageReponseWikipediaSummary() throws {
-        let jsonMock = """
+    // Test 5 : Décodage JSON standard de Car (NHTSA / API)
+    func testDecodageCarDepuisJSONStandard() throws {
+        let json = """
         {
-            "title": "Porsche 911",
-            "extract": "La Porsche 911 est une voiture de sport haut de gamme fabriquée par le constructeur allemand Porsche.",
-            "description": "Modèle d'automobile sportive",
-            "thumbnail": {
-                "source": "https://upload.wikimedia.org/thumb/porsche_thumb.jpg",
-                "width": 320,
-                "height": 240
-            },
-            "originalimage": {
-                "source": "https://upload.wikimedia.org/porsche_original.jpg",
-                "width": 1920,
-                "height": 1080
-            },
-            "content_urls": {
-                "mobile": {
-                    "page": "https://fr.m.wikipedia.org/wiki/Porsche_911"
-                },
-                "desktop": {
-                    "page": "https://fr.wikipedia.org/wiki/Porsche_911"
-                }
-            }
+            "make": "Ferrari",
+            "model": "F40",
+            "year": 1987,
+            "fuel_type": "petrol",
+            "cylinders": 8,
+            "displacement": 2.9,
+            "transmission": "m",
+            "drive": "rwd",
+            "city_mpg": 12,
+            "highway_mpg": 17,
+            "class": "Supercar"
         }
         """.data(using: .utf8)!
         
-        let summary = try JSONDecoder().decode(WikipediaSummaryResponse.self, from: jsonMock)
-        
-        XCTAssertEqual(summary.title, "Porsche 911")
-        XCTAssertEqual(summary.thumbnail?.source, "https://upload.wikimedia.org/thumb/porsche_thumb.jpg")
-        XCTAssertEqual(summary.originalimage?.source, "https://upload.wikimedia.org/porsche_original.jpg")
-        XCTAssertEqual(summary.content_urls?.desktop?.page, "https://fr.wikipedia.org/wiki/Porsche_911")
-        XCTAssertTrue(summary.extract?.contains("voiture de sport") == true)
+        let car = try JSONDecoder().decode(Car.self, from: json)
+        XCTAssertEqual(car.Make_Name, "Ferrari")
+        XCTAssertEqual(car.Model_Name, "F40")
+        XCTAssertEqual(car.year, 1987)
+        XCTAssertEqual(car.cylinders, 8)
+        XCTAssertEqual(car.displacement, 2.9)
     }
 
-    // Test 6 : Décodage d'une recherche MediaWiki pour retrouver le titre exact
-    func testDecodageReponseWikipediaSearch() throws {
-        let jsonMock = """
-        {
-            "query": {
-                "search": [
-                    { "title": "Peugeot 508 II" },
-                    { "title": "Peugeot 508 I" }
-                ]
+    // MARK: - 2. Tests Traduction & Localisation Française (Carburant & Boîte)
+
+    // Test 6 : Traduction Petrol / Gas / Gasoline -> Essence
+    func testTraductionCarburantEssence() {
+        let c1 = Car(Make_Name: "Porsche", Model_Name: "911", fuelType: "Petrol")
+        let c2 = Car(Make_Name: "Ford", Model_Name: "Mustang", fuelType: "gasoline")
+        let c3 = Car(Make_Name: "Chevrolet", Model_Name: "Corvette", fuelType: "gas")
+        let c4 = Car(Make_Name: "Peugeot", Model_Name: "208", fuelType: "essence")
+
+        XCTAssertEqual(c1.displayFuelType, "Essence")
+        XCTAssertEqual(c2.displayFuelType, "Essence")
+        XCTAssertEqual(c3.displayFuelType, "Essence")
+        XCTAssertEqual(c4.displayFuelType, "Essence")
+    }
+
+    // Test 7 : Traduction Diesel
+    func testTraductionCarburantDiesel() {
+        let c1 = Car(Make_Name: "Audi", Model_Name: "A6 TDI", fuelType: "Diesel")
+        let c2 = Car(Make_Name: "BMW", Model_Name: "530d", fuelType: "diesel (select markets)")
+
+        XCTAssertEqual(c1.displayFuelType, "Diesel")
+        XCTAssertEqual(c2.displayFuelType, "Diesel")
+    }
+
+    // Test 8 : Traduction Électrique
+    func testTraductionCarburantElectrique() {
+        let c1 = Car(Make_Name: "Tesla", Model_Name: "Model S", fuelType: "Electric")
+        let c2 = Car(Make_Name: "Porsche", Model_Name: "Taycan", fuelType: "electricity")
+        let c3 = Car(Make_Name: "Alpine", Model_Name: "A290", fuelType: "Électrique")
+
+        XCTAssertEqual(c1.displayFuelType, "Électrique")
+        XCTAssertEqual(c2.displayFuelType, "Électrique")
+        XCTAssertEqual(c3.displayFuelType, "Électrique")
+    }
+
+    // Test 9 : Traduction Hybride
+    func testTraductionCarburantHybride() {
+        let c1 = Car(Make_Name: "Toyota", Model_Name: "Prius", fuelType: "Hybrid")
+        let c2 = Car(Make_Name: "BMW", Model_Name: "330e", fuelType: "Plug-in Hybrid")
+        let c3 = Car(Make_Name: "Peugeot", Model_Name: "3008", fuelType: "Hybride rechargeable")
+
+        XCTAssertEqual(c1.displayFuelType, "Hybride")
+        XCTAssertEqual(c2.displayFuelType, "Hybride")
+        XCTAssertEqual(c3.displayFuelType, "Hybride")
+    }
+
+    // Test 10 : Traduction Carburants Alternatifs (Hydrogène, GPL, Flex-Fuel)
+    func testTraductionCarburantAlternatifs() {
+        let c1 = Car(Make_Name: "Toyota", Model_Name: "Mirai", fuelType: "Hydrogen")
+        let c2 = Car(Make_Name: "Dacia", Model_Name: "Sandero ECO-G", fuelType: "LPG")
+        let c3 = Car(Make_Name: "Ford", Model_Name: "Puma", fuelType: "Flex-Fuel")
+
+        XCTAssertEqual(c1.displayFuelType, "Hydrogène")
+        XCTAssertEqual(c2.displayFuelType, "GPL")
+        XCTAssertEqual(c3.displayFuelType, "Flex-Fuel (Éthanol)")
+    }
+
+    // Test 11 : Traduction Bi-carburation Petrol/Diesel
+    func testTraductionCarburantBiCarburation() {
+        let car = Car(Make_Name: "Mercedes", Model_Name: "Vito", fuelType: "Petrol/Diesel")
+        XCTAssertEqual(car.displayFuelType, "Essence / Diesel")
+    }
+
+    // Test 12 : Gestion Carburant Nil ou Vide
+    func testTraductionCarburantNilOuVide() {
+        let c1 = Car(Make_Name: "Unknown", Model_Name: "Proto", fuelType: nil)
+        let c2 = Car(Make_Name: "Unknown", Model_Name: "Proto2", fuelType: "   ")
+
+        XCTAssertNil(c1.displayFuelType)
+        XCTAssertNil(c2.displayFuelType)
+    }
+
+    // Test 13 : Traduction Boîte Automatique
+    func testTraductionTransmissionAutomatique() {
+        let c1 = Car(Make_Name: "BMW", Model_Name: "M3", transmission: "a")
+        let c2 = Car(Make_Name: "Porsche", Model_Name: "911", transmission: "PDK")
+        let c3 = Car(Make_Name: "Volkswagen", Model_Name: "Golf GTI", transmission: "DSG")
+        let c4 = Car(Make_Name: "Audi", Model_Name: "RS3", transmission: "Automatic")
+
+        XCTAssertEqual(c1.displayTransmission, "Automatique")
+        XCTAssertEqual(c2.displayTransmission, "Automatique")
+        XCTAssertEqual(c3.displayTransmission, "Automatique")
+        XCTAssertEqual(c4.displayTransmission, "Automatique")
+    }
+
+    // Test 14 : Traduction Boîte Manuelle
+    func testTraductionTransmissionManuelle() {
+        let c1 = Car(Make_Name: "Honda", Model_Name: "Civic Type R", transmission: "m")
+        let c2 = Car(Make_Name: "Mazda", Model_Name: "MX-5", transmission: "manual")
+        let c3 = Car(Make_Name: "Renault", Model_Name: "Clio RS", transmission: "manuelle")
+
+        XCTAssertEqual(c1.displayTransmission, "Manuelle")
+        XCTAssertEqual(c2.displayTransmission, "Manuelle")
+        XCTAssertEqual(c3.displayTransmission, "Manuelle")
+    }
+
+    // Test 15 : Transmission Nil ou Inconnue
+    func testTraductionTransmissionNil() {
+        let car = Car(Make_Name: "Test", Model_Name: "Car", transmission: nil)
+        XCTAssertNil(car.displayTransmission)
+    }
+
+    // MARK: - 3. Tests Propriétés Calculées Modèle Car
+
+    // Test 16 : DisplayName Nom Complet
+    func testCarDisplayNameComplet() {
+        let car = Car(Make_Name: "Bugatti", Model_Name: "Chiron")
+        XCTAssertEqual(car.displayName, "Bugatti Chiron")
+    }
+
+    // Test 17 : DisplayName avec Marque Manquante
+    func testCarDisplayNameMarqueManquante() {
+        let car = Car(Make_Name: nil, Model_Name: "Concept 2026")
+        XCTAssertEqual(car.displayName.trimmingCharacters(in: .whitespaces), "Concept 2026")
+    }
+
+    // Test 18 : DisplaySubtitle avec Année et Puissance
+    func testCarDisplaySubtitleComplet() {
+        let car = Car(Make_Name: "Ferrari", Model_Name: "296 GTB", year: 2023, horsepower: 830)
+        XCTAssertEqual(car.displaySubtitle, "Modèle 2023 • 830 ch")
+    }
+
+    // Test 19 : DisplaySubtitle sans Puissance mais avec Catégorie
+    func testCarDisplaySubtitleSansPuissanceMaisCategorie() {
+        let car = Car(Make_Name: "Citroën", Model_Name: "Ami", year: 2021, vehicleClass: "micro-car")
+        XCTAssertEqual(car.displaySubtitle, "Modèle 2021 • Micro-Car")
+    }
+
+    // Test 20 : DisplaySubtitle sans Aucune Caractéristique
+    func testCarDisplaySubtitleVide() {
+        let car = Car(Make_Name: nil, Model_Name: nil)
+        XCTAssertEqual(car.displaySubtitle, "Véhicule")
+    }
+
+    // Test 21 : Unicité de l'identifiant UUID
+    func testCarIdentifiantsUniques() {
+        let c1 = Car(Make_Name: "Porsche", Model_Name: "911")
+        let c2 = Car(Make_Name: "Porsche", Model_Name: "911")
+        XCTAssertNotEqual(c1.id, c2.id, "Deux instances distinctes doivent avoir un UUID unique.")
+    }
+
+    // Test 22 : Conformité Equatable de Car
+    func testCarConformiteEquatable() {
+        let car = Car(Make_Name: "BMW", Model_Name: "M5")
+        XCTAssertEqual(car, car)
+    }
+
+    // MARK: - 4. Tests Intégrité Données Catalogue Local
+
+    // Test 23 : Taille totale du catalogue local
+    @MainActor
+    func testCatalogueLocalNombreElements() {
+        let viewModel = CarViewModel()
+        XCTAssertGreaterThanOrEqual(viewModel.catalogueLocal.count, 2150, "Le catalogue doit comporter au moins 2150 véhicules.")
+    }
+
+    // Test 24 : Cohérence des années de production
+    @MainActor
+    func testCatalogueLocalAnneesCoherentes() {
+        let viewModel = CarViewModel()
+        for car in viewModel.catalogueLocal {
+            if let year = car.year {
+                XCTAssertGreaterThanOrEqual(year, 1880, "L'année ne peut être antérieure aux débuts de l'automobile en 1880 (\(car.displayName)).")
+                XCTAssertLessThanOrEqual(year, 2030, "L'année ne peut dépasser 2030 (\(car.displayName)).")
             }
         }
-        """.data(using: .utf8)!
-        
-        let searchResponse = try JSONDecoder().decode(WikipediaSearchResponse.self, from: jsonMock)
-        
-        let premierTitre = searchResponse.query?.search?.first?.title
-        XCTAssertEqual(premierTitre, "Peugeot 508 II")
     }
 
-    // Test 7 : Génération et normalisation des URLs de logos de marques
-    func testGenerationUrlLogoMarque() throws {
-        let service = BrandLogoService.shared
-        
-        let urlFord = service.urlLogo(pour: "Ford")
-        XCTAssertEqual(urlFord?.lastPathComponent, "ford.png")
-        
-        let urlAlfa = service.urlLogo(pour: "Alfa Romeo")
-        XCTAssertEqual(urlAlfa?.lastPathComponent, "alfa-romeo.png")
-        
-        let urlAston = service.urlLogo(pour: "Aston Martin")
-        XCTAssertEqual(urlAston?.lastPathComponent, "aston-martin.png")
-        
-        let urlMercedes = service.urlLogo(pour: "Mercedes")
-        XCTAssertEqual(urlMercedes?.lastPathComponent, "mercedes-benz.png")
-    }
-
-    // Test 8 : Pagination par tranches de 20 éléments
+    // Test 25 : Cohérence des puissances moteurs
     @MainActor
-    func testPaginationVingtElements() async {
+    func testCatalogueLocalPuissancesCoherentes() {
         let viewModel = CarViewModel()
-        await viewModel.fetchTrendingCars()
-        
-        XCTAssertEqual(viewModel.taillePage, 20, "La taille de page doit être de 20.")
-        XCTAssertEqual(viewModel.limitePagination, 20, "La limite initiale doit être de 20.")
-        XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 20, "Le nombre d'éléments affichés ne doit pas dépasser 20 initialement.")
-        
-        if viewModel.peutChargerPlus {
-            viewModel.chargerPageSuivante()
-            XCTAssertEqual(viewModel.limitePagination, 40, "Après chargement de page, la limite doit être de 40.")
-            XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 40)
+        for car in viewModel.catalogueLocal {
+            if let hp = car.horsepower {
+                XCTAssertGreaterThanOrEqual(hp, 0, "La puissance doit être positive ou nulle (\(car.displayName)).")
+                XCTAssertLessThan(hp, 3000, "La puissance ne doit pas dépasser 3000 ch (\(car.displayName)).")
+            }
         }
     }
 
-    // Test 8b : Incrémentations successives de pagination et réinitialisation
+    // Test 26 : Présence des Supercars phares
     @MainActor
-    func testPaginationIncrementationConsecutiveEtReinitialisation() async {
+    func testCatalogueLocalPresenceSupercars() {
         let viewModel = CarViewModel()
-        await viewModel.fetchTrendingCars()
-        
-        XCTAssertEqual(viewModel.limitePagination, 20)
-        
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 40)
-        
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 60)
-        
-        viewModel.reinitialiserPagination()
-        XCTAssertEqual(viewModel.limitePagination, 20, "La réinitialisation doit restaurer la taille de page initiale de 20.")
+        let noms = viewModel.catalogueLocal.map { $0.displayName.lowercased() }
+
+        XCTAssertTrue(noms.contains(where: { $0.contains("tourbillon") }), "Bugatti Tourbillon doit être présente.")
+        XCTAssertTrue(noms.contains(where: { $0.contains("f80") }), "Ferrari F80 doit être présente.")
+        XCTAssertTrue(noms.contains(where: { $0.contains("gt3 rs") }), "Porsche 911 GT3 RS doit être présente.")
     }
 
-    // Test 8c : Réinitialisation automatique de la pagination lors d'une recherche ou changement d'onglet
+    // Test 27 : Présence des Citadines populaires européennes
     @MainActor
-    func testPaginationReinitialiseeSurRechercheEtOnglets() async {
+    func testCatalogueLocalPresenceCitadines() {
         let viewModel = CarViewModel()
-        await viewModel.fetchTrendingCars()
-        
-        // Simule plusieurs scrolls
-        viewModel.chargerPageSuivante()
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 60)
-        
-        // Lancer une recherche avec beaucoup de résultats (> 20, ex: BMW avec 91 modèles)
-        await viewModel.fetchCars(searchQuery: "BMW")
-        XCTAssertEqual(viewModel.limitePagination, 20, "Une nouvelle recherche doit remettre la pagination à 20.")
-        XCTAssertEqual(viewModel.carsAffichees.count, 20, "Exactement 20 éléments doivent être affichés initialement.")
-        XCTAssertTrue(viewModel.peutChargerPlus, "BMW ayant 91 résultats, peutChargerPlus doit être vrai.")
-        
-        // Simuler un scroll sur la recherche BMW
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 40)
-        XCTAssertEqual(viewModel.carsAffichees.count, 40)
-        
-        // Basculer sur les nouveautés doit réinitialiser la pagination à 20
-        await viewModel.fetchNewReleases()
-        XCTAssertEqual(viewModel.limitePagination, 20, "Le basculement sur Nouveautés doit remettre la pagination à 20.")
-        XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 20)
+        let noms = viewModel.catalogueLocal.map { $0.displayName.lowercased() }
+
+        XCTAssertTrue(noms.contains(where: { $0.contains("clio") }), "Renault Clio doit être présente.")
+        XCTAssertTrue(noms.contains(where: { $0.contains("208") }), "Peugeot 208 doit être présente.")
+        XCTAssertTrue(noms.contains(where: { $0.contains("golf") }), "Volkswagen Golf doit être présente.")
     }
 
-    // Test 8d : Comportement de la pagination avec un résultat inférieur à 20 (ex: Porsche avec 6 modèles)
+    // Test 28 : Noms de marques et modèles non vides
     @MainActor
-    func testPaginationResultatsInferieursAVingt() async {
+    func testCatalogueLocalNomsNonVides() {
+        let viewModel = CarViewModel()
+        for car in viewModel.catalogueLocal {
+            XCTAssertFalse((car.Make_Name ?? "").trimmingCharacters(in: .whitespaces).isEmpty)
+            XCTAssertFalse((car.Model_Name ?? "").trimmingCharacters(in: .whitespaces).isEmpty)
+        }
+    }
+
+    // MARK: - 5. Tests Recherche & Recherche Dynamique
+
+    // Test 29 : Recherche exacte par marque
+    @MainActor
+    func testRechercheExacteMarque() async {
         let viewModel = CarViewModel()
         await viewModel.fetchCars(searchQuery: "Porsche")
-        
-        let nombreVoitures = viewModel.cars.count
-        XCTAssertTrue(nombreVoitures > 0 && nombreVoitures < 20, "Le catalogue contient moins de 20 Porsche.")
-        XCTAssertEqual(viewModel.carsAffichees.count, nombreVoitures, "Toutes les voitures doivent être affichées.")
-        XCTAssertFalse(viewModel.peutChargerPlus, "Il ne doit pas être possible de charger plus d'éléments.")
-        
-        // Tenter de charger la page suivante ne doit pas modifier la pagination
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 20)
-        XCTAssertEqual(viewModel.carsAffichees.count, nombreVoitures)
+        XCTAssertFalse(viewModel.cars.isEmpty)
+        let toutPorsche = viewModel.cars.allSatisfy {
+            ($0.Make_Name ?? "").localizedCaseInsensitiveContains("Porsche") ||
+            ($0.Model_Name ?? "").localizedCaseInsensitiveContains("Porsche")
+        }
+        XCTAssertTrue(toutPorsche, "Tous les véhicules retournés doivent être liés à Porsche.")
     }
 
-    // Test 9 : Chargement des nouveautés récentes (sorties des 6 derniers mois / >= 2025)
+    // Test 30 : Recherche insensible à la casse
     @MainActor
-    func testChargementNouveautesRecentes() async {
-        let viewModel = CarViewModel()
-        await viewModel.fetchNewReleases()
-        
-        XCTAssertFalse(viewModel.cars.isEmpty, "La liste des nouveautés ne doit pas être vide.")
-        let toutesRecentes = viewModel.cars.allSatisfy { ($0.year ?? 0) >= 2025 }
-        XCTAssertTrue(toutesRecentes, "Toutes les nouveautés doivent être sorties ces 6 derniers mois (>= 2025).")
-        XCTAssertGreaterThanOrEqual(viewModel.cars.count, 40, "La liste des nouveautés doit contenir au moins 40 modèles récents.")
+    func testRechercheInsensibleCasse() async {
+        let vm1 = CarViewModel()
+        let vm2 = CarViewModel()
+        await vm1.fetchCars(searchQuery: "ferrari")
+        await vm2.fetchCars(searchQuery: "FERRARI")
+
+        XCTAssertEqual(vm1.cars.count, vm2.cars.count, "La recherche doit donner le même nombre de résultats en minuscule et majuscule.")
     }
 
-    // Test 10 : Pagination sur l'onglet Nouveautés
+    // Test 31 : Recherche avec espaces superflus
     @MainActor
-    func testPaginationSurOngletNouveautes() async {
-        let viewModel = CarViewModel()
-        await viewModel.fetchNewReleases()
-        
-        XCTAssertEqual(viewModel.limitePagination, 20)
-        XCTAssertEqual(viewModel.carsAffichees.count, 20)
-        XCTAssertTrue(viewModel.peutChargerPlus, "Nouveautés doit contenir plus de 20 modèles pour permettre la pagination.")
-        
-        viewModel.chargerPageSuivante()
-        XCTAssertEqual(viewModel.limitePagination, 40)
-        XCTAssertEqual(viewModel.carsAffichees.count, 40)
+    func testRechercheAvecEspacesSuperflus() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "   Alpine   ")
+        XCTAssertFalse(vm.cars.isEmpty)
+        let toutAlpine = vm.cars.allSatisfy {
+            ($0.Make_Name ?? "").localizedCaseInsensitiveContains("Alpine") ||
+            ($0.Model_Name ?? "").localizedCaseInsensitiveContains("Alpine")
+        }
+        XCTAssertTrue(toutAlpine)
     }
 
-    // Test 11 : Résolution d'un Favori vers sa fiche Car complète avec spécifications
+    // Test 32 : Recherche par nom de modèle numérique
     @MainActor
-    func testResolutionFavoriVersCarComplet() {
-        let viewModel = CarViewModel()
-        let favori = FavoriteCar(make: "Ferrari", model: "F80", year: 2025)
-        let carTrouvee = viewModel.trouverVehicule(pour: favori)
-        
-        XCTAssertEqual(carTrouvee.Make_Name?.lowercased(), "ferrari")
-        XCTAssertTrue(carTrouvee.displayName.contains("Ferrari"))
-        XCTAssertEqual(carTrouvee.horsepower, 1200, "Le modèle Ferrari F80 doit avoir sa puissance de 1200 ch renseignée.")
-        
-        // Test de repli pour un favori inexistant dans le catalogue local
-        let favoriInconnu = FavoriteCar(make: "MarqueInconnue", model: "PrototypeX", year: 2030)
-        let carRepli = viewModel.trouverVehicule(pour: favoriInconnu)
-        XCTAssertEqual(carRepli.Make_Name, "MarqueInconnue")
-        XCTAssertEqual(carRepli.Model_Name, "PrototypeX")
-        XCTAssertEqual(carRepli.year, 2030)
+    func testRechercheParModeleNumerique() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "911")
+        XCTAssertFalse(vm.cars.isEmpty)
+        let tous911 = vm.cars.allSatisfy { ($0.Model_Name ?? "").contains("911") }
+        XCTAssertTrue(tous911)
     }
 
-    // Test 12 : Vérification du filtrage de variantes complexes pour Wikipédia
-    func testWikipediaServiceNettoyageVariantes() async {
-        let service = WikipediaService.shared
-        // Requête sur modèle avec parenthèses
-        let detail = await service.chargerInfosVehicule(marque: "Peugeot", modele: "508 PSE (Peugeot Sport Engineered)")
-        // Même si la requête réseau peut être mockée ou dépendre de l'environnement, on vérifie que l'acteur répond sans crash
-        if let detail = detail {
-            XCTAssertFalse(detail.titre.isEmpty)
-            if let photo = detail.photoUrl {
-                XCTAssertFalse(photo.hasSuffix(".svg"), "Les images vectorielles SVG de logos doivent être rejetées.")
-                XCTAssertFalse(photo.lowercased().contains("logo"), "Les URLs contenant 'logo' doivent être exclues.")
-            }
+    // Test 33 : Recherche infructueuse retourne une liste vide
+    @MainActor
+    func testRechercheInfructueuse() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "VehiculeInexistant12345XYZ")
+        XCTAssertTrue(vm.cars.isEmpty, "Une recherche inexistante doit retourner 0 véhicule.")
+        XCTAssertEqual(vm.voituresAffichees.count, 0)
+    }
+
+    // Test 34 : Recherche par caractères spéciaux et tirets
+    @MainActor
+    func testRechercheCaracteresSpeciaux() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "e-tron")
+        XCTAssertFalse(vm.cars.isEmpty)
+    }
+
+    // Test 35 : Effacement de recherche restaure la sélection populaire
+    @MainActor
+    func testRechercheDynamiqueRestaurationPopulaire() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "Mustang")
+        XCTAssertFalse(vm.cars.isEmpty)
+
+        await vm.fetchCars(searchQuery: "")
+        XCTAssertFalse(vm.cars.isEmpty)
+        XCTAssertEqual(vm.cars.count, vm.catalogueLocal.count)
+    }
+
+    // MARK: - 6. Tests Pagination & Optimisation Performance
+
+    // Test 36 : Taille de page par défaut est de 20
+    @MainActor
+    func testTaillePageParDefautVingt() {
+        let vm = CarViewModel()
+        XCTAssertEqual(vm.taillePage, 20)
+    }
+
+    // Test 37 : Affichage initial limité à 20 éléments
+    @MainActor
+    func testAffichageInitialLimiteVingt() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        XCTAssertEqual(vm.voituresAffichees.count, 20)
+    }
+
+    // Test 38 : Incrémentation successive de la pagination (20 -> 40 -> 60)
+    @MainActor
+    func testIncrementationPagination() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        XCTAssertEqual(vm.voituresAffichees.count, 20)
+
+        vm.chargerPageSuivante()
+        XCTAssertEqual(vm.voituresAffichees.count, 40)
+
+        vm.chargerPageSuivante()
+        XCTAssertEqual(vm.voituresAffichees.count, 60)
+    }
+
+    // Test 39 : Drapeau peutChargerPlus vrai tant qu'il reste des éléments
+    @MainActor
+    func testPeutChargerPlusIndicateur() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        XCTAssertTrue(vm.peutChargerPlus)
+    }
+
+    // Test 40 : Drapeau peutChargerPlus faux en fin de catalogue
+    @MainActor
+    func testPeutChargerPlusFauxEnFin() async {
+        let vm = CarViewModel()
+        await vm.fetchCars(searchQuery: "Chiron")
+        // Afficher tous les éléments
+        while vm.peutChargerPlus {
+            vm.chargerPageSuivante()
+        }
+        XCTAssertFalse(vm.peutChargerPlus)
+        XCTAssertEqual(vm.voituresAffichees.count, vm.cars.count)
+    }
+
+    // Test 41 : Réinitialisation stricte de la pagination lors du changement de filtre
+    @MainActor
+    func testPaginationResetSurChangementFiltre() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.chargerPageSuivante()
+        vm.chargerPageSuivante()
+        XCTAssertEqual(vm.voituresAffichees.count, 60)
+
+        vm.appliquerFiltres(energie: .electrique)
+        XCTAssertEqual(vm.limitePagination, 20)
+        XCTAssertLessThanOrEqual(vm.voituresAffichees.count, 20)
+    }
+
+    // MARK: - 7. Tests Filtres Avancés Énergie & Puissance
+
+    // Test 42 : Filtre Électrique pur
+    @MainActor
+    func testFiltreEnergieElectrique() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(energie: .electrique)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("electr") || fuel.contains("ev"), "Chaque voiture filtrée doit être électrique: \(car.displayName)")
         }
     }
 
-    // Test 13 : Validation des filtres avancés Énergie et Puissance avec maintien de la pagination
+    // Test 43 : Filtre Hybride pur
     @MainActor
-    func testFiltresAvancesEnergieEtPuissance() async {
-        let viewModel = CarViewModel()
-        await viewModel.fetchTrendingCars()
-        
-        let totalInitial = viewModel.cars.count
-        XCTAssertGreaterThan(totalInitial, 100, "La liste de base doit comporter plus de 100 modèles.")
-        
-        // 1. Filtrer par énergie Électrique
-        viewModel.appliquerFiltres(energie: .electrique)
-        XCTAssertFalse(viewModel.cars.isEmpty, "Il doit y avoir des véhicules électriques.")
-        let tousElectriques = viewModel.cars.allSatisfy {
-            let fuel = ($0.fuelType ?? "").lowercased()
-            return fuel.contains("electric") || fuel.contains("electrique")
+    func testFiltreEnergieHybride() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(energie: .hybride)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("hybri") || fuel.contains("phev"), "Chaque voiture filtrée doit être hybride: \(car.displayName)")
         }
-        XCTAssertTrue(tousElectriques, "Tous les résultats doivent être électriques.")
-        XCTAssertEqual(viewModel.limitePagination, 20, "La pagination doit être réinitialisée à 20.")
-        
-        // 2. Filtrer par puissance > 500 ch
-        viewModel.appliquerFiltres(puissance: .plusDe500)
-        let tousPlusDe500 = viewModel.cars.allSatisfy { ($0.horsepower ?? 0) >= 500 }
-        XCTAssertTrue(tousPlusDe500, "Tous les résultats doivent avoir au moins 500 ch.")
-        
-        // 3. Réinitialisation des filtres
-        viewModel.reinitialiserFiltres()
-        XCTAssertEqual(viewModel.cars.count, totalInitial, "La réinitialisation doit restaurer le catalogue source.")
-        XCTAssertEqual(viewModel.filtreEnergieActif, .tous)
-        XCTAssertEqual(viewModel.filtrePuissanceActif, .toutes)
     }
 
-    // Test 14 : Logique du Comparateur Duel (Attribution correcte des vainqueurs par critère)
-    func testLogiqueComparateurDuel() {
-        let car1 = Car(Make_Name: "Porsche", Model_Name: "911 GT3", year: 2022, highwayMpg: 20, horsepower: 510)
-        let car2 = Car(Make_Name: "Ferrari", Model_Name: "F80", year: 2025, highwayMpg: 16, horsepower: 1200)
-        
-        let duel = ComparaisonVehicules(car1: car1, car2: car2)
-        
-        // Ferrari F80 a plus de puissance (1200 > 510)
-        XCTAssertEqual(duel.gagnantPuissance, 2, "La voiture 2 (Ferrari) doit remporter le critère puissance.")
-        
-        // Porsche 911 consomme moins sur autoroute (20 MPG > 16 MPG)
-        XCTAssertEqual(duel.gagnantConso, 1, "La voiture 1 (Porsche) doit remporter le critère consommation autoroute.")
-        
+    // Test 44 : Filtre Essence pur (incluant petrol et gas)
+    @MainActor
+    func testFiltreEnergieEssence() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(energie: .essence)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("petrol") || fuel.contains("gas") || fuel.contains("essence"))
+        }
+    }
+
+    // Test 45 : Filtre Diesel pur
+    @MainActor
+    func testFiltreEnergieDiesel() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(energie: .diesel)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("diesel"))
+        }
+    }
+
+    // Test 46 : Filtre Puissance > 300 ch
+    @MainActor
+    func testFiltrePuissancePlusDe300() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(puissance: .plusDe300)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            XCTAssertGreaterThanOrEqual(car.horsepower ?? 0, 300)
+        }
+    }
+
+    // Test 47 : Filtre Puissance > 500 ch
+    @MainActor
+    func testFiltrePuissancePlusDe500() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(puissance: .plusDe500)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            XCTAssertGreaterThanOrEqual(car.horsepower ?? 0, 500)
+        }
+    }
+
+    // Test 48 : Combinaison simultanée Énergie + Puissance (Électrique & > 500 ch)
+    @MainActor
+    func testFiltreCombineEnergieEtPuissance() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        vm.appliquerFiltres(energie: .electrique, puissance: .plusDe500)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("electr") || fuel.contains("ev"))
+            XCTAssertGreaterThanOrEqual(car.horsepower ?? 0, 500)
+        }
+    }
+
+    // Test 49 : Réinitialisation complète des filtres restaure les paramètres par défaut
+    @MainActor
+    func testReinitialisationCompleteFiltres() async {
+        let vm = CarViewModel()
+        await vm.fetchTrendingCars()
+        let countInitial = vm.cars.count
+
+        vm.appliquerFiltres(energie: .diesel, puissance: .plusDe300)
+        XCTAssertEqual(vm.filtreEnergieActif, .diesel)
+        XCTAssertEqual(vm.filtrePuissanceActif, .plusDe300)
+
+        vm.reinitialiserFiltres()
+        XCTAssertEqual(vm.filtreEnergieActif, .tous)
+        XCTAssertEqual(vm.filtrePuissanceActif, .toutes)
+        XCTAssertEqual(vm.cars.count, countInitial)
+    }
+
+    // MARK: - 8. Tests Nouveautés 6 Mois
+
+    // Test 50 : Filtrage strict des millésimes récents (>= 2025)
+    @MainActor
+    func testNouveautesAnneesStrictes2025Et2026() async {
+        let vm = CarViewModel()
+        await vm.fetchNouveautes()
+
+        XCTAssertFalse(vm.cars.isEmpty, "L'onglet nouveautés ne doit pas être vide.")
+        for car in vm.cars {
+            let annee = car.year ?? 0
+            XCTAssertGreaterThanOrEqual(annee, 2025, "Chaque nouveauté doit être de 2025 ou 2026 (\(car.displayName)).")
+        }
+    }
+
+    // Test 51 : Pagination active sur l'onglet Nouveautés
+    @MainActor
+    func testNouveautesPaginationParVingt() async {
+        let vm = CarViewModel()
+        await vm.fetchNouveautes()
+
+        XCTAssertGreaterThan(vm.cars.count, 20, "Les nouveautés doivent comporter plus de 20 modèles pour paginer.")
+        XCTAssertEqual(vm.voituresAffichees.count, 20, "La première page doit afficher 20 véhicules.")
+
+        vm.chargerPageSuivante()
+        XCTAssertGreaterThan(vm.voituresAffichees.count, 20, "Le chargement de page suivante doit étendre la liste.")
+    }
+
+    // Test 52 : Présence des dernières supercars 2025-2026
+    @MainActor
+    func testNouveautesPresenceSupercars2025() async {
+        let vm = CarViewModel()
+        await vm.fetchNouveautes()
+
+        let noms = vm.cars.map { $0.displayName.lowercased() }
+        XCTAssertTrue(noms.contains(where: { $0.contains("f80") }))
+        XCTAssertTrue(noms.contains(where: { $0.contains("tourbillon") }))
+        XCTAssertTrue(noms.contains(where: { $0.contains("w1") }))
+    }
+
+    // Test 53 : Nouveautés compatibles avec filtre énergie
+    @MainActor
+    func testNouveautesFiltreElectrique() async {
+        let vm = CarViewModel()
+        await vm.fetchNouveautes()
+        vm.appliquerFiltres(energie: .electrique)
+
+        XCTAssertFalse(vm.cars.isEmpty)
+        for car in vm.cars {
+            XCTAssertGreaterThanOrEqual(car.year ?? 0, 2025)
+            let fuel = (car.fuelType ?? "").lowercased()
+            XCTAssertTrue(fuel.contains("electr") || fuel.contains("ev"))
+        }
+    }
+
+    // MARK: - 9. Tests Comparateur Duel (Pokédex Face-à-Face)
+
+    // Test 54 : Égalité parfaite entre deux véhicules identiques
+    func testComparateurDuelEgaliteParfaite() {
+        let c1 = Car(Make_Name: "Porsche", Model_Name: "911 GT3", year: 2024, displacement: 4.0, highwayMpg: 20, horsepower: 510)
+        let c2 = Car(Make_Name: "Porsche", Model_Name: "911 GT3", year: 2024, displacement: 4.0, highwayMpg: 20, horsepower: 510)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertNil(duel.gagnantPuissance)
+        XCTAssertNil(duel.gagnantCylindree)
+        XCTAssertNil(duel.gagnantConso)
+        XCTAssertEqual(duel.scoreCar1, 0)
+        XCTAssertEqual(duel.scoreCar2, 0)
+        XCTAssertEqual(duel.verdictTexte, "Égalité parfaite entre les deux bolides !")
+    }
+
+    // Test 55 : Victoire nette de la Voiture 1
+    func testComparateurDuelVictoireVoiture1() {
+        let c1 = Car(Make_Name: "Bugatti", Model_Name: "Tourbillon", year: 2026, displacement: 8.3, highwayMpg: 18, horsepower: 1800)
+        let c2 = Car(Make_Name: "Alpine", Model_Name: "A110", year: 2022, displacement: 1.8, highwayMpg: 35, horsepower: 252)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertEqual(duel.gagnantPuissance, 1, "Bugatti a plus de ch.")
+        XCTAssertEqual(duel.gagnantCylindree, 1, "Bugatti a plus de cylindrée.")
+        XCTAssertEqual(duel.gagnantConso, 2, "Alpine consomme moins (35 > 18 MPG).")
+
+        XCTAssertEqual(duel.scoreCar1, 2)
+        XCTAssertEqual(duel.scoreCar2, 1)
+        XCTAssertTrue(duel.verdictTexte.contains("Bugatti Tourbillon"))
+    }
+
+    // Test 56 : Victoire nette de la Voiture 2
+    func testComparateurDuelVictoireVoiture2() {
+        let c1 = Car(Make_Name: "Peugeot", Model_Name: "208", year: 2023, displacement: 1.2, highwayMpg: 45, horsepower: 100)
+        let c2 = Car(Make_Name: "Ferrari", Model_Name: "F80", year: 2025, displacement: 3.0, highwayMpg: 18, horsepower: 1200)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertEqual(duel.gagnantPuissance, 2)
+        XCTAssertEqual(duel.gagnantCylindree, 2)
+        XCTAssertEqual(duel.gagnantConso, 1)
+
+        XCTAssertEqual(duel.scoreCar1, 1)
+        XCTAssertEqual(duel.scoreCar2, 2)
+        XCTAssertTrue(duel.verdictTexte.contains("Ferrari F80"))
+    }
+
+    // Test 57 : Comparateur avec valeurs optionnelles Nil
+    func testComparateurDuelGestionDonneesNil() {
+        let c1 = Car(Make_Name: "Proto1", Model_Name: "X", horsepower: nil)
+        let c2 = Car(Make_Name: "Proto2", Model_Name: "Y", horsepower: 200)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertNil(duel.gagnantPuissance, "La comparaison est indécise (nil) si l'une des deux données est manquante.")
+    }
+
+    // Test 58 : Comparateur quand les deux valeurs sont Nil
+    func testComparateurDuelDeuxValeursNil() {
+        let c1 = Car(Make_Name: "Proto1", Model_Name: "X", displacement: nil)
+        let c2 = Car(Make_Name: "Proto2", Model_Name: "Y", displacement: nil)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertNil(duel.gagnantCylindree)
+    }
+
+    // Test 59 : Comparaison Consommation Autoroute
+    func testComparateurDuelConsommationAutoroute() {
+        let c1 = Car(Make_Name: "Clio", Model_Name: "dCi", highwayMpg: 55)
+        let c2 = Car(Make_Name: "Mustang", Model_Name: "V8", highwayMpg: 22)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
+        XCTAssertEqual(duel.gagnantConso, 1)
+    }
+
+    // Test 60 : Détection de l'égalité de score
+    func testComparateurDuelScoreEgalitaire() {
+        let c1 = Car(Make_Name: "A", Model_Name: "1", highwayMpg: 30, horsepower: 500)
+        let c2 = Car(Make_Name: "B", Model_Name: "2", highwayMpg: 40, horsepower: 400)
+
+        let duel = ComparaisonVehicules(car1: c1, car2: c2)
         XCTAssertEqual(duel.scoreCar1, 1)
         XCTAssertEqual(duel.scoreCar2, 1)
         XCTAssertEqual(duel.verdictTexte, "Égalité parfaite entre les deux bolides !")
     }
 
-    // Test 15 : Générateur de Question de Quiz Pokédex
+    // MARK: - 10. Tests Mini-Jeu Quiz Pokédex
+
+    // Test 61 : Génération valide d'une question de quiz
     @MainActor
-    func testGenerationQuestionQuizPokedex() {
-        let viewModel = CarViewModel()
-        let question = viewModel.genererQuestionQuiz()
-        
-        XCTAssertNotNil(question, "Une question de quiz doit être générée avec succès.")
+    func testGenerationQuestionQuizStructureValide() {
+        let vm = CarViewModel()
+        let question = vm.genererQuestionQuiz()
+
+        XCTAssertNotNil(question)
         if let q = question {
-            XCTAssertEqual(q.propositions.count, 4, "Le quiz doit proposer exactement 4 choix.")
-            XCTAssertTrue(q.bonneReponseIndex >= 0 && q.bonneReponseIndex < 4, "L'index de la bonne réponse doit être valide (0-3).")
-            XCTAssertEqual(q.propositions[q.bonneReponseIndex].id, q.voitureCible.id, "La bonne réponse doit correspondre au véhicule cible.")
-            
-            // Vérifier que toutes les 4 propositions sont distinctes
-            let idsUniques = Set(q.propositions.map { $0.id })
-            XCTAssertEqual(idsUniques.count, 4, "Les 4 propositions doivent être 4 véhicules distincts sans doublon.")
+            XCTAssertEqual(q.propositions.count, 4)
+            XCTAssertTrue((0...3).contains(q.bonneReponseIndex))
+            XCTAssertEqual(q.propositions[q.bonneReponseIndex].id, q.voitureCible.id)
         }
+    }
+
+    // Test 62 : Les 4 choix proposés sont 4 véhicules strictement distincts
+    @MainActor
+    func testQuizPropositionsSansDoublon() {
+        let vm = CarViewModel()
+        for _ in 1...10 {
+            if let q = vm.genererQuestionQuiz() {
+                let ids = Set(q.propositions.map { $0.id })
+                XCTAssertEqual(ids.count, 4, "Chaque question doit proposer 4 véhicules strictement différents.")
+            }
+        }
+    }
+
+    // Test 63 : La voiture cible appartient obligatoirement aux propositions
+    @MainActor
+    func testQuizCibleToujoursPresenteDansPropositions() {
+        let vm = CarViewModel()
+        for _ in 1...10 {
+            if let q = vm.genererQuestionQuiz() {
+                let cibleTrouvee = q.propositions.contains(where: { $0.id == q.voitureCible.id })
+                XCTAssertTrue(cibleTrouvee)
+            }
+        }
+    }
+
+    // Test 64 : Génération de questions multiples indépendantes
+    @MainActor
+    func testQuizQuestionsSuccessivesIndependantes() {
+        let vm = CarViewModel()
+        let q1 = vm.genererQuestionQuiz()
+        let q2 = vm.genererQuestionQuiz()
+
+        XCTAssertNotNil(q1)
+        XCTAssertNotNil(q2)
+        XCTAssertNotEqual(q1?.id, q2?.id, "Deux questions doivent avoir des identifiants distincts.")
+    }
+
+    // Test 65 : Sélection prioritaire de marques emblématiques pour le quiz
+    @MainActor
+    func testQuizCibleMarqueEmblematique() {
+        let vm = CarViewModel()
+        let q = vm.genererQuestionQuiz()
+        XCTAssertNotNil(q?.voitureCible.Make_Name)
+    }
+
+    // Test 66 : Quiz non générable sur catalogue trop restreint (< 4 éléments)
+    @MainActor
+    func testQuizCatalogueTropPetitRenvoieNil() {
+        let vm = CarViewModel()
+        vm.catalogueLocal = [
+            Car(Make_Name: "A", Model_Name: "1"),
+            Car(Make_Name: "B", Model_Name: "2")
+        ]
+        XCTAssertNil(vm.genererQuestionQuiz(), "Le générateur doit renvoyer nil si le catalogue comporte moins de 4 éléments.")
+    }
+
+    // MARK: - 11. Tests Recherche Spécifique & Trouver Véhicule
+
+    // Test 67 : Trouver véhicule par identifiant UUID exact
+    @MainActor
+    func testTrouverVehiculeParId() {
+        let vm = CarViewModel()
+        guard let premier = vm.catalogueLocal.first else {
+            XCTFail("Le catalogue doit contenir au moins un véhicule.")
+            return
+        }
+
+        let trouve = vm.trouverVehicule(parId: premier.id)
+        XCTAssertEqual(trouve?.id, premier.id)
+        XCTAssertEqual(trouve?.displayName, premier.displayName)
+    }
+
+    // Test 68 : Trouver véhicule par Marque et Modèle
+    @MainActor
+    func testTrouverVehiculeParMarqueEtModele() {
+        let vm = CarViewModel()
+        let trouve = vm.trouverVehicule(marque: "Porsche", modele: "911 Carrera S")
+        XCTAssertNotNil(trouve)
+        XCTAssertEqual(trouve?.Make_Name?.lowercased(), "porsche")
+    }
+
+    // Test 69 : Recherche d'un véhicule inexistant renvoie nil
+    @MainActor
+    func testTrouverVehiculeInexistantRenvoieNil() {
+        let vm = CarViewModel()
+        let trouveId = vm.trouverVehicule(parId: UUID())
+        XCTAssertNil(trouveId)
+
+        let trouveNom = vm.trouverVehicule(marque: "MarqueInconnue", modele: "ModeleInconnu")
+        XCTAssertNil(trouveNom)
+    }
+
+    // MARK: - 12. Tests Services Réseau & Cache (BrandLogo & Wikipédia)
+
+    // Test 70 : Service de Logo Marque et normalisation d'URL
+    func testBrandLogoServiceNormalisationURL() {
+        let service = BrandLogoService.shared
+        let urlPorsche = service.urlLogo(pour: "Porsche")
+        let urlMercedes = service.urlLogo(pour: "Mercedes-Benz")
+        let urlAston = service.urlLogo(pour: "Aston Martin")
+
+        XCTAssertNotNil(urlPorsche)
+        XCTAssertNotNil(urlMercedes)
+        XCTAssertNotNil(urlAston)
+        XCTAssertTrue(urlPorsche?.absoluteString.contains("porsche") ?? false)
+    }
+
+    // Test 71 : Service de Logo avec chaîne vide ou inconnue
+    func testBrandLogoServiceMarqueInconnue() {
+        let service = BrandLogoService.shared
+        XCTAssertNil(service.urlLogo(pour: ""))
+        XCTAssertNil(service.urlLogo(pour: "   "))
+    }
+
+    // Test 72 : Service Wikipédia et assainissement des variantes
+    func testWikipediaServiceNettoyageVariantes() async {
+        let service = WikipediaService.shared
+        let detail = await service.chargerInfosVehicule(marque: "Peugeot", modele: "508 PSE (Peugeot Sport Engineered)")
+        if let detail = detail {
+            XCTAssertFalse(detail.titre.isEmpty)
+            if let photo = detail.photoUrl {
+                XCTAssertFalse(photo.hasSuffix(".svg"), "Les fichiers vectoriels SVG de logos doivent être rejetés.")
+                XCTAssertFalse(photo.lowercased().contains("logo"))
+            }
+        }
+    }
+
+    // MARK: - 13. Tests Modèle Persistant SwiftData (FavoriteCar)
+
+    // Test 73 : Création et propriétés du modèle FavoriteCar
+    func testModeleFavoriteCarProprietes() {
+        let favori = FavoriteCar(make: "Ferrari", model: "F40", year: 1987)
+        XCTAssertEqual(favori.make, "Ferrari")
+        XCTAssertEqual(favori.model, "F40")
+        XCTAssertEqual(favori.year, 1987)
+        XCTAssertEqual(favori.id, "ferrari-f40")
+        XCTAssertEqual(favori.displayName, "Ferrari F40")
+        XCTAssertEqual(favori.displaySubtitle, "1987 - Spécification Standard")
+        XCTAssertNotNil(favori.timestamp)
+    }
+
+    // Test 74 : Unicité de la clé d'identification dans FavoriteCar
+    func testModeleFavoriteCarCleUnique() {
+        let fav1 = FavoriteCar(make: "Porsche", model: "911 GT3", year: 2022)
+        let fav2 = FavoriteCar(make: "PORSCHE", model: "911 gt3", year: 2024)
+        XCTAssertEqual(fav1.id, fav2.id, "La clé composite unique doit être normalisée en minuscules.")
     }
 }

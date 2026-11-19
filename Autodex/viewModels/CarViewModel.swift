@@ -130,6 +130,11 @@ class CarViewModel {
         Array(cars.prefix(limitePagination))
     }
     
+    // Alias français pour la compatibilité et les tests
+    var voituresAffichees: [Car] {
+        carsAffichees
+    }
+    
     var peutChargerPlus: Bool {
         limitePagination < cars.count
     }
@@ -144,7 +149,7 @@ class CarViewModel {
     }
     
     // Cache local de l'ensemble du catalogue embarqué
-    private(set) var catalogueLocal: [Car] = []
+    var catalogueLocal: [Car] = []
     
     init() {
         chargerCatalogueLocal()
@@ -245,6 +250,22 @@ class CarViewModel {
         )
     }
     
+    // Recherche par identifiant unique dans le catalogue local
+    func trouverVehicule(parId id: UUID) -> Car? {
+        catalogueLocal.first(where: { $0.id == id })
+    }
+    
+    // Recherche par marque et modèle dans le catalogue local
+    func trouverVehicule(marque: String, modele: String) -> Car? {
+        let makeNettoyee = marque.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let modeleNettoye = modele.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return catalogueLocal.first(where: {
+            let m = ($0.Make_Name ?? "").lowercased()
+            let mod = ($0.Model_Name ?? "").lowercased()
+            return m == makeNettoyee && (mod == modeleNettoye || mod.contains(modeleNettoye) || modeleNettoye.contains(mod))
+        })
+    }
+    
     // MARK: - Recherche par marque ou modèle (dynamique)
     func fetchCars(searchQuery: String) async {
         let rechercheNettoyee = searchQuery.trimmingCharacters(in: .whitespaces)
@@ -327,6 +348,15 @@ class CarViewModel {
     
     // MARK: - Remplissage avec les nouveautés récentes (sorties des 6 derniers mois / millésimes 2025-2026)
     func fetchNewReleases() async {
+        await chargerNouveautes()
+    }
+    
+    // Alias français
+    func fetchNouveautes() async {
+        await chargerNouveautes()
+    }
+    
+    private func chargerNouveautes() async {
         self.isLoading = true
         self.errorMessage = nil
         self.reinitialiserPagination()
@@ -360,7 +390,21 @@ class CarViewModel {
     // MARK: - Générateur de Question de Quiz Pokédex
     func genererQuestionQuiz() -> QuestionQuiz? {
         guard catalogueLocal.count >= 4 else { return nil }
-        guard let cible = catalogueLocal.randomElement() else { return nil }
+        
+        // Sélection prioritaire parmi les marques emblématiques pour garantir la photo et l'intérêt ludique
+        let marquesEmblematiques = [
+            "porsche", "ferrari", "lamborghini", "bmw", "audi", "mercedes-benz",
+            "renault", "peugeot", "alpine", "ford", "chevrolet", "toyota",
+            "volkswagen", "aston martin", "mclaren", "bugatti", "nissan", "honda", "alfa romeo"
+        ]
+        
+        let poolEmblematique = catalogueLocal.filter { car in
+            guard let make = car.Make_Name?.lowercased() else { return false }
+            return marquesEmblematiques.contains(where: { make.contains($0) })
+        }
+        
+        let poolCible = !poolEmblematique.isEmpty ? poolEmblematique : catalogueLocal
+        guard let cible = poolCible.randomElement() else { return nil }
         
         var distracteurs: [Car] = []
         // Même marque en priorité si possible
