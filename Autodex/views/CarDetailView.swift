@@ -143,8 +143,8 @@ struct CarDetailView: View {
                 if let hp = car.horsepower {
                     LabeledContent("Puissance", value: "\(hp) ch")
                 }
-                if let fuel = car.fuelType {
-                    LabeledContent("Carburant", value: fuel.capitalized)
+                if let fuel = car.displayFuelType {
+                    LabeledContent("Carburant", value: fuel)
                 }
                 if let cylinders = car.cylinders {
                     LabeledContent("Cylindres", value: "\(cylinders)")
@@ -152,8 +152,8 @@ struct CarDetailView: View {
                 if let displacement = car.displacement {
                     LabeledContent("Cylindrée", value: String(format: "%.1f L", displacement))
                 }
-                if let transmission = car.transmission {
-                    LabeledContent("Transmission", value: transmission == "a" ? "Automatique" : transmission == "m" ? "Manuelle" : transmission.capitalized)
+                if let transmission = car.displayTransmission {
+                    LabeledContent("Transmission", value: transmission)
                 }
                 if let drive = car.drive {
                     LabeledContent("Traction", value: drive.capitalized)

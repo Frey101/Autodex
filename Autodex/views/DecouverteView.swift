@@ -225,8 +225,8 @@ struct DecouverteView: View {
                     if let hp = car.horsepower {
                         badgeCaracteristique(icone: "bolt.fill", valeur: "\(hp) ch", couleur: .orange)
                     }
-                    if let carburant = car.fuelType {
-                        badgeCaracteristique(icone: "fuelpump.fill", valeur: carburant.capitalized, couleur: .green)
+                    if let carburant = car.displayFuelType {
+                        badgeCaracteristique(icone: "fuelpump.fill", valeur: carburant, couleur: .green)
                     }
                 }
                 

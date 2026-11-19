@@ -45,46 +45,84 @@ struct QuizView: View {
                                 .font(.headline)
                                 .foregroundColor(.secondary)
                             
-                            // Emplacement Photo
+                            // Emplacement Photo / Silhouette
                             ZStack {
                                 RoundedRectangle(cornerRadius: 18)
-                                    .fill(Color(.secondarySystemBackground))
-                                    .frame(height: 180)
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [Color(.systemGray6), Color(.systemGray5)],
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                    )
+                                    .frame(height: 190)
                                 
                                 if let photoUrl = wikiPhotoUrl, let url = URL(string: photoUrl) {
                                     AsyncImage(url: url) { phase in
                                         switch phase {
                                         case .empty:
-                                            ProgressView()
+                                            VStack(spacing: 8) {
+                                                ProgressView()
+                                                Text("Chargement du visuel...")
+                                                    .font(.caption2)
+                                                    .foregroundColor(.secondary)
+                                            }
                                         case .success(let image):
                                             image
                                                 .resizable()
                                                 .scaledToFill()
                                                 .frame(maxWidth: .infinity)
-                                                .frame(height: 180)
+                                                .frame(height: 190)
                                                 .clipped()
                                                 .cornerRadius(18)
-                                                // Effet Silhouette tant que l'utilisateur n'a pas répondu
-                                                .colorMultiply(reponseValidee ? .white : Color.black.opacity(0.85))
-                                                .blur(radius: reponseValidee ? 0 : 3)
+                                                // Effet Silhouette : contrasté et désaturé sans devenir un rectangle noir opaque
+                                                .grayscale(reponseValidee ? 0.0 : 0.9)
+                                                .brightness(reponseValidee ? 0.0 : -0.35)
+                                                .contrast(reponseValidee ? 1.0 : 2.2)
+                                                .blur(radius: reponseValidee ? 0 : 2.5)
+                                                .animation(.spring(response: 0.4), value: reponseValidee)
                                         case .failure:
-                                            vueSilhouetteSecours(marque: cible.Make_Name)
+                                            vueSilhouetteSecours(marque: cible.Make_Name, resolu: reponseValidee)
                                         @unknown default:
-                                            vueSilhouetteSecours(marque: cible.Make_Name)
+                                            vueSilhouetteSecours(marque: cible.Make_Name, resolu: reponseValidee)
                                         }
                                     }
                                 } else if estEnChargementPhoto {
-                                    ProgressView("Chargement de la silhouette...")
+                                    VStack(spacing: 8) {
+                                        ProgressView()
+                                        Text("Recherche du visuel...")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
                                 } else {
-                                    vueSilhouetteSecours(marque: cible.Make_Name)
+                                    vueSilhouetteSecours(marque: cible.Make_Name, resolu: reponseValidee)
                                 }
                                 
+                                // Badge discret "Mystère" dans le coin supérieur sans masquer la silhouette
                                 if !reponseValidee {
-                                    Image(systemName: "questionmark")
-                                        .font(.system(size: 48, weight: .bold))
-                                        .foregroundColor(.white.opacity(0.8))
+                                    VStack {
+                                        HStack {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "questionmark.circle.fill")
+                                                    .font(.caption)
+                                                Text("Silhouette Mystère")
+                                                    .font(.caption2)
+                                                    .fontWeight(.bold)
+                                            }
+                                            .foregroundColor(.white)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 5)
+                                            .background(Color.black.opacity(0.65))
+                                            .clipShape(Capsule())
+                                            .padding(10)
+                                            
+                                            Spacer()
+                                        }
+                                        Spacer()
+                                    }
                                 }
                             }
+                            .frame(height: 190)
                             
                             // Révélation du nom après validation
                             if reponseValidee {
@@ -276,19 +314,37 @@ struct QuizView: View {
     }
     
     @ViewBuilder
-    private func vueSilhouetteSecours(marque: String?) -> some View {
+    private func vueSilhouetteSecours(marque: String?, resolu: Bool) -> some View {
         ZStack {
-            Color.black.opacity(0.7)
-            if let marque = marque {
-                LogoMarqueView(marque: marque, taille: 70)
-                    .opacity(0.3)
+            LinearGradient(
+                colors: resolu
+                    ? [Color.blue.opacity(0.12), Color.purple.opacity(0.08)]
+                    : [Color(red: 28/255, green: 32/255, blue: 44/255), Color(red: 18/255, green: 20/255, blue: 28/255)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            
+            if resolu, let marque = marque {
+                VStack(spacing: 8) {
+                    LogoMarqueView(marque: marque, taille: 70)
+                    Text(marque)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                }
             } else {
-                Image(systemName: "car.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(.white.opacity(0.4))
+                VStack(spacing: 8) {
+                    Image(systemName: "car.side.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.white.opacity(0.85))
+                        .shadow(color: .cyan.opacity(0.4), radius: 8, x: 0, y: 3)
+                    Text("Profil Silhouette Aérodynamique")
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white.opacity(0.7))
+                }
             }
         }
-        .frame(height: 180)
+        .frame(height: 190)
         .cornerRadius(18)
     }
     
