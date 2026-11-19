@@ -8,6 +8,7 @@
 
 - **Catalogue local complet** : Plus de 2 100 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
+- **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (avec cache mémoire).
 - **Recherche instantanée** : Filtrage en temps réel par marque ou modèle avec bascule automatique vers l'API NHTSA vPIC si besoin.
 - **Véhicules populaires** : Sélection dynamique et équilibrée de modèles emblématiques sur la page d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
@@ -37,6 +38,8 @@ Autodex/
 │   └── FavoriteCar.swift     # Modèle persistant SwiftData pour les favoris
 ├── viewModels/
 │   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
+├── services/
+│   └── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
 ├── views/
 │   ├── ContentView.swift     # Écran d'accueil (Recherche, Populaires, Liste)
 │   ├── DecouverteView.swift  # Écran de découverte aléatoire et par marque
