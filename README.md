@@ -13,7 +13,10 @@
 - **Mode Découverte Pokédex enrichi** : Tirage de cartes interactives avec vraie photo du véhicule, badges de specs (année, puissance ch, carburant), gestes de glissement (passer/favori) et consultation directe de la fiche technique.
 - **Pagination fluide par 20 éléments** : Chargement progressif par tranches de 20 véhicules sur les onglets Populaires, Nouveautés et la recherche, défilement infini automatique et bouton manuel « Afficher plus de véhicules ».
 - **Onglet Nouveautés (sorties récentes)** : Filtrage strict des modèles sortis ces 6 derniers mois (millésimes 2025 et 2026 : Ferrari F80, Bugatti Tourbillon, McLaren W1, Porsche Macan Turbo Electric, Audi SQ6 e-tron, BMW i5 M60, Renault 5 E-Tech, Alpine A290, etc.).
-- **Recherche dynamique en temps réel** : Filtrage instantané dès la frappe et lors de l'effacement de caractères, restauration automatique des modèles populaires et bouton d'effacement rapide.
+- **Recherche dynamique & Filtres avancés** : Filtrage instantané dès la frappe et lors de l'effacement de caractères, avec puces de filtres rapides par énergie (Électrique, Hybride, Essence, Diesel) et par puissance (> 300 ch, > 500 ch) tout en préservant la pagination.
+- **Bouton Like réactif sur Fiche Technique** : Sauvegarde/retrait en favoris directement depuis la barre d'outils de la fiche détaillée, avec retour haptique et persistance SwiftData synchronisée en temps réel.
+- **Comparateur Face-à-Face (Mode Duel / Pokédex)** : Comparatif visuel côte à côte de deux véhicules au choix ou en tirage aléatoire (puissance ch, cylindrée, consommation autoroute, année, énergie, transmission) avec décompte de points, couronne et mise en valeur verte sur les caractéristiques gagnantes.
+- **Mini-jeu Pokédex « Devine la Voiture »** : Quiz interactif affichant la silhouette assombrie et floutée d'un véhicule mystère, des indices techniques déblocables, 4 choix multiples, retour haptique et suivi du score, de la série de victoires et du record.
 - **Véhicules populaires & Nouveautés** : Sélecteur d'onglets ergonomique en en-tête d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
 - **Favoris persistants & navigables** : Sauvegarde locale des modèles préférés via SwiftData, affichage des spécifications et ouverture directe de la fiche technique en un tap.
@@ -46,9 +49,11 @@ Autodex/
 │   ├── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
 │   └── BrandLogoService.swift # Service de logos constructeurs et normalisation
 ├── views/
-│   ├── ContentView.swift      # Écran d'accueil (Recherche, Populaires, Liste)
+│   ├── ContentView.swift      # Écran d'accueil (Recherche, Filtres, Populaires, Onglets)
 │   ├── DecouverteView.swift   # Écran de découverte aléatoire et par marque
-│   ├── CarDetailView.swift    # Fiche technique détaillée (Moteur, transmission, dimensions)
+│   ├── ComparateurView.swift  # Comparateur face-à-face (Duel Pokédex avec specs et gagnant)
+│   ├── QuizView.swift         # Mini-jeu Pokédex « Devine la Voiture » (Silhouette et QCM)
+│   ├── CarDetailView.swift    # Fiche technique détaillée (Like Toolbar, Moteur, Dimensions)
 │   └── LogoMarqueView.swift   # Composant d'affichage de logo avec cache et repli
 ├── car_details.json          # Dataset local de 2 157 véhicules avec specs moteurs
 └── Assets.xcassets/          # Logos des marques, visuels et icônes
