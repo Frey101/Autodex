@@ -2,29 +2,33 @@
 //  ContentView.swift
 //  Autodex
 //
-//  Created by Alyssia Frey and Lucas Cesar on 29/05/2026.
+//  Created by Alyssia Frey on 29/05/2026.
+//
 
 import SwiftUI
 import SwiftData
 
+enum OngletAccueil: String, CaseIterable {
+    case populaires = "Populaires"
+    case nouveautes = "Nouveautés"
+}
+
 struct ContentView: View {
     @State private var viewModel = CarViewModel()
     @State private var searchText = ""
-    @State private var detailVoiture = ""
+    @State private var ongletActif: OngletAccueil = .populaires
     
-    // Enregistrement des favoris
-    @Environment(\.modelContext) private var modelContext
+    // Pour les favoris
     @Query private var favoriteCars: [FavoriteCar]
+    @Environment(\.modelContext) private var modelContext
     
-    var body : some View {
-        
-        NavigationStack{
-            
+    var body: some View {
+        NavigationStack {
             ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
+                Color(red: 247/255, green: 247/255, blue: 249/255).ignoresSafeArea()
                 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
+                    
                     Text("AutoDex")
                         .font(.largeTitle)
                         .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
@@ -34,7 +38,7 @@ struct ContentView: View {
                         .font(.caption)
                         .padding(.bottom, 20)
                     
-                    // Barre de recherche dynamique
+                    // MARK: - Barre de recherche dynamique
                     HStack(spacing: 8) {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.secondary)
@@ -58,21 +62,53 @@ struct ContentView: View {
                     .padding(.vertical, 10)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(25)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 16)
                     
-                    HStack {
-                        Button("Populaires"){ }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 8)
-                            .background(Color.yellow)
-                            .foregroundStyle(.black)
-                            .cornerRadius(30)
+                    // MARK: - Filtres d'onglets (Populaires & Nouveautés des 6 derniers mois)
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                ongletActif = .populaires
+                                searchText = ""
+                            }
+                            Task {
+                                await viewModel.fetchTrendingCars()
+                            }
+                        }) {
+                            Text("Populaires")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 8)
+                                .background(ongletActif == .populaires ? Color.yellow : Color(.systemGray6))
+                                .foregroundStyle(ongletActif == .populaires ? .black : .secondary)
+                                .cornerRadius(30)
+                        }
                         
-                        Button("Nouveautés"){ }
-                            .foregroundStyle(.gray)
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                ongletActif = .nouveautes
+                                searchText = ""
+                            }
+                            Task {
+                                await viewModel.fetchNewReleases()
+                            }
+                        }) {
+                            Text("Nouveautés")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 8)
+                                .background(ongletActif == .nouveautes ? Color.yellow : Color(.systemGray6))
+                                .foregroundStyle(ongletActif == .nouveautes ? .black : .secondary)
+                                .cornerRadius(30)
+                        }
+                        
+                        Spacer()
                     }
                     .padding(.bottom, 15)
                     
+                    // MARK: - Liste Paginée (20 éléments par page)
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 12) {
                             if viewModel.isLoading {
@@ -89,12 +125,11 @@ struct ContentView: View {
                                     .font(.footnote)
                                     .padding(.top, 40)
                             } else {
-                                ForEach(viewModel.cars) { car in
-                                    // ID unique théorique pour vérifier si le favori existe déjà
+                                ForEach(viewModel.carsAffichees) { car in
                                     let carId = "\((car.Make_Name ?? "").lowercased())-\((car.Model_Name ?? "").lowercased())"
                                     let isCarFavorite = favoriteCars.contains(where: { $0.id == carId })
                                     
-                                    NavigationLink(destination: CarDetailView(car: car)){
+                                    NavigationLink(destination: CarDetailView(car: car)) {
                                         CarLigne(
                                             marque: car.Make_Name ?? "Inconnu",
                                             titre: car.displayName,
@@ -104,9 +139,33 @@ struct ContentView: View {
                                                 toggleFavorite(for: car, isAlreadyFavorite: isCarFavorite, id: carId)
                                             }
                                         )
-                                        
                                     }
-                                    
+                                    .onAppear {
+                                        // Détection de fin de liste pour charger automatiquement la page suivante
+                                        if car.id == viewModel.carsAffichees.last?.id {
+                                            viewModel.chargerPageSuivante()
+                                        }
+                                    }
+                                }
+                                
+                                // Bouton / indicateur de pagination si d'autres éléments sont disponibles
+                                if viewModel.peutChargerPlus {
+                                    Button(action: {
+                                        withAnimation {
+                                            viewModel.chargerPageSuivante()
+                                        }
+                                    }) {
+                                        HStack(spacing: 8) {
+                                            Text("Afficher plus de véhicules (\(viewModel.carsAffichees.count) sur \(viewModel.cars.count))")
+                                                .font(.footnote)
+                                                .fontWeight(.medium)
+                                            Image(systemName: "chevron.down")
+                                                .font(.caption)
+                                        }
+                                        .foregroundColor(.secondary)
+                                        .padding(.vertical, 12)
+                                        .frame(maxWidth: .infinity)
+                                    }
                                 }
                             }
                         }
@@ -115,22 +174,28 @@ struct ContentView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
-            
-        }
-        
-     
+            }
         }
         .task {
             await viewModel.fetchTrendingCars()
         }
         .onChange(of: searchText) { _, nouvelleValeur in
             Task {
-                await viewModel.fetchCars(searchQuery: nouvelleValeur)
+                let texte = nouvelleValeur.trimmingCharacters(in: .whitespaces)
+                if texte.isEmpty {
+                    if ongletActif == .populaires {
+                        await viewModel.fetchTrendingCars()
+                    } else {
+                        await viewModel.fetchNewReleases()
+                    }
+                } else {
+                    await viewModel.fetchCars(searchQuery: texte)
+                }
             }
         }
     }
     
-    // Fonction ajout ou supprime le favori
+    // MARK: - Gestion des favoris
     private func toggleFavorite(for car: Car, isAlreadyFavorite: Bool, id: String) {
         if isAlreadyFavorite {
             if let index = favoriteCars.firstIndex(where: { $0.id == id }) {
@@ -146,6 +211,8 @@ struct ContentView: View {
         }
     }
 }
+
+// MARK: - Ligne de Véhicule dans la Liste
 struct CarLigne: View {
     var marque: String
     var titre: String
@@ -154,32 +221,29 @@ struct CarLigne: View {
     var onFavoriteToggle: () -> Void
     
     var body: some View {
-        
         HStack(spacing: 15) {
-            LogoMarqueView(marque: marque, taille: 38)
-                .frame(width: 48, height: 48)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(Circle())
-                .overlay(Circle().stroke(Color.gray.opacity(0.12), lineWidth: 1))
+            // Le logo constructeur prend la totalité du cercle
+            LogoMarqueView(marque: marque, taille: 48)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(titre)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.primary)
+                    .lineLimit(1)
                 Text(sousTitre)
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
+                    .lineLimit(1)
             }
             
             Spacer()
             
-            
             Button(action: onFavoriteToggle) {
-                            Image(systemName: isFavorite ? "heart.fill" : "heart")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(isFavorite ? .red : Color(.systemGray3))
-                        }
-                        .buttonStyle(.plain)
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(isFavorite ? .red : Color(.systemGray3))
+            }
+            .buttonStyle(.plain)
             
             Image(systemName: "chevron.right")
                 .font(.system(size: 14, weight: .semibold))
@@ -192,6 +256,7 @@ struct CarLigne: View {
     }
 }
 
+// MARK: - Barre de navigation principale
 struct Navigationview: View {
     @Query private var favoriteCars: [FavoriteCar]
     @Environment(\.modelContext) private var modelContext
@@ -217,33 +282,42 @@ struct Navigationview: View {
                     } else {
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(favoriteCars) { favorite in
-                                    CarLigne(
-                                        marque: favorite.make,
-                                        titre: favorite.displayName,
-                                        sousTitre: favorite.displaySubtitle,
-                                        isFavorite: true,
-                                        onFavoriteToggle: {
-                                            // Permet de retirer des favoris directement depuis l'onglet Favoris
-                                            modelContext.delete(favorite)
+                                ForEach(favoriteCars) { fav in
+                                    HStack(spacing: 15) {
+                                        LogoMarqueView(marque: fav.make, taille: 48)
+                                        
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("\(fav.make) \(fav.model)")
+                                                .font(.headline)
+                                            Text("Modèle \(fav.year)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
                                         }
-                                    )
+                                        
+                                        Spacer()
+                                        
+                                        Button(role: .destructive) {
+                                            modelContext.delete(fav)
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .foregroundColor(.red)
+                                        }
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(16)
+                                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
                                 }
                             }
                             .padding()
                         }
-                        .navigationTitle("Mes Favoris")
                     }
                 }
+                .navigationTitle("Mes Favoris")
             }
             .tabItem {
                 Label("Favoris", systemImage: "heart")
             }
         }
-        .tint(Color.blue)
     }
-}
-
-#Preview {
-    Navigationview()
 }

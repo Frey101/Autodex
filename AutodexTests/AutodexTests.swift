@@ -173,4 +173,32 @@ final class AutodexTests: XCTestCase {
         let urlMercedes = service.urlLogo(pour: "Mercedes")
         XCTAssertEqual(urlMercedes?.lastPathComponent, "mercedes-benz.png")
     }
+
+    // Test 8 : Pagination par tranches de 20 éléments
+    @MainActor
+    func testPaginationVingtElements() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchTrendingCars()
+        
+        XCTAssertEqual(viewModel.taillePage, 20, "La taille de page doit être de 20.")
+        XCTAssertEqual(viewModel.limitePagination, 20, "La limite initiale doit être de 20.")
+        XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 20, "Le nombre d'éléments affichés ne doit pas dépasser 20 initialement.")
+        
+        if viewModel.peutChargerPlus {
+            viewModel.chargerPageSuivante()
+            XCTAssertEqual(viewModel.limitePagination, 40, "Après chargement de page, la limite doit être de 40.")
+            XCTAssertLessThanOrEqual(viewModel.carsAffichees.count, 40)
+        }
+    }
+
+    // Test 9 : Chargement des nouveautés récentes (2024-2026)
+    @MainActor
+    func testChargementNouveautesRecentes() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchNewReleases()
+        
+        XCTAssertFalse(viewModel.cars.isEmpty, "La liste des nouveautés ne doit pas être vide.")
+        let toutesRecentes = viewModel.cars.allSatisfy { ($0.year ?? 0) >= 2024 }
+        XCTAssertTrue(toutesRecentes, "Toutes les nouveautés doivent être sorties récemment (>= 2024).")
+    }
 }
