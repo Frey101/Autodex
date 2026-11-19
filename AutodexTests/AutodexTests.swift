@@ -280,4 +280,38 @@ final class AutodexTests: XCTestCase {
         XCTAssertEqual(viewModel.limitePagination, 40)
         XCTAssertEqual(viewModel.carsAffichees.count, 40)
     }
+
+    // Test 11 : Résolution d'un Favori vers sa fiche Car complète avec spécifications
+    @MainActor
+    func testResolutionFavoriVersCarComplet() {
+        let viewModel = CarViewModel()
+        let favori = FavoriteCar(make: "Ferrari", model: "F80", year: 2025)
+        let carTrouvee = viewModel.trouverVehicule(pour: favori)
+        
+        XCTAssertEqual(carTrouvee.Make_Name?.lowercased(), "ferrari")
+        XCTAssertTrue(carTrouvee.displayName.contains("Ferrari"))
+        XCTAssertEqual(carTrouvee.horsepower, 1200, "Le modèle Ferrari F80 doit avoir sa puissance de 1200 ch renseignée.")
+        
+        // Test de repli pour un favori inexistant dans le catalogue local
+        let favoriInconnu = FavoriteCar(make: "MarqueInconnue", model: "PrototypeX", year: 2030)
+        let carRepli = viewModel.trouverVehicule(pour: favoriInconnu)
+        XCTAssertEqual(carRepli.Make_Name, "MarqueInconnue")
+        XCTAssertEqual(carRepli.Model_Name, "PrototypeX")
+        XCTAssertEqual(carRepli.year, 2030)
+    }
+
+    // Test 12 : Vérification du filtrage de variantes complexes pour Wikipédia
+    func testWikipediaServiceNettoyageVariantes() async {
+        let service = WikipediaService.shared
+        // Requête sur modèle avec parenthèses
+        let detail = await service.chargerInfosVehicule(marque: "Peugeot", modele: "508 PSE (Peugeot Sport Engineered)")
+        // Même si la requête réseau peut être mockée ou dépendre de l'environnement, on vérifie que l'acteur répond sans crash
+        if let detail = detail {
+            XCTAssertFalse(detail.titre.isEmpty)
+            if let photo = detail.photoUrl {
+                XCTAssertFalse(photo.hasSuffix(".svg"), "Les images vectorielles SVG de logos doivent être rejetées.")
+                XCTAssertFalse(photo.lowercased().contains("logo"), "Les URLs contenant 'logo' doivent être exclues.")
+            }
+        }
+    }
 }

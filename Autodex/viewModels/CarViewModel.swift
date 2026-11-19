@@ -61,6 +61,28 @@ class CarViewModel {
         }
     }
     
+    // MARK: - Résolution d'un favori vers sa fiche complète Car
+    func trouverVehicule(pour favori: FavoriteCar) -> Car {
+        let makeFav = favori.make.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let modelFav = favori.model.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        
+        if let match = catalogueLocal.first(where: {
+            let carMake = ($0.Make_Name ?? "").lowercased()
+            let carModel = ($0.Model_Name ?? "").lowercased()
+            return (carMake == makeFav || carMake.contains(makeFav)) &&
+                   (carModel == modelFav || carModel.contains(modelFav) || modelFav.contains(carModel))
+        }) {
+            return match
+        }
+        
+        // Reconstitution minimale si non présent dans le catalogue local
+        return Car(
+            Make_Name: favori.make,
+            Model_Name: favori.model,
+            year: favori.year
+        )
+    }
+    
     // MARK: - Recherche par marque ou modèle (dynamique)
     func fetchCars(searchQuery: String) async {
         let rechercheNettoyee = searchQuery.trimmingCharacters(in: .whitespaces)
