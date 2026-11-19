@@ -13,7 +13,6 @@ final class AutodexTests: XCTestCase {
     // Test 1 : Vérification de la présence et du décodage du catalogue local
     func testDecodageCatalogueLocal() throws {
         let bundle = Bundle(for: type(of: self))
-        // Le fichier peut être soit dans le bundle de tests, soit dans le bundle principal de l'app
         let url = Bundle.main.url(forResource: "car_details", withExtension: "json") 
             ?? bundle.url(forResource: "car_details", withExtension: "json")
         
@@ -83,5 +82,61 @@ final class AutodexTests: XCTestCase {
         
         XCTAssertFalse(viewModel.cars.isEmpty, "La sélection populaire ne doit pas être vide.")
         XCTAssertFalse(viewModel.isLoading, "Le chargement doit être terminé après fetch.")
+    }
+
+    // Test 5 : Décodage d'un résumé de réponse Wikipédia REST
+    func testDecodageReponseWikipediaSummary() throws {
+        let jsonMock = """
+        {
+            "title": "Porsche 911",
+            "extract": "La Porsche 911 est une voiture de sport haut de gamme fabriquée par le constructeur allemand Porsche.",
+            "description": "Modèle d'automobile sportive",
+            "thumbnail": {
+                "source": "https://upload.wikimedia.org/thumb/porsche_thumb.jpg",
+                "width": 320,
+                "height": 240
+            },
+            "originalimage": {
+                "source": "https://upload.wikimedia.org/porsche_original.jpg",
+                "width": 1920,
+                "height": 1080
+            },
+            "content_urls": {
+                "mobile": {
+                    "page": "https://fr.m.wikipedia.org/wiki/Porsche_911"
+                },
+                "desktop": {
+                    "page": "https://fr.wikipedia.org/wiki/Porsche_911"
+                }
+            }
+        }
+        """.data(using: .utf8)!
+        
+        let summary = try JSONDecoder().decode(WikipediaSummaryResponse.self, from: jsonMock)
+        
+        XCTAssertEqual(summary.title, "Porsche 911")
+        XCTAssertEqual(summary.thumbnail?.source, "https://upload.wikimedia.org/thumb/porsche_thumb.jpg")
+        XCTAssertEqual(summary.originalimage?.source, "https://upload.wikimedia.org/porsche_original.jpg")
+        XCTAssertEqual(summary.content_urls?.desktop?.page, "https://fr.wikipedia.org/wiki/Porsche_911")
+        XCTAssertTrue(summary.extract?.contains("voiture de sport") == true)
+    }
+
+    // Test 6 : Décodage d'une recherche MediaWiki pour retrouver le titre exact
+    func testDecodageReponseWikipediaSearch() throws {
+        let jsonMock = """
+        {
+            "query": {
+                "search": [
+                    { "title": "Peugeot 508 II" },
+                    { "title": "Peugeot 508 I" }
+                ]
+            }
+        }
+        """.data(using: .utf8)!
+        
+        let searchResponse = try JSONDecoder().decode(WikipediaSearchResponse.self, from: jsonMock)
+        
+        let premierTitre = searchResponse.query?.search?.first?.title
+        XCTAssertEqual(premierTitre, "Peugeot 508 II")
     }
 }
