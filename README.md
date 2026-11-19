@@ -30,7 +30,7 @@
 - **Gestion d'état** : Framework Observation (`@Observable`)
 - **Persistance** : SwiftData
 - **Concurrence** : `async/await`, `TaskGroup`, `@MainActor`
-- **Tests** : XCTest (tests unitaires décodage, mapping et recherche)
+- **Tests** : XCTest (74 tests unitaires complets et 10 tests d'interface UI automatisés)
 - **Données** : Dataset local embarqué (`car_details.json`) + API NHTSA vPIC
 
 ---
