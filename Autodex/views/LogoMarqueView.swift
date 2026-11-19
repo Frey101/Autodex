@@ -29,8 +29,8 @@ struct LogoMarqueView: View {
                         image
                             .resizable()
                             .scaledToFit()
-                            .scaleEffect(1.45)
-                            .frame(width: taille, height: taille)
+                            .scaleEffect(1.15)
+                            .frame(width: taille * 0.80, height: taille * 0.80)
                             .clipShape(Circle())
                     case .failure:
                         vueRepliLocal(nomMarque: nomMarque)
@@ -59,14 +59,14 @@ struct LogoMarqueView: View {
             Image(nomMarque)
                 .resizable()
                 .scaledToFit()
-                .scaleEffect(1.35)
-                .frame(width: taille, height: taille)
+                .scaleEffect(1.15)
+                .frame(width: taille * 0.80, height: taille * 0.80)
                 .clipShape(Circle())
         } else {
             Image("voiture")
                 .resizable()
                 .scaledToFit()
-                .frame(width: taille * 0.75, height: taille * 0.75)
+                .frame(width: taille * 0.65, height: taille * 0.65)
         }
     }
 }
