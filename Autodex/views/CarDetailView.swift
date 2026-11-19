@@ -167,11 +167,8 @@ struct CarDetailView: View {
     // MARK: - Vue de secours pour l'image (Logo de la marque ou icône par défaut)
     @ViewBuilder
     private var vueImageSecours: some View {
-        if let marque = car.Make_Name?.lowercased(), UIImage(named: marque) != nil {
-            Image(marque)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 80)
+        if let marque = car.Make_Name {
+            LogoMarqueView(marque: marque, taille: 80)
                 .padding(.vertical, 8)
         } else {
             Image("voiture")

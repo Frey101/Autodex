@@ -23,6 +23,15 @@ struct AutodexApp: App {
         }
     }()
 
+    init() {
+        // Configuration du cache réseau d'images (50 Mo RAM, 150 Mo disque)
+        URLCache.shared = URLCache(
+            memoryCapacity: 50 * 1024 * 1024,
+            diskCapacity: 150 * 1024 * 1024,
+            diskPath: "autodex_images_cache"
+        )
+    }
+
     var body: some Scene {
         WindowGroup {
             Navigationview()
