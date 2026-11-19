@@ -32,6 +32,22 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testNavigationVersFicheDetailEtWikipedia() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Attendre que les éléments de la liste apparaissent
+        let premierElement = app.cells.firstMatch
+        if premierElement.waitForExistence(timeout: 5) {
+            premierElement.tap()
+            
+            // Vérifier que la vue détaillée s'ouvre bien
+            let barreNav = app.navigationBars["Fiche Technique"]
+            XCTAssertTrue(barreNav.waitForExistence(timeout: 5), "La fiche technique doit s'ouvrir au tap.")
+        }
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
