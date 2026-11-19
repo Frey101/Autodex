@@ -87,6 +87,17 @@ final class AutodexUITests: XCTestCase {
         // Sauvegarder la capture d'écran pour vérification visuelle
         let capture = XCUIScreen.main.screenshot()
         try? capture.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/nouveautes.png"))
+        
+        // Vérifier le défilement et la pagination sur l'onglet Nouveautés
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.waitForExistence(timeout: 4) {
+            scrollView.swipeUp()
+            scrollView.swipeUp()
+            let boutonPagination = app.buttons["boutonPagination"]
+            if boutonPagination.waitForExistence(timeout: 4) && boutonPagination.isHittable {
+                boutonPagination.tap()
+            }
+        }
     }
 
     @MainActor

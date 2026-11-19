@@ -9,6 +9,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 class CarViewModel {
     // Liste des véhicules affichés dans l'interface
     var cars: [Car] = []
@@ -86,19 +87,15 @@ class CarViewModel {
         }
         
         if !resultatsLocaux.isEmpty {
-            await MainActor.run {
-                self.cars = resultatsLocaux
-                self.isLoading = false
-            }
+            self.cars = resultatsLocaux
+            self.isLoading = false
             return
         }
         
         // 2. Si aucun résultat local et au moins 3 caractères, tentative via l'API NHTSA
         guard rechercheNettoyee.count >= 3 else {
-            await MainActor.run {
-                self.cars = []
-                self.isLoading = false
-            }
+            self.cars = []
+            self.isLoading = false
             return
         }
         
@@ -113,28 +110,27 @@ class CarViewModel {
         self.errorMessage = nil
         self.reinitialiserPagination()
         
-        // Si le catalogue local est présent, sélection des marques emblématiques
+        // Si le catalogue local est présent, sélection ordonnée : marques emblématiques en tête, puis reste du catalogue
         if !catalogueLocal.isEmpty {
-            let marquesPopulaires = [
+            let marquesPopulaires: Set<String> = [
                 "porsche", "bmw", "audi", "mercedes-benz", "ferrari",
                 "lamborghini", "ford", "renault", "peugeot", "volkswagen",
-                "honda", "toyota", "abarth", "aston martin", "alfa romeo", "alpine"
+                "honda", "toyota", "abarth", "aston martin", "alfa romeo", "alpine",
+                "bugatti", "mclaren", "chevrolet", "maserati", "lotus", "nissan"
             ]
             
-            // Sélection d'échantillons variés par marque
-            var selectionPopulaire: [Car] = []
-            for marque in marquesPopulaires {
-                let vehiculesMarque = catalogueLocal.filter {
-                    ($0.Make_Name ?? "").lowercased() == marque
-                }
-                selectionPopulaire.append(contentsOf: vehiculesMarque.prefix(4))
-            }
+            // 1. Les véhicules des marques emblématiques (mélangés équitablement en priorité)
+            let vehiculesPopulaires = catalogueLocal.filter { car in
+                marquesPopulaires.contains((car.Make_Name ?? "").lowercased())
+            }.shuffled()
             
-            let listeFinale = selectionPopulaire.shuffled()
-            await MainActor.run {
-                self.cars = listeFinale
-                self.isLoading = false
-            }
+            // 2. Le reste du catalogue complet pour alimenter la pagination continue
+            let autresVehicules = catalogueLocal.filter { car in
+                !marquesPopulaires.contains((car.Make_Name ?? "").lowercased())
+            }.shuffled()
+            
+            self.cars = vehiculesPopulaires + autresVehicules
+            self.isLoading = false
             return
         }
         
@@ -142,17 +138,17 @@ class CarViewModel {
         await fetchTrendingCarsReseau()
     }
     
-    // MARK: - Remplissage avec les nouveautés récentes (sorties des 6 derniers mois / 2024-2026)
+    // MARK: - Remplissage avec les nouveautés récentes (sorties des 6 derniers mois / millésimes 2025-2026)
     func fetchNewReleases() async {
         self.isLoading = true
         self.errorMessage = nil
         self.reinitialiserPagination()
         
         if !catalogueLocal.isEmpty {
-            // Sélection des modèles récents (2024, 2025 et 2026) triés par récence et puissance
+            // Sélection STRICTE des modèles sortis durant les 6 derniers mois (>= 2025)
             let nouveautes = catalogueLocal.filter { car in
                 guard let annee = car.year else { return false }
-                return annee >= 2024
+                return annee >= 2025
             }.sorted { (c1, c2) in
                 let y1 = c1.year ?? 0
                 let y2 = c2.year ?? 0
@@ -162,10 +158,8 @@ class CarViewModel {
                 return (c1.horsepower ?? 0) > (c2.horsepower ?? 0)
             }
             
-            await MainActor.run {
-                self.cars = nouveautes
-                self.isLoading = false
-            }
+            self.cars = nouveautes
+            self.isLoading = false
             return
         }
         
@@ -222,20 +216,16 @@ class CarViewModel {
     private func effectuerRequeteReseau(urlString: String, anneeParDefaut: Int) async {
         guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedUrlString) else {
-            await MainActor.run {
-                self.errorMessage = "Erreur : Recherche invalide."
-                self.isLoading = false
-            }
+            self.errorMessage = "Erreur : Recherche invalide."
+            self.isLoading = false
             return
         }
         
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                await MainActor.run {
-                    self.errorMessage = "Erreur serveur ou véhicule introuvable."
-                    self.isLoading = false
-                }
+                self.errorMessage = "Erreur serveur ou véhicule introuvable."
+                self.isLoading = false
                 return
             }
             
@@ -246,15 +236,11 @@ class CarViewModel {
                 return updatedCar
             }
             
-            await MainActor.run {
-                self.cars = finalCars
-                self.isLoading = false
-            }
+            self.cars = finalCars
+            self.isLoading = false
         } catch {
-            await MainActor.run {
-                self.errorMessage = "Aucun véhicule trouvé pour cette recherche."
-                self.isLoading = false
-            }
+            self.errorMessage = "Aucun véhicule trouvé pour cette recherche."
+            self.isLoading = false
         }
     }
 }

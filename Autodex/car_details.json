@@ -52240,5 +52240,695 @@
         ]
       }
     ]
+  },
+  {
+    "id": 30019,
+    "brand": "Porsche",
+    "model": "Macan Turbo Electric",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique Dual Motor",
+        "power_hp": 639.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30020,
+    "brand": "Audi",
+    "model": "SQ6 e-tron",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique Quattro",
+        "power_hp": 517.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30021,
+    "brand": "BMW",
+    "model": "i5 M60 xDrive",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Sedan"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique M eDrive",
+        "power_hp": 601.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30022,
+    "brand": "Mercedes-Benz",
+    "model": "G 580 with EQ Technology",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "4 Moteurs Électriques Individuels",
+        "power_hp": 587.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique 2-rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30023,
+    "brand": "Mercedes-Benz",
+    "model": "AMG CLE 53 4MATIC+ Coupé",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupe"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "3.0L Turbo 6-cylindres Micro-Hybride",
+        "power_hp": 449.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "AMG SPEEDSHIFT TCT 9G"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30024,
+    "brand": "Polestar",
+    "model": "Polestar 4 Long Range Dual",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV Coupe"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor Transmission Intégrale",
+        "power_hp": 544.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30025,
+    "brand": "Polestar",
+    "model": "Polestar 5 GT",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Sedan"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Architecture 800V Dual Motor",
+        "power_hp": 884.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30026,
+    "brand": "Volvo",
+    "model": "EX90 Twin Motor Performance",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Twin Motor AWD",
+        "power_hp": 517.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30027,
+    "brand": "Renault",
+    "model": "Rafale E-Tech 4x4 Atelier Alpine",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV Coupe"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "1.2L Turbo Hybride Rechargeable 4x4",
+        "power_hp": 300.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "Automatique Multimode"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30028,
+    "brand": "Renault",
+    "model": "Symbioz E-Tech full hybrid",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "1.6L 4-cylindres E-Tech Hybride",
+        "power_hp": 145.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "Boîte à crabots multimode"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30029,
+    "brand": "Alpine",
+    "model": "A390 GTS Fastback",
+    "production_year_start": 2026,
+    "production_year_end": null,
+    "body_styles": [
+      "Sedan"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Tri-moteur électrique Alpine Torque Vectoring",
+        "power_hp": 450.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30030,
+    "brand": "Cupra",
+    "model": "Born VZ",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Hatchback"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique Haute Performance",
+        "power_hp": 326.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique 1-rapport"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30031,
+    "brand": "Volkswagen",
+    "model": "ID.7 GTX Tourer",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Wagon"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor 4MOTION",
+        "power_hp": 340.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30032,
+    "brand": "Fiat",
+    "model": "Grande Panda Electric",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Hatchback"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Moteur Électrique Urbain",
+        "power_hp": 113.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30033,
+    "brand": "Ford",
+    "model": "Capri EV Premium",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV Coupe"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor AWD",
+        "power_hp": 340.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30034,
+    "brand": "Ford",
+    "model": "Mustang Dark Horse",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupe"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "5.0L Coyote V8 Atmosphérique",
+        "power_hp": 500.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Manuelle Tremec 6-vitesses"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30035,
+    "brand": "Aston Martin",
+    "model": "Vantage 2025",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupe"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "4.0L Bi-Turbo V8 AMG",
+        "power_hp": 665.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Automatique ZF 8-vitesses"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30036,
+    "brand": "Bentley",
+    "model": "Flying Spur Speed Hybrid",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Sedan"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "4.0L V8 Hybride Ultra Performance",
+        "power_hp": 782.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "PDK 8-rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30037,
+    "brand": "Maserati",
+    "model": "GranCabrio Folgore",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Convertible"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Tri-moteur électrique 800V",
+        "power_hp": 761.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30038,
+    "brand": "Chevrolet",
+    "model": "Tahoe RST Performance",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "6.2L EcoTec3 V8",
+        "power_hp": 420.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Automatique 10-vitesses"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30039,
+    "brand": "Toyota",
+    "model": "Land Cruiser 250 First Edition",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Diesel"
+    ],
+    "engines": [
+      {
+        "name": "2.8L D-4D Turbo Diesel Micro-Hybride",
+        "power_hp": 204.0,
+        "fuel": "Diesel",
+        "transmissions": [
+          "Automatique Direct Shift 8-vitesses"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30040,
+    "brand": "Toyota",
+    "model": "Camry Hybrid 2025",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Sedan"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "2.5L 4-cylindres Hybride Dynamic Force",
+        "power_hp": 225.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "e-CVT"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30041,
+    "brand": "Hyundai",
+    "model": "Ioniq 5 N",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Hatchback"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor N Grin Boost",
+        "power_hp": 650.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "N e-Shift 8-vitesses simulées"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30042,
+    "brand": "Alfa Romeo",
+    "model": "33 Stradale",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupe"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "3.0L V6 Bi-Turbo",
+        "power_hp": 620.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Double embrayage 8-vitesses"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30043,
+    "brand": "Koenigsegg",
+    "model": "CC850",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Coupe"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "5.0L V8 Bi-Turbo Engage Shift System",
+        "power_hp": 1385.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Manuelle / Automatique ESS 9-rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30044,
+    "brand": "Pagani",
+    "model": "Utopia Roadster",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Convertible"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "6.0L V12 Bi-Turbo Mercedes-AMG",
+        "power_hp": 864.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "Boîte Manuelle 7-rapports Xtrac"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30045,
+    "brand": "Honda",
+    "model": "Civic e:HEV Sport 2025",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Hatchback"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "2.0L i-MMD Hybride",
+        "power_hp": 200.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "e-CVT"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30046,
+    "brand": "Nissan",
+    "model": "Ariya Nismo B9 e-4ORCE",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Electric"
+    ],
+    "engines": [
+      {
+        "name": "Dual Motor Nismo Tuned",
+        "power_hp": 435.0,
+        "fuel": "Electric",
+        "transmissions": [
+          "Automatique"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30047,
+    "brand": "BMW",
+    "model": "M3 CS Touring",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "Wagon"
+    ],
+    "fuel_types": [
+      "Gasoline"
+    ],
+    "engines": [
+      {
+        "name": "3.0L Bi-Turbo 6-cylindres S58",
+        "power_hp": 550.0,
+        "fuel": "Gasoline",
+        "transmissions": [
+          "M Steptronic 8-rapports"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30048,
+    "brand": "Land Rover",
+    "model": "Range Rover Sport SV Edition Two",
+    "production_year_start": 2025,
+    "production_year_end": null,
+    "body_styles": [
+      "SUV"
+    ],
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "engines": [
+      {
+        "name": "4.4L Twin-Turbo V8 Micro-Hybride",
+        "power_hp": 635.0,
+        "fuel": "Hybrid",
+        "transmissions": [
+          "Automatique 8-vitesses"
+        ]
+      }
+    ]
   }
 ]
