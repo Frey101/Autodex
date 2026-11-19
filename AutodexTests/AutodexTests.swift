@@ -254,14 +254,30 @@ final class AutodexTests: XCTestCase {
         XCTAssertEqual(viewModel.carsAffichees.count, nombreVoitures)
     }
 
-    // Test 9 : Chargement des nouveautés récentes (2024-2026)
+    // Test 9 : Chargement des nouveautés récentes (sorties des 6 derniers mois / >= 2025)
     @MainActor
     func testChargementNouveautesRecentes() async {
         let viewModel = CarViewModel()
         await viewModel.fetchNewReleases()
         
         XCTAssertFalse(viewModel.cars.isEmpty, "La liste des nouveautés ne doit pas être vide.")
-        let toutesRecentes = viewModel.cars.allSatisfy { ($0.year ?? 0) >= 2024 }
-        XCTAssertTrue(toutesRecentes, "Toutes les nouveautés doivent être sorties récemment (>= 2024).")
+        let toutesRecentes = viewModel.cars.allSatisfy { ($0.year ?? 0) >= 2025 }
+        XCTAssertTrue(toutesRecentes, "Toutes les nouveautés doivent être sorties ces 6 derniers mois (>= 2025).")
+        XCTAssertGreaterThanOrEqual(viewModel.cars.count, 40, "La liste des nouveautés doit contenir au moins 40 modèles récents.")
+    }
+
+    // Test 10 : Pagination sur l'onglet Nouveautés
+    @MainActor
+    func testPaginationSurOngletNouveautes() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchNewReleases()
+        
+        XCTAssertEqual(viewModel.limitePagination, 20)
+        XCTAssertEqual(viewModel.carsAffichees.count, 20)
+        XCTAssertTrue(viewModel.peutChargerPlus, "Nouveautés doit contenir plus de 20 modèles pour permettre la pagination.")
+        
+        viewModel.chargerPageSuivante()
+        XCTAssertEqual(viewModel.limitePagination, 40)
+        XCTAssertEqual(viewModel.carsAffichees.count, 40)
     }
 }

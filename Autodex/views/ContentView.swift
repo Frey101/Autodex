@@ -66,7 +66,9 @@ struct ContentView: View {
                     
                     // MARK: - Filtres d'onglets (Populaires & Nouveautés des 6 derniers mois)
                     HStack(spacing: 12) {
+                        // Onglet 1 : Véhicules populaires
                         Button(action: {
+                            guard ongletActif != .populaires else { return }
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 ongletActif = .populaires
                                 searchText = ""
@@ -85,7 +87,9 @@ struct ContentView: View {
                                 .cornerRadius(30)
                         }
                         
+                        // Onglet 2 : Nouveautés (sorties des 6 derniers mois)
                         Button(action: {
+                            guard ongletActif != .nouveautes else { return }
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 ongletActif = .nouveautes
                                 searchText = ""
@@ -140,15 +144,9 @@ struct ContentView: View {
                                             }
                                         )
                                     }
-                                    .onAppear {
-                                        // Détection de fin de liste pour charger automatiquement la page suivante
-                                        if car.id == viewModel.carsAffichees.last?.id {
-                                            viewModel.chargerPageSuivante()
-                                        }
-                                    }
                                 }
                                 
-                                // Bouton / indicateur de pagination si d'autres éléments sont disponibles
+                                // Indicateur et bouton de pagination interactif avec déclenchement automatique
                                 if viewModel.peutChargerPlus {
                                     Button(action: {
                                         withAnimation {
@@ -156,6 +154,8 @@ struct ContentView: View {
                                         }
                                     }) {
                                         HStack(spacing: 8) {
+                                            ProgressView()
+                                                .scaleEffect(0.8)
                                             Text("Afficher plus de véhicules (\(viewModel.carsAffichees.count) sur \(viewModel.cars.count))")
                                                 .font(.footnote)
                                                 .fontWeight(.medium)
@@ -163,10 +163,22 @@ struct ContentView: View {
                                                 .font(.caption)
                                         }
                                         .foregroundColor(.secondary)
-                                        .padding(.vertical, 12)
+                                        .padding(.vertical, 14)
                                         .frame(maxWidth: .infinity)
+                                        .background(Color(.systemGray6))
+                                        .cornerRadius(12)
                                     }
                                     .accessibilityIdentifier("boutonPagination")
+                                    .onAppear {
+                                        // Chargement automatique lors du défilement au bas de la page
+                                        viewModel.chargerPageSuivante()
+                                    }
+                                } else if !viewModel.carsAffichees.isEmpty {
+                                    Text("Tous les véhicules sont affichés (\(viewModel.carsAffichees.count))")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .padding(.vertical, 14)
+                                        .frame(maxWidth: .infinity)
                                 }
                             }
                         }
