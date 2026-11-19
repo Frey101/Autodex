@@ -38,10 +38,15 @@ class CarViewModel {
         }
     }
     
-    // MARK: - Recherche par marque ou modèle
+    // MARK: - Recherche par marque ou modèle (dynamique)
     func fetchCars(searchQuery: String) async {
         let rechercheNettoyee = searchQuery.trimmingCharacters(in: .whitespaces)
-        guard !rechercheNettoyee.isEmpty else { return }
+        
+        // Si la recherche est vide, on recharge instantanément les véhicules populaires
+        if rechercheNettoyee.isEmpty {
+            await fetchTrendingCars()
+            return
+        }
         
         self.isLoading = true
         self.errorMessage = nil
@@ -65,7 +70,15 @@ class CarViewModel {
             return
         }
         
-        // 2. Si aucun résultat local, fallback sur l'API NHTSA
+        // 2. Si aucun résultat local et au moins 3 caractères, tentative via l'API NHTSA
+        guard rechercheNettoyee.count >= 3 else {
+            await MainActor.run {
+                self.cars = []
+                self.isLoading = false
+            }
+            return
+        }
+        
         let anneeCible = 2025
         let urlString = "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/\(rechercheNettoyee)/modelyear/\(anneeCible)?format=json"
         await effectuerRequeteReseau(urlString: urlString, anneeParDefaut: anneeCible)

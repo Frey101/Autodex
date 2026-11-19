@@ -84,6 +84,23 @@ final class AutodexTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading, "Le chargement doit être terminé après fetch.")
     }
 
+    // Test 4 bis : Vérification de la recherche dynamique et restauration lors de l'effacement
+    @MainActor
+    func testRechercheDynamiqueEffacementRestaurePopulaires() async {
+        let viewModel = CarViewModel()
+        
+        // 1. Recherche d'un mot-clé
+        await viewModel.fetchCars(searchQuery: "Civic")
+        XCTAssertFalse(viewModel.cars.isEmpty, "La recherche Civic doit renvoyer des résultats.")
+        let tousCivic = viewModel.cars.allSatisfy { ($0.Model_Name ?? "").localizedCaseInsensitiveContains("Civic") }
+        XCTAssertTrue(tousCivic, "Tous les résultats doivent correspondre à Civic.")
+        
+        // 2. Effacement complet de la saisie (chaîne vide)
+        await viewModel.fetchCars(searchQuery: "")
+        XCTAssertFalse(viewModel.cars.isEmpty, "La réinitialisation doit restaurer les véhicules populaires.")
+        XCTAssertFalse(viewModel.isLoading, "Le chargement doit être inactif après réinitialisation.")
+    }
+
     // Test 5 : Décodage d'un résumé de réponse Wikipédia REST
     func testDecodageReponseWikipediaSummary() throws {
         let jsonMock = """

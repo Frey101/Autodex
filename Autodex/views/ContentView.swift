@@ -34,21 +34,29 @@ struct ContentView: View {
                         .font(.caption)
                         .padding(.bottom, 20)
                     
-                    // Barre de recherche
-                    HStack {
+                    // Barre de recherche dynamique
+                    HStack(spacing: 8) {
                         Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
+                        
                         TextField("Rechercher un modèle (ex: clio, mustang...)", text: $searchText)
-                            .font(.caption)
-                            .onSubmit {
-                                Task {
-                                    await viewModel.fetchCars(searchQuery: searchText)
-                                }
+                            .font(.subheadline)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                        
+                        if !searchText.isEmpty {
+                            Button(action: {
+                                searchText = ""
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.secondary)
                             }
-                        Spacer()
+                            .accessibilityLabel("Effacer la recherche")
+                        }
                     }
-                    .padding(10)
-                    .foregroundStyle(.black)
-                    .background(Color(red: 225/255, green: 225/255, blue: 225/255))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Color(.secondarySystemBackground))
                     .cornerRadius(25)
                     .padding(.bottom, 20)
                     
@@ -115,6 +123,11 @@ struct ContentView: View {
         .task {
             await viewModel.fetchTrendingCars()
         }
+        .onChange(of: searchText) { _, nouvelleValeur in
+            Task {
+                await viewModel.fetchCars(searchQuery: nouvelleValeur)
+            }
+        }
     }
     
     // Fonction ajout ou supprime le favori
@@ -143,11 +156,11 @@ struct CarLigne: View {
     var body: some View {
         
         HStack(spacing: 15) {
-            LogoMarqueView(marque: marque, taille: 34)
-                .frame(width: 44, height: 44)
+            LogoMarqueView(marque: marque, taille: 38)
+                .frame(width: 48, height: 48)
                 .background(Color(.secondarySystemBackground))
                 .clipShape(Circle())
-                .overlay(Circle().stroke(Color.gray.opacity(0.15), lineWidth: 1))
+                .overlay(Circle().stroke(Color.gray.opacity(0.12), lineWidth: 1))
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(titre)
