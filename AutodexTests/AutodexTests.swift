@@ -10,27 +10,78 @@ import XCTest
 
 final class AutodexTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    // Test 1 : Vérification de la présence et du décodage du catalogue local
+    func testDecodageCatalogueLocal() throws {
+        let bundle = Bundle(for: type(of: self))
+        // Le fichier peut être soit dans le bundle de tests, soit dans le bundle principal de l'app
+        let url = Bundle.main.url(forResource: "car_details", withExtension: "json") 
+            ?? bundle.url(forResource: "car_details", withExtension: "json")
+        
+        XCTAssertNotNil(url, "Le fichier car_details.json doit être accessible dans le bundle de l'application.")
+        
+        if let url = url {
+            let data = try Data(contentsOf: url)
+            let vehicules = try JSONDecoder().decode([DetailVehiculeData].self, from: data)
+            
+            XCTAssertGreaterThan(vehicules.count, 2000, "Le catalogue doit contenir plus de 2000 véhicules.")
+            
+            // Vérification de la présence de marques phares
+            let marques = Set(vehicules.map { $0.brand.lowercased() })
+            XCTAssertTrue(marques.contains("porsche"), "Le catalogue doit contenir Porsche.")
+            XCTAssertTrue(marques.contains("bmw"), "Le catalogue doit contenir BMW.")
+            XCTAssertTrue(marques.contains("audi"), "Le catalogue doit contenir Audi.")
         }
     }
 
+    // Test 2 : Vérification du mapping vers le modèle Car et les specs moteur
+    func testMappingVersCarAvecPuissance() throws {
+        let moteur = MoteurData(name: "4.0L Flat-6", power_hp: 510, fuel: "Petrol", transmissions: ["PDK", "Manual"])
+        let detail = DetailVehiculeData(
+            id: 9999,
+            brand: "Porsche",
+            model: "911 GT3",
+            production_year_start: 2022,
+            production_year_end: 2024,
+            body_styles: ["Coupe"],
+            fuel_types: ["Petrol"],
+            engines: [moteur]
+        )
+        
+        let car = Car(fromDetail: detail)
+        
+        XCTAssertEqual(car.Make_Name, "Porsche")
+        XCTAssertEqual(car.Model_Name, "911 GT3")
+        XCTAssertEqual(car.year, 2022)
+        XCTAssertEqual(car.horsepower, 510)
+        XCTAssertEqual(car.transmission, "PDK")
+        XCTAssertEqual(car.engineName, "4.0L Flat-6")
+        XCTAssertEqual(car.displayName, "Porsche 911 GT3")
+        XCTAssertTrue(car.displaySubtitle.contains("510 ch"), "Le sous-titre doit afficher la puissance en chevaux.")
+    }
+
+    // Test 3 : Vérification du ViewModel et de la recherche instantanée
+    @MainActor
+    func testRechercheCatalogueLocalViewModel() async {
+        let viewModel = CarViewModel()
+        
+        // Si le catalogue est chargé
+        if !viewModel.catalogueLocal.isEmpty {
+            await viewModel.fetchCars(searchQuery: "Carrera")
+            XCTAssertFalse(viewModel.cars.isEmpty, "La recherche 'Carrera' doit retourner des modèles.")
+            
+            let premierVehicule = viewModel.cars.first
+            XCTAssertEqual(premierVehicule?.Make_Name?.lowercased(), "porsche")
+            XCTAssertNotNil(premierVehicule?.horsepower, "Les specs moteur doivent être renseignées.")
+        }
+    }
+
+    // Test 4 : Vérification de la sélection des véhicules populaires
+    @MainActor
+    func testChargementVehiculesPopulaires() async {
+        let viewModel = CarViewModel()
+        await viewModel.fetchTrendingCars()
+        
+        XCTAssertFalse(viewModel.cars.isEmpty, "La sélection populaire ne doit pas être vide.")
+        XCTAssertFalse(viewModel.isLoading, "Le chargement doit être terminé après fetch.")
+    }
 }
