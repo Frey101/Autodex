@@ -51,6 +51,7 @@ struct MaCollectionView: View {
     @State private var afficherAlerteCameraIndisponible: Bool = false
     @State private var alerteVehiculeNonDetecte: Bool = false
     @State private var messageRejetDetection: String = ""
+    @State private var photoEnAttenteRejet: UIImage? = nil
     
     var body: some View {
         NavigationStack {
@@ -188,6 +189,7 @@ struct MaCollectionView: View {
                             if resultat.estUnVehicule {
                                 sheetActive = .ajoutSpot(image: photo, marque: "", modele: "")
                             } else {
+                                photoEnAttenteRejet = photo
                                 messageRejetDetection = resultat.messageExplicatif
                                 alerteVehiculeNonDetecte = true
                             }
@@ -195,11 +197,19 @@ struct MaCollectionView: View {
                     }
                 }
             }
-            // Alerte de refus strict si aucun véhicule n'est détecté
-            .alert("Aucun véhicule détecté", isPresented: $alerteVehiculeNonDetecte) {
-                Button("Compris", role: .cancel) {}
+            // Alerte si le véhicule n'est pas reconnu avec certitude
+            .alert("Véhicule non reconnu avec certitude", isPresented: $alerteVehiculeNonDetecte) {
+                Button("Annuler", role: .cancel) {
+                    photoEnAttenteRejet = nil
+                }
+                Button("Ajouter quand même") {
+                    if let photo = photoEnAttenteRejet {
+                        sheetActive = .ajoutSpot(image: photo, marque: "", modele: "")
+                        photoEnAttenteRejet = nil
+                    }
+                }
             } message: {
-                Text(messageRejetDetection.isEmpty ? "Cette photo ne semble pas contenir de véhicule automobile. Seuls les bolides sont acceptés dans votre collection." : messageRejetDetection)
+                Text(messageRejetDetection.isEmpty ? "L'analyse visuelle a un doute sur cette photo. S'il s'agit bien d'une voiture, vous pouvez forcer son ajout dans votre collection." : "\(messageRejetDetection)\n\nS'il s'agit bien d'un véhicule, vous pouvez confirmer son ajout.")
             }
             // Dialogue de confirmation de suppression
             .confirmationDialog(
@@ -415,6 +425,7 @@ struct MaCollectionView: View {
                     if resultat.estUnVehicule {
                         sheetActive = .ajoutSpot(image: image, marque: "", modele: "")
                     } else {
+                        photoEnAttenteRejet = image
                         messageRejetDetection = resultat.messageExplicatif
                         alerteVehiculeNonDetecte = true
                     }

@@ -114,13 +114,15 @@ final class DetectionVehiculeTests: XCTestCase {
     }
     
     func testPhotoReelleVoitureEstAcceptee() async {
-        // Chargement du fichier renault.jpg via Data
-        let cheminRenault = "/Users/e88459u/Desktop/SwiftProject/Autodex/Autodex/Assets.xcassets/images/renault.imageset/renault.jpg"
-        if let data = try? Data(contentsOf: URL(fileURLWithPath: cheminRenault)),
+        // Chargement dynamique du visuel voiture depuis le projet
+        let currentFileURL = URL(fileURLWithPath: #file)
+        let projectRoot = currentFileURL.deletingLastPathComponent().deletingLastPathComponent()
+        let cheminVoiture = projectRoot.appendingPathComponent("Autodex/Assets.xcassets/images/voiture.png").path
+        
+        if let data = try? Data(contentsOf: URL(fileURLWithPath: cheminVoiture)),
            let image = UIImage(data: data) {
             let resultat = await service.analyserPresenceVehicule(image: image)
-            // Vérification de la complétion et non-crash du service Vision
-            XCTAssertFalse(resultat.messageExplicatif.isEmpty)
+            XCTAssertTrue(resultat.estUnVehicule, "Une image de voiture doit être acceptée par le service Vision.")
         }
     }
     
