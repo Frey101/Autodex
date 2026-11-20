@@ -46,7 +46,7 @@ struct QuizView: View {
                                 .font(.headline)
                                 .foregroundColor(.secondary)
                             
-                            // Emplacement Photo / Silhouette
+                            // Emplacement Photo / Silhouette (aux dimensions strictement uniformes)
                             ZStack {
                                 RoundedRectangle(cornerRadius: 18)
                                     .fill(
@@ -56,6 +56,7 @@ struct QuizView: View {
                                             endPoint: .bottom
                                         )
                                     )
+                                    .frame(maxWidth: .infinity)
                                     .frame(height: 190)
                                 
                                 if let photoUrl = wikiPhotoUrl, let url = URL(string: photoUrl) {
@@ -68,6 +69,7 @@ struct QuizView: View {
                                                     .font(.caption2)
                                                     .foregroundColor(.secondary)
                                             }
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                                         case .success(let image):
                                             image
                                                 .resizable()
@@ -75,7 +77,6 @@ struct QuizView: View {
                                                 .frame(maxWidth: .infinity)
                                                 .frame(height: 190)
                                                 .clipped()
-                                                .cornerRadius(18)
                                                 // Effet Silhouette : contrasté et désaturé sans devenir un rectangle noir opaque
                                                 .grayscale(reponseValidee ? 0.0 : 0.9)
                                                 .brightness(reponseValidee ? 0.0 : -0.35)
@@ -95,6 +96,7 @@ struct QuizView: View {
                                             .font(.caption2)
                                             .foregroundColor(.secondary)
                                     }
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 } else {
                                     vueSilhouetteSecours(marque: cible.Make_Name, resolu: reponseValidee)
                                 }
@@ -123,7 +125,9 @@ struct QuizView: View {
                                     }
                                 }
                             }
+                            .frame(maxWidth: .infinity)
                             .frame(height: 190)
+                            .clipShape(RoundedRectangle(cornerRadius: 18))
                             
                             // Révélation du nom après validation
                             if reponseValidee {
@@ -168,6 +172,7 @@ struct QuizView: View {
                                 }
                             }
                         }
+                        .frame(maxWidth: .infinity)
                         .padding(20)
                         .background(Color.white)
                         .cornerRadius(22)
@@ -358,8 +363,9 @@ struct QuizView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 190)
-        .cornerRadius(18)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
     }
     
     // MARK: - Logique Métier du Quiz
