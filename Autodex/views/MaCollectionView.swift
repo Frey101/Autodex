@@ -49,6 +49,8 @@ struct MaCollectionView: View {
     
     // Alertes
     @State private var afficherAlerteCameraIndisponible: Bool = false
+    @State private var alerteVehiculeNonDetecte: Bool = false
+    @State private var messageRejetDetection: String = ""
     
     var body: some View {
         NavigationStack {
@@ -179,9 +181,25 @@ struct MaCollectionView: View {
             }
             .onChange(of: photoPriseParCamera) { _, nouvellePhoto in
                 if let photo = nouvellePhoto {
-                    sheetActive = .ajoutSpot(image: photo, marque: "", modele: "")
                     photoPriseParCamera = nil
+                    Task {
+                        let resultat = await DetectionVehiculeService.shared.analyserPresenceVehicule(image: photo)
+                        await MainActor.run {
+                            if resultat.estUnVehicule {
+                                sheetActive = .ajoutSpot(image: photo, marque: "", modele: "")
+                            } else {
+                                messageRejetDetection = resultat.messageExplicatif
+                                alerteVehiculeNonDetecte = true
+                            }
+                        }
+                    }
                 }
+            }
+            // Alerte de refus strict si aucun véhicule n'est détecté
+            .alert("Aucun véhicule détecté", isPresented: $alerteVehiculeNonDetecte) {
+                Button("Compris", role: .cancel) {}
+            } message: {
+                Text(messageRejetDetection.isEmpty ? "Cette photo ne semble pas contenir de véhicule automobile. Seuls les bolides sont acceptés dans votre collection." : messageRejetDetection)
             }
             // Dialogue de confirmation de suppression
             .confirmationDialog(
@@ -391,9 +409,15 @@ struct MaCollectionView: View {
         Task {
             if let data = try? await item.loadTransferable(type: Data.self),
                let image = UIImage(data: data) {
+                let resultat = await DetectionVehiculeService.shared.analyserPresenceVehicule(image: image)
                 await MainActor.run {
-                    sheetActive = .ajoutSpot(image: image, marque: "", modele: "")
                     selectedPhotoItem = nil
+                    if resultat.estUnVehicule {
+                        sheetActive = .ajoutSpot(image: image, marque: "", modele: "")
+                    } else {
+                        messageRejetDetection = resultat.messageExplicatif
+                        alerteVehiculeNonDetecte = true
+                    }
                 }
             }
         }

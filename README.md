@@ -11,7 +11,7 @@
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (nettoyage intelligent des noms de modèles, filtre strict anti-logos/pages constructeurs et repli sur la base anglophone).
 - **Logos officiels en plein cercle** : Récupération haute résolution transparente, mise à l'échelle optique plein format occupant 100 % du cercle sans marges parasites, et cache persistant (RAM + disque).
 - **Navigation ergonomique par Menu Tiroir (Hamburger)** : Remplacement de l'ancienne TabBar saturée par un menu latéral fluide accessible depuis chaque écran (bouton dédié et glissement tactile), regroupant 7 sections claires (Accueil, Ma Collection, Mode Duel, Quiz, Découverte, Favoris, À Propos) avec compteurs en temps réel (2 157 véhicules, favoris) et fond assombrissant interactif.
-- **Section « Ma Collection » (Car Spotting Photo & SwiftData)** : Carnet de bord personnel permettant d'immortaliser des bolides croisés dans la rue via l'appareil photo ou la galerie, avec sauvegarde optimisée des fichiers JPEG sur disque local (`Documents/PhotosCollection/`), modèle persistant SwiftData (`VoitureCollection`), statistiques en direct (nombre de spottés, marques uniques, dernier bolide), cartes avec date et logo constructeur, visionneuse plein écran et lien direct vers la fiche technique.
+- **Section « Ma Collection » & Contrôle IA Vision** : Carnet de bord personnel permettant d'immortaliser des bolides croisés dans la rue via l'appareil photo ou la galerie, avec contrôle strict par IA locale (framework Apple Vision) rejetant automatiquement les photos sans véhicule automobile, sauvegarde optimisée des fichiers JPEG sur disque local (`Documents/PhotosCollection/`), modèle persistant SwiftData (`VoitureCollection`), statistiques en direct, visionneuse plein écran et lien direct vers la fiche technique.
 - **Fiche « À Propos »** : Présentation du cadre académique BUT Informatique, de l'architecture technique moderne (SwiftUI, Observation, SwiftData, async/await) et des métriques du catalogue.
 - **Mode Découverte Pokédex enrichi** : Tirage de cartes interactives avec vraie photo du véhicule, badges de specs (année, puissance ch, carburant), gestes de glissement (passer/favori) et consultation directe de la fiche technique.
 - **Pagination fluide par 20 éléments** : Chargement progressif par tranches de 20 véhicules sur les onglets Populaires, Nouveautés et la recherche, défilement infini automatique et bouton manuel « Afficher plus de véhicules ».
@@ -34,7 +34,8 @@
 - **Gestion d'état** : Framework Observation (`@Observable`)
 - **Persistance** : SwiftData
 - **Concurrence** : `async/await`, `TaskGroup`, `@MainActor`
-- **Tests** : XCTest (106 tests unitaires complets et 17 tests d'interface UI automatisés — 123 tests au total)
+- **Tests** : XCTest (112 tests unitaires complets et 17 tests d'interface UI automatisés — 129 tests au total)
+- **Vision & IA locale** : Apple Vision framework (`VNClassifyImageRequest`, 100 % gratuit et on-device)
 - **Widgets** : WidgetKit (Extension iOS « La Voiture du Jour » + App Group)
 - **Données** : Dataset local embarqué (`car_details.json`) + API NHTSA vPIC
 
@@ -52,6 +53,7 @@ Autodex/
 ├── viewModels/
 │   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
 ├── services/
+│   ├── DetectionVehiculeService.swift # Détection et contrôle strict par IA Vision de la présence d'un véhicule
 │   ├── CollectionPhotoService.swift # Gestionnaire de photos spottées sur disque local (JPEG, cache, démo)
 │   ├── VoitureDuJourService.swift # Service déterministe Voiture du Jour, Deep Link et App Group
 │   ├── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
