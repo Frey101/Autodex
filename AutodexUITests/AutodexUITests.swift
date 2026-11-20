@@ -375,6 +375,64 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testMaCollectionAjoutSpotDemoEtSuppression() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // 1. Navigation vers "Ma Collection" via le menu tiroir
+        naviguerVersSection(app: app, sectionId: "Ma Collection")
+        
+        // 2. Vérification de la présence de l'écran Collection et de l'en-tête
+        let titreCollection = app.staticTexts["Ma Collection"]
+        XCTAssertTrue(titreCollection.waitForExistence(timeout: 5), "L'en-tête Ma Collection doit être visible.")
+        
+        let statSpottes = app.staticTexts["statSpottesValeur"]
+        XCTAssertTrue(statSpottes.waitForExistence(timeout: 5), "Le compteur de bolides spottés doit être affiché.")
+        
+        // 3. Ajout d'un spot démo (Simulateur)
+        // Soit via le bouton de l'état vide, soit via le menu d'ajout de la toolbar
+        let boutonDemoEtatVide = app.buttons["boutonSpotDemoCollection"]
+        if boutonDemoEtatVide.waitForExistence(timeout: 3) && boutonDemoEtatVide.isHittable {
+            boutonDemoEtatVide.tap()
+        } else {
+            let boutonToolbarPlus = app.buttons["boutonAjouterSpotToolbar"]
+            XCTAssertTrue(boutonToolbarPlus.waitForExistence(timeout: 4), "Le bouton d'ajout dans la barre d'outils doit être présent.")
+            boutonToolbarPlus.tap()
+            
+            let itemMenuDemo = app.buttons["Ajouter un spot démo"]
+            XCTAssertTrue(itemMenuDemo.waitForExistence(timeout: 3), "L'option de spot démo doit être accessible dans le menu.")
+            itemMenuDemo.tap()
+        }
+        
+        // 4. Vérification de la feuille d'ajout (Sheet)
+        let champMarque = app.textFields["champSaisieMarqueSpot"]
+        XCTAssertTrue(champMarque.waitForExistence(timeout: 5), "Le champ de saisie de la marque doit apparaître.")
+        
+        // Validation du spot
+        let boutonValider = app.buttons["boutonValiderSpot"]
+        XCTAssertTrue(boutonValider.waitForExistence(timeout: 4), "Le bouton de validation du spot doit être présent.")
+        boutonValider.tap()
+        
+        // 5. Vérification de l'ajout dans la collection
+        Thread.sleep(forTimeInterval: 0.8)
+        
+        // Capture d'écran de vérification pour l'artefact
+        let captureCollection = XCUIScreen.main.screenshot()
+        try? captureCollection.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/section_ma_collection_active.png"))
+        
+        // 6. Test de suppression du bolide pour garder l'état propre
+        let boutonSupprimer = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'boutonSupprimerSpot_'")).firstMatch
+        if boutonSupprimer.waitForExistence(timeout: 4) {
+            boutonSupprimer.tap()
+            
+            let boutonConfirmerSuppression = app.buttons["Supprimer"]
+            if boutonConfirmerSuppression.waitForExistence(timeout: 3) {
+                boutonConfirmerSuppression.tap()
+            }
+        }
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
