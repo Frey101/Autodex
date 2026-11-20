@@ -12,6 +12,10 @@ import SwiftData
 import FirebaseCore
 #endif
 
+#if canImport(GoogleSignIn)
+import GoogleSignIn
+#endif
+
 // MARK: - Initialisation de Firebase via AppDelegate (Recommandation officielle Firebase)
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -25,6 +29,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         #endif
         return true
+    }
+    
+    // Gestion du retour d'authentification Google / OAuth
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+        #if canImport(GoogleSignIn)
+        if GIDSignIn.sharedInstance.handle(url) {
+            return true
+        }
+        #endif
+        return false
     }
 }
 
@@ -54,6 +72,11 @@ struct AutodexApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: authService.estConnecte)
+            .onOpenURL { url in
+                #if canImport(GoogleSignIn)
+                _ = GIDSignIn.sharedInstance.handle(url)
+                #endif
+            }
         }
         .modelContainer(for: [FavoriteCar.self, VoitureCollection.self])
     }

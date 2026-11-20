@@ -142,6 +142,9 @@ final class AuthServiceTests: XCTestCase {
         
         let erreurWeakPassword = NSError(domain: "FIRAuthErrorDomain", code: 17026, userInfo: [NSLocalizedDescriptionKey: "weak password"])
         XCTAssertEqual(authService.formaterErreur(erreurWeakPassword), "Le mot de passe est trop court (au moins 6 caractères requis).")
+        
+        let erreurGoogleAnnulee = NSError(domain: "com.google.GIDSignIn", code: -5, userInfo: [NSLocalizedDescriptionKey: "canceled"])
+        XCTAssertEqual(authService.formaterErreur(erreurGoogleAnnulee), "Connexion Google annulée.")
     }
     
     // MARK: - Tests Déconnexion

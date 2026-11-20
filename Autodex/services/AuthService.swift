@@ -183,15 +183,19 @@ public final class AuthService {
         defer { estEnChargement = false }
         
         #if canImport(GoogleSignIn) && canImport(FirebaseAuth)
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
-            let msg = "Impossible de présenter la fenêtre de connexion Google."
+        guard let presentingVC = getTopViewController() else {
+            let msg = "Impossible d'identifier l'écran actif pour afficher la connexion Google."
             self.messageErreur = msg
             throw ErreurAuth.erreurPersonnalisee(msg)
         }
         
+        // Configuration explicite du clientID Google depuis Firebase
+        if let clientID = FirebaseApp.app()?.options.clientID {
+            GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+        }
+        
         do {
-            let resultatGID = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            let resultatGID = try await GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC)
             let userGID = resultatGID.user
             
             guard let idToken = userGID.idToken?.tokenString else {
@@ -221,6 +225,27 @@ public final class AuthService {
         #else
         throw ErreurAuth.configurationManquante
         #endif
+    }
+    
+    // MARK: - Détection de l'écran visible pour l'affichage de Google Sign-In
+    @MainActor
+    private func getTopViewController() -> UIViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive })
+            ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else {
+            return nil
+        }
+        
+        let window = windowScene.windows.first(where: { $0.isKeyWindow }) ?? windowScene.windows.first
+        guard var topController = window?.rootViewController else {
+            return nil
+        }
+        
+        while let presented = topController.presentedViewController {
+            topController = presented
+        }
+        return topController
     }
     
     // MARK: - Réinitialisation du Mot de passe par Email
@@ -309,6 +334,15 @@ public final class AuthService {
     public func formaterErreur(_ error: Error) -> String {
         let nsError = error as NSError
         let description = error.localizedDescription
+        
+        // Gestion des erreurs spécifiques Google Sign-In
+        if nsError.domain == "com.google.GIDSignIn" {
+            if nsError.code == -5 {
+                return "Connexion Google annulée."
+            } else if nsError.code == -4 {
+                return "Impossible de contacter les serveurs Google. Vérifiez votre connexion internet."
+            }
+        }
         
         // Codes d'erreurs standards Firebase Auth
         switch nsError.code {
