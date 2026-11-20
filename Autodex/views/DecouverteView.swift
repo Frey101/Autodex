@@ -15,6 +15,7 @@ struct DecouverteView: View {
     @State private var estEnChargementPhoto: Bool = false
     @State private var glissement: CGSize = .zero
     @State private var versDetail: Bool = false
+    var onOuvrirMenu: (() -> Void)? = nil
     
     // Accès SwiftData aux favoris
     @Environment(\.modelContext) private var modelContext
@@ -28,9 +29,24 @@ struct DecouverteView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                // En-tête
-                HStack {
+            VStack(spacing: 12) {
+                // En-tête avec bouton Hamburger
+                HStack(spacing: 14) {
+                    if let onOuvrirMenu = onOuvrirMenu {
+                        Button(action: onOuvrirMenu) {
+                            Image(systemName: "line.3.horizontal")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.primary)
+                                .padding(8)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Ouvrir le menu")
+                        .accessibilityIdentifier("boutonMenuDecouverte")
+                    }
+                    
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Découverte")
                             .font(.largeTitle)
@@ -42,7 +58,7 @@ struct DecouverteView: View {
                     }
                     Spacer()
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 20)
                 .padding(.top, 10)
                 
                 Spacer()
@@ -79,13 +95,13 @@ struct DecouverteView: View {
                     Spacer()
                     
                     // --- LES BOUTONS D'ACTION ---
-                    HStack(spacing: 50) {
+                    HStack(spacing: 36) {
                         // Bouton Passer (Croix rouge)
                         Button(action: passerVehicule) {
                             Image(systemName: "xmark")
-                                .font(.system(size: 26, weight: .bold))
+                                .font(.system(size: 24, weight: .bold))
                                 .foregroundColor(.red)
-                                .frame(width: 65, height: 65)
+                                .frame(width: 58, height: 58)
                                 .background(Color.red.opacity(0.12))
                                 .clipShape(Circle())
                                 .shadow(color: Color.red.opacity(0.15), radius: 6, x: 0, y: 3)
@@ -95,9 +111,9 @@ struct DecouverteView: View {
                         // Bouton Consulter Fiche Technique (Info / Oeil)
                         Button(action: { versDetail = true }) {
                             Image(systemName: "doc.text.magnifyingglass")
-                                .font(.system(size: 22, weight: .bold))
+                                .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.blue)
-                                .frame(width: 52, height: 52)
+                                .frame(width: 50, height: 50)
                                 .background(Color.blue.opacity(0.12))
                                 .clipShape(Circle())
                         }
@@ -106,16 +122,16 @@ struct DecouverteView: View {
                         // Bouton Favoris (Cœur vert / rouge si déjà favori)
                         Button(action: ajouterAuxFavoris) {
                             Image(systemName: estDejaFavori ? "heart.fill" : "heart")
-                                .font(.system(size: 26, weight: .bold))
+                                .font(.system(size: 24, weight: .bold))
                                 .foregroundColor(estDejaFavori ? .red : .green)
-                                .frame(width: 65, height: 65)
+                                .frame(width: 58, height: 58)
                                 .background((estDejaFavori ? Color.red : Color.green).opacity(0.12))
                                 .clipShape(Circle())
                                 .shadow(color: (estDejaFavori ? Color.red : Color.green).opacity(0.15), radius: 6, x: 0, y: 3)
                         }
                         .accessibilityIdentifier("boutonFavoriDecouverte")
                     }
-                    .padding(.bottom, 25)
+                    .padding(.bottom, 16)
                 } else {
                     VStack(spacing: 16) {
                         ProgressView()

@@ -904,4 +904,59 @@ final class AutodexTests: XCTestCase {
         let fav2 = FavoriteCar(make: "PORSCHE", model: "911 gt3", year: 2024)
         XCTAssertEqual(fav1.id, fav2.id, "La clé composite unique doit être normalisée en minuscules.")
     }
+
+    // MARK: - 14. Tests Menu Tiroir Latéral & Sections de Navigation
+
+    // Test 75 : Complétude et ordre des sections de navigation
+    func testSectionNavigationNombreEtOrdre() {
+        let sections = SectionNavigation.allCases
+        XCTAssertEqual(sections.count, 7, "Le menu tiroir doit comporter exactement 7 sections.")
+        XCTAssertEqual(sections, [.accueil, .collection, .duel, .quiz, .decouverte, .favoris, .aPropos])
+    }
+
+    // Test 76 : Titres complets en français pour chaque section
+    func testSectionNavigationTitresComplets() {
+        for section in SectionNavigation.allCases {
+            XCTAssertFalse(section.titreComplet.isEmpty)
+            XCTAssertFalse(section.rawValue.isEmpty)
+        }
+        XCTAssertEqual(SectionNavigation.accueil.titreComplet, "Accueil & Catalogue")
+        XCTAssertEqual(SectionNavigation.collection.titreComplet, "Ma Collection")
+        XCTAssertEqual(SectionNavigation.duel.titreComplet, "Mode Duel Face-à-Face")
+        XCTAssertEqual(SectionNavigation.quiz.titreComplet, "Pokédex Quiz")
+        XCTAssertEqual(SectionNavigation.decouverte.titreComplet, "Découverte Aléatoire")
+        XCTAssertEqual(SectionNavigation.favoris.titreComplet, "Mes Favoris")
+        XCTAssertEqual(SectionNavigation.aPropos.titreComplet, "À Propos d'AutoDex")
+    }
+
+    // Test 77 : Icônes SF Symbols valides
+    func testSectionNavigationIconesSF() {
+        for section in SectionNavigation.allCases {
+            XCTAssertFalse(section.icone.isEmpty, "Chaque section doit définir une icône SF Symbol non vide.")
+        }
+        XCTAssertEqual(SectionNavigation.accueil.icone, "house.fill")
+        XCTAssertEqual(SectionNavigation.collection.icone, "camera.fill")
+        XCTAssertEqual(SectionNavigation.duel.icone, "arrow.left.arrow.right")
+        XCTAssertEqual(SectionNavigation.quiz.icone, "gamecontroller.fill")
+        XCTAssertEqual(SectionNavigation.decouverte.icone, "sparkles")
+        XCTAssertEqual(SectionNavigation.favoris.icone, "heart.fill")
+        XCTAssertEqual(SectionNavigation.aPropos.icone, "info.circle.fill")
+    }
+
+    // Test 78 : Badge de nouveauté sur la section Ma Collection
+    func testSectionNavigationBadges() {
+        XCTAssertEqual(SectionNavigation.collection.badgeTexte, "Nouveau")
+        XCTAssertNil(SectionNavigation.accueil.badgeTexte)
+        XCTAssertNil(SectionNavigation.duel.badgeTexte)
+        XCTAssertNil(SectionNavigation.quiz.badgeTexte)
+        XCTAssertNil(SectionNavigation.decouverte.badgeTexte)
+        XCTAssertNil(SectionNavigation.aPropos.badgeTexte)
+    }
+
+    // Test 79 : Identifiant unique conforme au rawValue
+    func testSectionNavigationIdentifiants() {
+        for section in SectionNavigation.allCases {
+            XCTAssertEqual(section.id, section.rawValue)
+        }
+    }
 }

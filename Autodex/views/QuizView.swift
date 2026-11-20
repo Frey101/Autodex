@@ -12,6 +12,7 @@ struct QuizView: View {
     @State private var questionCourante: QuestionQuiz? = nil
     @State private var indexSelectionne: Int? = nil
     @State private var reponseValidee: Bool = false
+    var onOuvrirMenu: (() -> Void)? = nil
     
     // Scores
     @State private var score: Int = 0
@@ -218,6 +219,19 @@ struct QuizView: View {
             }
             .navigationTitle("Pokédex Quiz")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if let onOuvrirMenu = onOuvrirMenu {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: onOuvrirMenu) {
+                            Image(systemName: "line.3.horizontal")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.primary)
+                        }
+                        .accessibilityLabel("Ouvrir le menu")
+                        .accessibilityIdentifier("boutonMenuQuiz")
+                    }
+                }
+            }
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
             .task {
                 if questionCourante == nil {
