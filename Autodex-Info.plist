@@ -15,5 +15,9 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Autodex utilise l'appareil photo pour vous permettre d'immortaliser des voitures de collection et les ajouter à votre carnet de bord.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Autodex accède à votre photothèque pour importer vos photos de véhicules dans votre collection.</string>
 </dict>
 </plist>
