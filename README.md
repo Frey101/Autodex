@@ -6,6 +6,7 @@
 
 ## 🚀 Fonctionnalités
 
+- **Authentification Firebase (100% Gratuite)** : Accès sécurisé avant d'entrer dans l'application avec le SDK officiel Firebase Auth (sans compte Apple payant). Support de l'inscription/connexion par Email & Mot de passe, de la connexion rapide avec Google (Gmail), de la réinitialisation de mot de passe par email, de la gestion de session persistante et de la déconnexion directe depuis le menu tiroir latéral.
 - **Catalogue local complet** : Plus de 2 150 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (nettoyage intelligent des noms de modèles, filtre strict anti-logos/pages constructeurs et repli sur la base anglophone).
@@ -34,7 +35,8 @@
 - **Gestion d'état** : Framework Observation (`@Observable`)
 - **Persistance** : SwiftData
 - **Concurrence** : `async/await`, `TaskGroup`, `@MainActor`
-- **Tests** : XCTest (112 tests unitaires complets et 17 tests d'interface UI automatisés — 129 tests au total)
+- **Authentification & Cloud** : Firebase Authentication iOS SDK (`FirebaseAuth`, 100% gratuit) & `GoogleSignIn`
+- **Tests** : XCTest (120 tests unitaires complets et 17 tests d'interface UI automatisés — 137 tests au total)
 - **Vision & IA locale** : Apple Vision framework (`VNClassifyImageRequest`, 100 % gratuit et on-device)
 - **Widgets** : WidgetKit (Extension iOS « La Voiture du Jour » + App Group)
 - **Données** : Dataset local embarqué (`car_details.json`) + API NHTSA vPIC
@@ -45,19 +47,26 @@
 
 ```text
 Autodex/
-├── AutodexApp.swift          # Point d'entrée de l'application (@main, ModelContainer avec favoris et collection)
+├── AutodexApp.swift          # Point d'entrée (@main, AppDelegate Firebase, ModelContainer et porte d'authentification)
+├── GoogleService-Info.plist  # Configuration du projet Firebase (Bundle ID: com.iutstdie.autodex)
 ├── model/
 │   ├── Car.swift             # Modèle Car, spécifications moteurs et décodage
 │   ├── FavoriteCar.swift     # Modèle persistant SwiftData pour les favoris
-│   └── VoitureCollection.swift # Modèle persistant SwiftData pour les bolides spottés
+│   ├── VoitureCollection.swift # Modèle persistant SwiftData pour les bolides spottés
+│   └── UtilisateurAutodex.swift # Modèle utilisateur et fournisseur d'authentification
 ├── viewModels/
 │   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
 ├── services/
+│   ├── AuthService.swift     # Service d'authentification Firebase (Email/Mdp, Google, session, erreurs)
 │   ├── DetectionVehiculeService.swift # Détection et contrôle strict par IA Vision de la présence d'un véhicule
 │   ├── CollectionPhotoService.swift # Gestionnaire de photos spottées sur disque local (JPEG, cache, démo)
 │   ├── VoitureDuJourService.swift # Service déterministe Voiture du Jour, Deep Link et App Group
 │   ├── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
 │   └── BrandLogoService.swift # Service de logos constructeurs et normalisation
+└── views/
+    ├── AuthentificationView.swift # Écran de connexion, inscription, mot de passe oublié et Google
+    ├── ContentView.swift     # Accueil, catalogue, recherche et navigation
+    ├── MenuTiroirView.swift  # Menu tiroir latéral, profil utilisateur et déconnexion
 ├── views/
 │   ├── ContentView.swift      # Écran d'accueil et coordinateur Navigationview avec Menu Tiroir
 │   ├── MenuTiroirView.swift   # Menu latéral coulissant (7 sections, compteurs et badges)

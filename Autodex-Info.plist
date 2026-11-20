@@ -8,10 +8,18 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.dev.autodex</string>
+			<string>com.iutstdie.autodex</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>autodex</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.313998831035-m34kipb90d4aimnmbqhrjtj7kst8o1n3</string>
 			</array>
 		</dict>
 	</array>

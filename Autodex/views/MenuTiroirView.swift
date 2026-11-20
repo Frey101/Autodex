@@ -69,6 +69,8 @@ struct MenuTiroirView: View {
     @Binding var sectionSelectionnee: SectionNavigation
     @Binding var estOuvert: Bool
     @Query private var favoris: [FavoriteCar]
+    @State private var authService = AuthService.shared
+    @State private var confirmationDeconnexion: Bool = false
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -195,6 +197,58 @@ struct MenuTiroirView: View {
                 
                 Spacer()
                 
+                // MARK: - Carte Utilisateur Connecté & Déconnexion
+                if let utilisateur = authService.utilisateurCourant {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Divider()
+                            .padding(.horizontal, 20)
+                        
+                        HStack(spacing: 12) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color(red: 131/255, green: 170/255, blue: 131/255).opacity(0.2))
+                                    .frame(width: 40, height: 40)
+                                Text(utilisateur.initiales)
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(Color(red: 131/255, green: 170/255, blue: 131/255))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(utilisateur.nomOuEmail)
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.primary)
+                                    .lineLimit(1)
+                                
+                                HStack(spacing: 4) {
+                                    Image(systemName: utilisateur.fournisseur.iconeSysteme)
+                                        .font(.caption2)
+                                    Text(utilisateur.fournisseur.libelle)
+                                        .font(.caption2)
+                                }
+                                .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Button {
+                                confirmationDeconnexion = true
+                            } label: {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .font(.body)
+                                    .foregroundColor(.red)
+                                    .padding(8)
+                                    .background(Color.red.opacity(0.1))
+                                    .clipShape(Circle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Se déconnecter")
+                            .accessibilityIdentifier("boutonDeconnexionMenu")
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 4)
+                    }
+                }
+                
                 // MARK: - Pied de Page
                 Divider()
                     .padding(.horizontal, 20)
@@ -214,6 +268,17 @@ struct MenuTiroirView: View {
         }
         .frame(maxWidth: 310)
         .shadow(color: Color.black.opacity(0.18), radius: 20, x: 5, y: 0)
+        .alert("Déconnexion", isPresented: $confirmationDeconnexion) {
+            Button("Annuler", role: .cancel) {}
+            Button("Se déconnecter", role: .destructive) {
+                withAnimation {
+                    estOuvert = false
+                    authService.deconnexion()
+                }
+            }
+        } message: {
+            Text("Êtes-vous sûr de vouloir vous déconnecter d'AutoDex ?")
+        }
     }
     
     private func statPill(valeur: String, label: String, icone: String, couleur: Color) -> some View {

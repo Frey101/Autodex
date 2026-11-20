@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0AFB00032FC9951A00BE9322 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0AFB00022FC9951A00BE9322 /* FirebaseAuth */; };
+		0AGS00032FC9951A00BE9322 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AGS00022FC9951A00BE9322 /* GoogleSignIn */; };
+		0AGS00052FC9951A00BE9322 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */; };
 		0A1BDC5C2FC9951C00BE9322 /* AutodexWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -90,6 +93,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AFB00032FC9951A00BE9322 /* FirebaseAuth in Frameworks */,
+				0AGS00032FC9951A00BE9322 /* GoogleSignIn in Frameworks */,
+				0AGS00052FC9951A00BE9322 /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,6 +182,9 @@
 			);
 			name = Autodex;
 			packageProductDependencies = (
+				0AFB00022FC9951A00BE9322 /* FirebaseAuth */,
+				0AGS00022FC9951A00BE9322 /* GoogleSignIn */,
+				0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */,
 			);
 			productName = Autodex;
 			productReference = 0A1BDC1F2FC9951A00BE9322 /* Autodex.app */;
@@ -265,6 +274,10 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0A1BDC202FC9951A00BE9322 /* Products */;
 			projectDirPath = "";
+			packageReferences = (
+				0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			projectRoot = "";
 			targets = (
 				0A1BDC1E2FC9951A00BE9322 /* Autodex */,
@@ -305,6 +318,43 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+		0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0AFB00022FC9951A00BE9322 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		0AGS00022FC9951A00BE9322 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0A1BDC532FC9951C00BE9322 /* Sources */ = {
@@ -548,7 +598,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iutstdie.autodex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -577,7 +627,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iutstdie.autodex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
