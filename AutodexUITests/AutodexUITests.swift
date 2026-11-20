@@ -351,6 +351,9 @@ final class AutodexUITests: XCTestCase {
         // Vérifier l'apparition du bouton Question Suivante
         let boutonSuivant = app.buttons["boutonQuestionSuivanteQuiz"]
         XCTAssertTrue(boutonSuivant.waitForExistence(timeout: 6), "Le bouton Véhicule Suivant doit s'afficher après la réponse.")
+        
+        let captureQuizRepondu = XCUIScreen.main.screenshot()
+        try? captureQuizRepondu.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/quiz_pokedex_repondu.png"))
     }
 
     @MainActor

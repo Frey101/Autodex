@@ -27,7 +27,7 @@ struct QuizView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 12) {
                     // MARK: - En-tête & Barre de Score
                     HStack(spacing: 12) {
                         blocScore(titre: "Score", valeur: "\(score)", couleur: .blue)
@@ -35,20 +35,20 @@ struct QuizView: View {
                         blocScore(titre: "Record", valeur: "\(meilleurScore) 🏆", couleur: .purple)
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 10)
+                    .padding(.top, 6)
                     
                     if let question = questionCourante {
                         let cible = question.voitureCible
                         
                         // MARK: - Carte Mystère (Silhouette & Photo)
-                        VStack(spacing: 14) {
+                        VStack(spacing: 10) {
                             Text(reponseValidee ? "C'est bien..." : "Quel est ce véhicule ?")
                                 .font(.headline)
                                 .foregroundColor(.secondary)
                             
-                            // Emplacement Photo / Silhouette (aux dimensions strictement uniformes)
+                            // Emplacement Photo / Silhouette (aux dimensions strictement uniformes et compactes)
                             ZStack {
-                                RoundedRectangle(cornerRadius: 18)
+                                RoundedRectangle(cornerRadius: 16)
                                     .fill(
                                         LinearGradient(
                                             colors: [Color(.systemGray6), Color(.systemGray5)],
@@ -57,13 +57,13 @@ struct QuizView: View {
                                         )
                                     )
                                     .frame(maxWidth: .infinity)
-                                    .frame(height: 190)
+                                    .frame(height: 125)
                                 
                                 if let photoUrl = wikiPhotoUrl, let url = URL(string: photoUrl) {
                                     AsyncImage(url: url) { phase in
                                         switch phase {
                                         case .empty:
-                                            VStack(spacing: 8) {
+                                            VStack(spacing: 6) {
                                                 ProgressView()
                                                 Text("Chargement du visuel...")
                                                     .font(.caption2)
@@ -75,7 +75,7 @@ struct QuizView: View {
                                                 .resizable()
                                                 .scaledToFill()
                                                 .frame(maxWidth: .infinity)
-                                                .frame(height: 190)
+                                                .frame(height: 125)
                                                 .clipped()
                                                 // Effet Silhouette : contrasté et désaturé sans devenir un rectangle noir opaque
                                                 .grayscale(reponseValidee ? 0.0 : 0.9)
@@ -90,7 +90,7 @@ struct QuizView: View {
                                         }
                                     }
                                 } else if estEnChargementPhoto {
-                                    VStack(spacing: 8) {
+                                    VStack(spacing: 6) {
                                         ProgressView()
                                         Text("Recherche du visuel...")
                                             .font(.caption2)
@@ -113,11 +113,11 @@ struct QuizView: View {
                                                     .fontWeight(.bold)
                                             }
                                             .foregroundColor(.white)
-                                            .padding(.horizontal, 10)
-                                            .padding(.vertical, 5)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
                                             .background(Color.black.opacity(0.65))
                                             .clipShape(Capsule())
-                                            .padding(10)
+                                            .padding(8)
                                             
                                             Spacer()
                                         }
@@ -126,20 +126,20 @@ struct QuizView: View {
                                 }
                             }
                             .frame(maxWidth: .infinity)
-                            .frame(height: 190)
-                            .clipShape(RoundedRectangle(cornerRadius: 18))
+                            .frame(height: 125)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             
                             // Révélation du nom après validation
                             if reponseValidee {
                                 VStack(spacing: 4) {
                                     Text(cible.displayName)
-                                        .font(.title2)
+                                        .font(.title3)
                                         .fontWeight(.bold)
                                         .foregroundColor(.primary)
                                         .transition(.scale.combined(with: .opacity))
                                     
                                     Text(cible.displaySubtitle)
-                                        .font(.subheadline)
+                                        .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
                             }
@@ -164,8 +164,8 @@ struct QuizView: View {
                                         .font(.caption)
                                         .fontWeight(.semibold)
                                         .foregroundColor(.orange)
-                                        .padding(.vertical, 6)
-                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 5)
+                                        .padding(.horizontal, 10)
                                         .background(Color.orange.opacity(0.12))
                                         .cornerRadius(8)
                                     }
@@ -173,14 +173,15 @@ struct QuizView: View {
                             }
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(20)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 16)
                         .background(Color.white)
-                        .cornerRadius(22)
-                        .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 5)
+                        .cornerRadius(18)
+                        .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 4)
                         .padding(.horizontal, 16)
                         
                         // MARK: - Les 4 Propositions (QCM)
-                        VStack(spacing: 10) {
+                        VStack(spacing: 8) {
                             ForEach(Array(question.propositions.enumerated()), id: \.offset) { index, proposition in
                                 boutonProposition(
                                     texte: proposition.displayName,
@@ -286,15 +287,15 @@ struct QuizView: View {
                     }
                 }
             }
-            .padding(.vertical, 14)
+            .padding(.vertical, 11)
             .padding(.horizontal, 16)
             .frame(maxWidth: .infinity)
             .background(couleurFond)
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(couleurBordure, lineWidth: 2)
             )
-            .cornerRadius(14)
+            .cornerRadius(12)
             .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 2)
         }
         .disabled(reponseValidee)
@@ -303,16 +304,16 @@ struct QuizView: View {
     
     // MARK: - Composants Visuels
     private func blocScore(titre: String, valeur: String, couleur: Color) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 3) {
             Text(titre)
                 .font(.caption2)
                 .foregroundColor(.secondary)
             Text(valeur)
-                .font(.system(size: 16, weight: .bold))
+                .font(.system(size: 15, weight: .bold))
                 .foregroundColor(couleur)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
         .background(Color.white)
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 2)
@@ -344,16 +345,16 @@ struct QuizView: View {
             )
             
             if resolu, let marque = marque {
-                VStack(spacing: 8) {
-                    LogoMarqueView(marque: marque, taille: 70)
+                VStack(spacing: 6) {
+                    LogoMarqueView(marque: marque, taille: 50)
                     Text(marque)
                         .font(.headline)
                         .foregroundColor(.primary)
                 }
             } else {
-                VStack(spacing: 8) {
+                VStack(spacing: 6) {
                     Image(systemName: "car.side.fill")
-                        .font(.system(size: 60))
+                        .font(.system(size: 44))
                         .foregroundColor(.white.opacity(0.85))
                         .shadow(color: .cyan.opacity(0.4), radius: 8, x: 0, y: 3)
                     Text("Profil Silhouette Aérodynamique")
@@ -364,8 +365,8 @@ struct QuizView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 190)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .frame(height: 125)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
     
     // MARK: - Logique Métier du Quiz
