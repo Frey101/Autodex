@@ -16,21 +16,41 @@ struct ComparateurView: View {
     @State private var afficherSelecteur1: Bool = false
     @State private var afficherSelecteur2: Bool = false
     @State private var texteRecherche: String = ""
+    var onOuvrirMenu: (() -> Void)? = nil
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // En-tête
-                    VStack(spacing: 4) {
-                        Text("Comparateur Duel")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
-                        Text("Face-à-face technique façon Pokédex")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    // En-tête avec bouton Hamburger
+                    HStack(spacing: 14) {
+                        if let onOuvrirMenu = onOuvrirMenu {
+                            Button(action: onOuvrirMenu) {
+                                Image(systemName: "line.3.horizontal")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.primary)
+                                    .padding(8)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Ouvrir le menu")
+                            .accessibilityIdentifier("boutonMenuDuel")
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Comparateur Duel")
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
+                            Text("Face-à-face technique façon Pokédex")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
                     }
+                    .padding(.horizontal, 20)
                     .padding(.top, 10)
                     
                     // MARK: - Sélecteurs des deux véhicules (Côte à côte)

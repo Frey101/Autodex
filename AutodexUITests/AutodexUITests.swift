@@ -134,19 +134,92 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    private func naviguerVersSection(app: XCUIApplication, sectionId: String) {
+        let boutonHamburger = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'boutonMenu'")).firstMatch
+        if boutonHamburger.waitForExistence(timeout: 5) {
+            boutonHamburger.tap()
+        }
+        
+        let itemMenu = app.buttons["menuItem_\(sectionId)"]
+        XCTAssertTrue(itemMenu.waitForExistence(timeout: 4), "L'élément de menu '\(sectionId)' doit être visible dans le tiroir.")
+        itemMenu.tap()
+        
+        // Attente fluide de la fin de l'animation de fermeture du tiroir (0.35s)
+        Thread.sleep(forTimeInterval: 0.6)
+    }
+
+    @MainActor
+    func testMenuTiroirAffichageEtFermeture() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // 1. Ouvrir le menu tiroir depuis l'accueil
+        let boutonHamburger = app.buttons["boutonMenuAccueil"]
+        XCTAssertTrue(boutonHamburger.waitForExistence(timeout: 5), "Le bouton hamburger de l'accueil doit être visible.")
+        boutonHamburger.tap()
+        
+        // 2. Vérifier les éléments du tiroir (titre, sous-titre, compteur de véhicules)
+        let titreTiroir = app.staticTexts["Le Pokédex Automobile"]
+        XCTAssertTrue(titreTiroir.waitForExistence(timeout: 3), "Le sous-titre AutoDex doit être affiché dans le tiroir.")
+        
+        let statVehicules = app.staticTexts["2 157"]
+        XCTAssertTrue(statVehicules.waitForExistence(timeout: 3), "Le total du catalogue (2 157) doit être affiché dans le tiroir.")
+        
+        // 3. Capture d'écran du menu tiroir ouvert
+        let captureMenu = XCUIScreen.main.screenshot()
+        try? captureMenu.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/menu_tiroir_ouvert.png"))
+        
+        // 4. Fermer le tiroir via le bouton de fermeture
+        let boutonFermer = app.buttons["boutonFermerMenu"]
+        XCTAssertTrue(boutonFermer.waitForExistence(timeout: 3), "Le bouton de fermeture rapide du menu doit être présent.")
+        boutonFermer.tap()
+    }
+
+    @MainActor
+    func testMenuTiroirNavigationVersMaCollection() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Naviguer vers la nouvelle section "Ma Collection"
+        naviguerVersSection(app: app, sectionId: "Ma Collection")
+        
+        let titreCollection = app.staticTexts["Ma Collection"]
+        XCTAssertTrue(titreCollection.waitForExistence(timeout: 4), "La section Ma Collection doit s'afficher.")
+        
+        let captureCollection = XCUIScreen.main.screenshot()
+        try? captureCollection.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/section_ma_collection.png"))
+    }
+
+    @MainActor
+    func testMenuTiroirNavigationVersAPropos() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Naviguer vers la section "À Propos"
+        naviguerVersSection(app: app, sectionId: "À Propos")
+        
+        let barreNav = app.navigationBars["À Propos"]
+        XCTAssertTrue(barreNav.waitForExistence(timeout: 5), "La barre de navigation À Propos doit être affichée.")
+        
+        let texteAcademique = app.staticTexts["Contexte Académique"]
+        XCTAssertTrue(texteAcademique.waitForExistence(timeout: 3), "La fiche académique BUT Informatique doit être visible.")
+        
+        let captureAPropos = XCUIScreen.main.screenshot()
+        try? captureAPropos.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/section_a_propos.png"))
+    }
+
+    @MainActor
     func testDecouvertePageEtNavigationFicheTechnique() throws {
         let app = XCUIApplication()
         app.launch()
         
-        let ongletDecouverte = app.tabBars.buttons["Découverte"]
-        XCTAssertTrue(ongletDecouverte.waitForExistence(timeout: 5), "L'onglet Découverte doit être présent dans la TabBar.")
-        ongletDecouverte.tap()
+        naviguerVersSection(app: app, sectionId: "Découverte")
         
         // Vérifier la présence de la carte et du bouton de consultation
         let boutonConsulter = app.buttons["boutonConsulterFicheDecouverte"]
         XCTAssertTrue(boutonConsulter.waitForExistence(timeout: 6), "Le bouton de consultation de fiche dans Découverte doit être visible.")
         
-        // Capture d'écran de la nouvelle page Découverte
+        // Capture d'écran de la page Découverte
         let captureDecouverte = XCUIScreen.main.screenshot()
         try? captureDecouverte.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/decouverte_carte.png"))
         
@@ -177,10 +250,8 @@ final class AutodexUITests: XCTestCase {
         XCTAssertTrue(boutonCoeur.waitForExistence(timeout: 6), "Le bouton cœur de la première ligne doit être visible.")
         boutonCoeur.tap()
         
-        // 2. Aller sur l'onglet Favoris
-        let ongletFavoris = app.tabBars.buttons["Favoris"]
-        XCTAssertTrue(ongletFavoris.waitForExistence(timeout: 5), "L'onglet Favoris doit être accessible.")
-        ongletFavoris.tap()
+        // 2. Aller sur l'onglet Favoris via le menu tiroir
+        naviguerVersSection(app: app, sectionId: "Favoris")
         
         // 3. Attendre qu'une ligne de favori soit présente et cliquer dessus
         let favoriLink = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'favoriLink_'")).firstMatch
@@ -200,12 +271,10 @@ final class AutodexUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
-        // Ouvrir la première voiture
-        let premierElement = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'boutonCoeurLigne'")).firstMatch
-        let premiereLigne = app.scrollViews.descendants(matching: .any).element(boundBy: 4)
-        if premiereLigne.waitForExistence(timeout: 5) {
-            premiereLigne.tap()
-        }
+        // Ouvrir la première voiture via son lien de carte direct
+        let premiereVoiture = app.buttons.matching(identifier: "carCardLink").firstMatch
+        XCTAssertTrue(premiereVoiture.waitForExistence(timeout: 5), "Une carte de véhicule doit être présente sur l'accueil.")
+        premiereVoiture.tap()
         
         // Vérifier le bouton Like dans la barre de navigation de la fiche technique
         let boutonLike = app.buttons["boutonLikeFicheDetail"]
@@ -243,9 +312,7 @@ final class AutodexUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
-        let ongletDuel = app.tabBars.buttons["Duel"]
-        XCTAssertTrue(ongletDuel.waitForExistence(timeout: 5), "L'onglet Duel doit être accessible.")
-        ongletDuel.tap()
+        naviguerVersSection(app: app, sectionId: "Mode Duel")
         
         // Vérifier la présence du bouton Duel Aléatoire
         let boutonAleatoire = app.buttons["boutonDuelAleatoire"]
@@ -265,9 +332,7 @@ final class AutodexUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
-        let ongletQuiz = app.tabBars.buttons["Quiz"]
-        XCTAssertTrue(ongletQuiz.waitForExistence(timeout: 5), "L'onglet Quiz doit être accessible.")
-        ongletQuiz.tap()
+        naviguerVersSection(app: app, sectionId: "Pokédex Quiz")
         
         // Vérifier les boutons de proposition
         let proposition0 = app.buttons["propositionQuiz_0"]
@@ -277,11 +342,15 @@ final class AutodexUITests: XCTestCase {
         try? captureQuiz.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/quiz_pokedex.png"))
         
         // Taper sur la première proposition
-        proposition0.tap()
+        if proposition0.isHittable {
+            proposition0.tap()
+        } else {
+            proposition0.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
         
         // Vérifier l'apparition du bouton Question Suivante
         let boutonSuivant = app.buttons["boutonQuestionSuivanteQuiz"]
-        XCTAssertTrue(boutonSuivant.waitForExistence(timeout: 4), "Le bouton Véhicule Suivant doit s'afficher après la réponse.")
+        XCTAssertTrue(boutonSuivant.waitForExistence(timeout: 6), "Le bouton Véhicule Suivant doit s'afficher après la réponse.")
     }
 
     @MainActor

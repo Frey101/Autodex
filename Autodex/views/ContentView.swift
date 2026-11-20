@@ -14,6 +14,7 @@ enum OngletAccueil: String, CaseIterable {
 }
 
 struct ContentView: View {
+    var onOuvrirMenu: (() -> Void)? = nil
     @State private var viewModel = CarViewModel()
     @State private var searchText = ""
     @State private var ongletActif: OngletAccueil = .populaires
@@ -29,10 +30,33 @@ struct ContentView: View {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    Text("AutoDex")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
-                        .fontWeight(.bold)
+                    // En-tête avec bouton Hamburger
+                    HStack(spacing: 14) {
+                        if let onOuvrirMenu = onOuvrirMenu {
+                            Button(action: onOuvrirMenu) {
+                                Image(systemName: "line.3.horizontal")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.primary)
+                                    .padding(8)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Ouvrir le menu de navigation")
+                            .accessibilityIdentifier("boutonMenuAccueil")
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("AutoDex")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color(red: 131/255, green: 170/255, blue: 131/255))
+                                .fontWeight(.bold)
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding(.bottom, 4)
                     
                     Text("Faites votre choix de véhicules en comparant leur caractéristiques")
                         .font(.caption)
@@ -304,6 +328,7 @@ struct CarLigne: View {
                 }
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("carCardLink")
             
             Button(action: onFavoriteToggle) {
                 Image(systemName: isFavorite ? "heart.fill" : "heart")
@@ -328,99 +353,66 @@ struct CarLigne: View {
     }
 }
 
-// MARK: - Barre de navigation principale
+// MARK: - Navigation Principale avec Menu Tiroir Latéral (Side Drawer)
 struct Navigationview: View {
-    @Query private var favoriteCars: [FavoriteCar]
-    @Environment(\.modelContext) private var modelContext
-    @State private var viewModel = CarViewModel()
+    @State private var sectionCourante: SectionNavigation = .accueil
+    @State private var menuOuvert: Bool = false
     
     var body: some View {
-        TabView {
-            ContentView()
-                .tabItem {
-                    Label("Accueil", systemImage: "house")
-                }
+        GeometryReader { geometry in
+            let largeurTiroir = min(geometry.size.width * 0.82, 320.0)
             
-            DecouverteView()
-                .tabItem {
-                    Label("Découverte", systemImage: "sparkles")
-                }
-            
-            ComparateurView()
-                .tabItem {
-                    Label("Duel", systemImage: "arrow.left.arrow.right")
-                }
-            
-            QuizView()
-                .tabItem {
-                    Label("Quiz", systemImage: "gamecontroller.fill")
-                }
-            
-            NavigationStack {
-                ZStack {
-                    Color(.systemGroupedBackground).ignoresSafeArea()
-                    
-                    if favoriteCars.isEmpty {
-                        ContentUnavailableView("Aucun favori", systemImage: "heart.slash", description: Text("Vos véhicules favoris s'afficheront ici."))
-                    } else {
-                        ScrollView {
-                            VStack(spacing: 12) {
-                                ForEach(favoriteCars) { fav in
-                                    let car = viewModel.trouverVehicule(pour: fav)
-                                    HStack(spacing: 15) {
-                                        NavigationLink(destination: CarDetailView(car: car)) {
-                                            HStack(spacing: 15) {
-                                                LogoMarqueView(marque: fav.make, taille: 48)
-                                                
-                                                VStack(alignment: .leading, spacing: 4) {
-                                                    Text("\(fav.make) \(fav.model)")
-                                                        .font(.system(size: 16, weight: .bold))
-                                                        .foregroundColor(.primary)
-                                                    Text(car.displaySubtitle)
-                                                        .font(.system(size: 12))
-                                                        .foregroundColor(.gray)
-                                                }
-                                                Spacer()
-                                            }
-                                        }
-                                        .buttonStyle(.plain)
-                                        .accessibilityIdentifier("favoriLink_\(fav.make)_\(fav.model)")
-                                        
-                                        Button(role: .destructive) {
-                                            withAnimation {
-                                                modelContext.delete(fav)
-                                            }
-                                        } label: {
-                                            Image(systemName: "trash")
-                                                .foregroundColor(.red)
-                                                .padding(8)
-                                        }
-                                        .buttonStyle(.plain)
-                                        
-                                        NavigationLink(destination: CarDetailView(car: car)) {
-                                            Image(systemName: "chevron.right")
-                                                .font(.system(size: 14, weight: .semibold))
-                                                .foregroundColor(Color(.systemGray3))
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(16)
-                                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
-                                    .accessibilityElement(children: .contain)
-                                    .accessibilityIdentifier("favoriRow_\(fav.make)_\(fav.model)")
-                                }
-                            }
-                            .padding()
-                        }
+            ZStack(alignment: .leading) {
+                // 1. Vue principale correspondant à la section active
+                Group {
+                    switch sectionCourante {
+                    case .accueil:
+                        ContentView(onOuvrirMenu: toggleMenu)
+                    case .collection:
+                        MaCollectionView(onOuvrirMenu: toggleMenu)
+                    case .duel:
+                        ComparateurView(onOuvrirMenu: toggleMenu)
+                    case .quiz:
+                        QuizView(onOuvrirMenu: toggleMenu)
+                    case .decouverte:
+                        DecouverteView(onOuvrirMenu: toggleMenu)
+                    case .favoris:
+                        FavorisView(onOuvrirMenu: toggleMenu)
+                    case .aPropos:
+                        AProposView(onOuvrirMenu: toggleMenu)
                     }
                 }
-                .navigationTitle("Mes Favoris")
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .disabled(menuOuvert) // Désactive les interactions sur le contenu lorsque le menu est ouvert
+                
+                // 2. Fond assombrissant interactif avec fondu animé & Panneau Tiroir
+                if menuOuvert {
+                    Color.black
+                        .opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .onTapGesture {
+                            fermerMenu()
+                        }
+                    
+                    MenuTiroirView(sectionSelectionnee: $sectionCourante, estOuvert: $menuOuvert)
+                        .frame(width: largeurTiroir)
+                        .transition(.move(edge: .leading))
+                        .shadow(color: Color.black.opacity(0.25), radius: 16, x: 8, y: 0)
+                }
             }
-            .tabItem {
-                Label("Favoris", systemImage: "heart")
-            }
+        }
+    }
+    
+    private func toggleMenu() {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+            menuOuvert.toggle()
+        }
+    }
+    
+    private func fermerMenu() {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+            menuOuvert = false
         }
     }
 }
