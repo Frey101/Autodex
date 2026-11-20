@@ -20,6 +20,7 @@
 - **Bouton Like réactif sur Fiche Technique** : Sauvegarde/retrait en favoris directement depuis la barre d'outils de la fiche détaillée, avec retour haptique et persistance SwiftData synchronisée en temps réel.
 - **Comparateur Face-à-Face (Mode Duel / Pokédex)** : Comparatif visuel côte à côte de deux véhicules au choix ou en tirage aléatoire (puissance ch, cylindrée, consommation autoroute, année, énergie, transmission) avec décompte de points, couronne et mise en valeur verte sur les caractéristiques gagnantes.
 - **Mini-jeu Pokédex « Devine la Voiture »** : Quiz interactif affichant la silhouette assombrie et floutée d'un véhicule mystère, des indices techniques déblocables, 4 choix multiples, retour haptique et suivi du score, de la série de victoires et du record.
+- **Widget iOS « La Voiture du Jour » (WidgetKit)** : Extension d'écran d'accueil disponible en formats Petit (`.systemSmall`) et Moyen (`.systemMedium`), avec sélection déterministe quotidienne à minuit parmi 31 supercars emblématiques, synchronisation App Group et Deep Linking direct ouvrant instantanément la fiche technique du bolide.
 - **Véhicules populaires & Nouveautés** : Sélecteur d'onglets ergonomique en en-tête d'accueil.
 - **Fiches véhicules** : Vue détaillée avec caractéristiques moteur, dimensions, photos et logos des marques.
 - **Favoris persistants & navigables** : Sauvegarde locale des modèles préférés via SwiftData, affichage des spécifications et ouverture directe de la fiche technique en un tap.
@@ -33,7 +34,8 @@
 - **Gestion d'état** : Framework Observation (`@Observable`)
 - **Persistance** : SwiftData
 - **Concurrence** : `async/await`, `TaskGroup`, `@MainActor`
-- **Tests** : XCTest (79 tests unitaires complets et 15 tests d'interface UI automatisés)
+- **Tests** : XCTest (93 tests unitaires complets et 16 tests d'interface UI automatisés — 109 tests au total)
+- **Widgets** : WidgetKit (Extension iOS « La Voiture du Jour » + App Group)
 - **Données** : Dataset local embarqué (`car_details.json`) + API NHTSA vPIC
 
 ---
@@ -42,13 +44,14 @@
 
 ```text
 Autodex/
-├── AutodexApp.swift          # Point d'entrée de l'application (@main, ModelContainer)
+├── AutodexApp.swift          # Point d'entrée de l'application (@main, ModelContainer, App Group)
 ├── model/
 │   ├── Car.swift             # Modèle Car, spécifications moteurs et décodage
 │   └── FavoriteCar.swift     # Modèle persistant SwiftData pour les favoris
 ├── viewModels/
 │   └── CarViewModel.swift    # Logique métier, catalogue local et recherche asynchrone
 ├── services/
+│   ├── VoitureDuJourService.swift # Service déterministe Voiture du Jour, Deep Link et App Group
 │   ├── WikipediaService.swift # Service asynchrone Wikipédia (photos, résumés, cache)
 │   └── BrandLogoService.swift # Service de logos constructeurs et normalisation
 ├── views/
@@ -64,6 +67,13 @@ Autodex/
 │   └── LogoMarqueView.swift   # Composant d'affichage de logo avec cache et repli
 ├── car_details.json          # Dataset local de 2 157 véhicules avec specs moteurs
 └── Assets.xcassets/          # Logos des marques, visuels et icônes
+
+AutodexWidget/                # Cible App Extension WidgetKit iOS
+├── AutodexWidgetBundle.swift # Point d'entrée du bundle de widgets (@main)
+├── VoitureDuJourWidget.swift # Définition du Widget (formats .systemSmall & .systemMedium)
+├── VoitureDuJourProvider.swift # TimelineProvider (renouvellement quotidien à minuit)
+├── VoitureDuJourWidgetView.swift # Vues SwiftUI des formats Petit et Moyen
+└── VoitureDuJourModel.swift  # Modèle autonome et moteur de sélection hors-ligne
 ```
 
 ---

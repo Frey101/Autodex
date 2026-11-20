@@ -357,6 +357,24 @@ final class AutodexUITests: XCTestCase {
     }
 
     @MainActor
+    func testDeepLinkVoitureDuJourOuvertureFiche() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Simuler l'ouverture de l'URL Deep Link émise par le Widget iOS
+        let url = URL(string: "autodex://car?make=Porsche&model=911%20GT3%20RS&year=2024")!
+        app.open(url)
+        
+        // Vérifier l'apparition de la fiche technique
+        let titreFiche = app.staticTexts["Porsche 911 GT3 RS"]
+        XCTAssertTrue(titreFiche.waitForExistence(timeout: 8), "L'ouverture de l'URL Deep Link du Widget doit présenter la fiche technique du véhicule.")
+        
+        let boutonFermer = app.buttons["Fermer"]
+        XCTAssertTrue(boutonFermer.waitForExistence(timeout: 5), "Le bouton Fermer de la modal doit être présent.")
+        boutonFermer.tap()
+    }
+
+    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {

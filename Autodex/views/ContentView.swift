@@ -357,6 +357,8 @@ struct CarLigne: View {
 struct Navigationview: View {
     @State private var sectionCourante: SectionNavigation = .accueil
     @State private var menuOuvert: Bool = false
+    @State private var voitureDeepLink: Car? = nil
+    @State private var viewModel = CarViewModel()
     
     var body: some View {
         GeometryReader { geometry in
@@ -402,6 +404,48 @@ struct Navigationview: View {
                 }
             }
         }
+        .onOpenURL { url in
+            ouvrirDepuisDeepLink(url)
+        }
+        .sheet(item: $voitureDeepLink) { car in
+            NavigationStack {
+                CarDetailView(car: car)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("Fermer") {
+                                voitureDeepLink = nil
+                            }
+                            .fontWeight(.semibold)
+                        }
+                    }
+            }
+        }
+    }
+    
+    private func ouvrirDepuisDeepLink(_ url: URL) {
+        guard let (make, model, year) = VoitureDuJourService.shared.analyserUrlDeepLink(url) else { return }
+        
+        // 1. Chercher dans le catalogue local
+        if let car = viewModel.trouverVehicule(marque: make, modele: model) {
+            voitureDeepLink = car
+            return
+        }
+        
+        // 2. Chercher dans le catalogue emblématique du widget
+        if let emblematique = VoitureDuJourService.shared.catalogueEmblematique.first(where: {
+            $0.make.caseInsensitiveCompare(make) == .orderedSame &&
+            $0.model.caseInsensitiveCompare(model) == .orderedSame
+        }) {
+            voitureDeepLink = emblematique.toCar()
+            return
+        }
+        
+        // 3. Fallback avec les paramètres d'URL
+        voitureDeepLink = Car(
+            Make_Name: make,
+            Model_Name: model,
+            year: year
+        )
     }
     
     private func toggleMenu() {

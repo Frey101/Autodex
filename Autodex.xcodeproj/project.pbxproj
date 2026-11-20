@@ -6,7 +6,18 @@
 	objectVersion = 56;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0A1BDC5C2FC9951C00BE9322 /* AutodexWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A1BDC522FC9951C00BE9322;
+			remoteInfo = AutodexWidget;
+		};
 		0A1BDC2F2FC9951C00BE9322 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
@@ -23,13 +34,33 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0A1BDC5B2FC9951C00BE9322 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0A1BDC5C2FC9951C00BE9322 /* AutodexWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */ = {isa = PBXFileReference; explicitFileType = wrapper.app-extension; includeInIndex = 0; path = AutodexWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC1F2FC9951A00BE9322 /* Autodex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Autodex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC2E2FC9951C00BE9322 /* AutodexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutodexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC382FC9951C00BE9322 /* AutodexUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutodexUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0A1BDC512FC9951C00BE9322 /* AutodexWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AutodexWidget;
+			sourceTree = "<group>";
+		};
 		0A1BDC212FC9951A00BE9322 /* Autodex */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Autodex;
@@ -48,6 +79,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0A1BDC542FC9951C00BE9322 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A1BDC1C2FC9951A00BE9322 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -75,6 +113,7 @@
 		0A1BDC162FC9951A00BE9322 = {
 			isa = PBXGroup;
 			children = (
+				0A1BDC512FC9951C00BE9322 /* AutodexWidget */,
 				0A1BDC212FC9951A00BE9322 /* Autodex */,
 				0A1BDC312FC9951C00BE9322 /* AutodexTests */,
 				0A1BDC3B2FC9951C00BE9322 /* AutodexUITests */,
@@ -85,6 +124,7 @@
 		0A1BDC202FC9951A00BE9322 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */,
 				0A1BDC1F2FC9951A00BE9322 /* Autodex.app */,
 				0A1BDC2E2FC9951C00BE9322 /* AutodexTests.xctest */,
 				0A1BDC382FC9951C00BE9322 /* AutodexUITests.xctest */,
@@ -95,6 +135,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0A1BDC522FC9951C00BE9322 /* AutodexWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */;
+			buildPhases = (
+				0A1BDC532FC9951C00BE9322 /* Sources */,
+				0A1BDC542FC9951C00BE9322 /* Frameworks */,
+				0A1BDC552FC9951C00BE9322 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0A1BDC512FC9951C00BE9322 /* AutodexWidget */,
+			);
+			name = AutodexWidget;
+			packageProductDependencies = (
+			);
+			productName = AutodexWidget;
+			productReference = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		0A1BDC1E2FC9951A00BE9322 /* Autodex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A1BDC422FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "Autodex" */;
@@ -102,10 +164,12 @@
 				0A1BDC1B2FC9951A00BE9322 /* Sources */,
 				0A1BDC1C2FC9951A00BE9322 /* Frameworks */,
 				0A1BDC1D2FC9951A00BE9322 /* Resources */,
-			);
+							0A1BDC5B2FC9951C00BE9322 /* Embed Foundation Extensions */,
+);
 			buildRules = (
 			);
 			dependencies = (
+				0A1BDC5A2FC9951C00BE9322 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0A1BDC212FC9951A00BE9322 /* Autodex */,
@@ -173,6 +237,9 @@
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
+					0A1BDC522FC9951C00BE9322 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 					0A1BDC1E2FC9951A00BE9322 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -203,11 +270,19 @@
 				0A1BDC1E2FC9951A00BE9322 /* Autodex */,
 				0A1BDC2D2FC9951C00BE9322 /* AutodexTests */,
 				0A1BDC372FC9951C00BE9322 /* AutodexUITests */,
-			);
+							0A1BDC522FC9951C00BE9322 /* AutodexWidget */,
+);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0A1BDC552FC9951C00BE9322 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A1BDC1D2FC9951A00BE9322 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +307,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0A1BDC532FC9951C00BE9322 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A1BDC1B2FC9951A00BE9322 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +338,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0A1BDC5A2FC9951C00BE9322 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A1BDC522FC9951C00BE9322 /* AutodexWidget */;
+			targetProxy = 0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */;
+		};
 		0A1BDC302FC9951C00BE9322 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0A1BDC1E2FC9951A00BE9322 /* Autodex */;
@@ -269,6 +356,58 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0A1BDC572FC9951C00BE9322 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AutodexWidget-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0A1BDC582FC9951C00BE9322 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AutodexWidget-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		0A1BDC402FC9951C00BE9322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -391,6 +530,8 @@
 		0A1BDC432FC9951C00BE9322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
+				INFOPLIST_FILE = "Autodex-Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -418,6 +559,8 @@
 		0A1BDC442FC9951C00BE9322 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
+				INFOPLIST_FILE = "Autodex-Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -513,6 +656,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A1BDC572FC9951C00BE9322 /* Debug */,
+				0A1BDC582FC9951C00BE9322 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0A1BDC1A2FC9951A00BE9322 /* Build configuration list for PBXProject "Autodex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -30,6 +30,8 @@ struct AutodexApp: App {
             diskCapacity: 150 * 1024 * 1024,
             diskPath: "autodex_images_cache"
         )
+        // Synchronisation de la Voiture du Jour dans l'App Group
+        VoitureDuJourService.shared.synchroniser()
     }
 
     var body: some Scene {
