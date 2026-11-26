@@ -57,7 +57,7 @@ final class AuthServiceTests: XCTestCase {
     // MARK: - Tests de Validation des Identifiants
     func testValidationIdentifiantsReussite() {
         XCTAssertNoThrow(
-            try authService.validerIdentifiants(email: "valid@autodex.fr", motDePasse: "123456")
+            try authService.validerIdentifiants(email: "valid@autodex.fr", motDePasse: "Autodex2026!")
         )
     }
     
@@ -83,7 +83,7 @@ final class AuthServiceTests: XCTestCase {
                 XCTFail("Type d'erreur inattendu")
                 return
             }
-            XCTAssertTrue(msg.contains("6 caractères"))
+            XCTAssertTrue(msg.contains("12 caractères"))
         }
     }
     
