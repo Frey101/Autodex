@@ -65,11 +65,19 @@ struct AutodexApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
+                #if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("-UITestBypassAuth") || authService.estConnecte {
+                    Navigationview()
+                } else {
+                    AuthentificationView()
+                }
+                #else
                 if authService.estConnecte {
                     Navigationview()
                 } else {
                     AuthentificationView()
                 }
+                #endif
             }
             .animation(.easeInOut(duration: 0.3), value: authService.estConnecte)
             .onOpenURL { url in

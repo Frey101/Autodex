@@ -22,19 +22,24 @@ final class AutodexUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    private func lancerAppConnectee() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments.append("-UITestBypassAuth")
+        app.launch()
+        return app
+    }
+
     @MainActor
     func testExample() throws {
         // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
     @MainActor
     func testNavigationVersFicheDetailEtWikipedia() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Attendre que les éléments de la liste apparaissent
         let premierElement = app.cells.firstMatch
@@ -49,8 +54,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testRechercheDynamiqueFrappeEtEffacement() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         let champRecherche = app.textFields["Rechercher un modèle (ex: clio, mustang...)"]
         XCTAssertTrue(champRecherche.waitForExistence(timeout: 5), "La barre de recherche doit être visible.")
@@ -73,8 +77,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testOngletNouveautes() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         let boutonNouveautes = app.buttons["Nouveautés"]
         XCTAssertTrue(boutonNouveautes.waitForExistence(timeout: 5), "Le bouton Nouveautés doit exister.")
@@ -102,8 +105,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testPaginationChargementPageSuivante() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Attendre que la liste charge les 20 premiers éléments
         let premierElement = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'ch'")).firstMatch
@@ -150,8 +152,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testMenuTiroirAffichageEtFermeture() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // 1. Ouvrir le menu tiroir depuis l'accueil
         let boutonHamburger = app.buttons["boutonMenuAccueil"]
@@ -177,8 +178,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testMenuTiroirNavigationVersMaCollection() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Naviguer vers la nouvelle section "Ma Collection"
         naviguerVersSection(app: app, sectionId: "Ma Collection")
@@ -192,8 +192,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testMenuTiroirNavigationVersAPropos() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Naviguer vers la section "À Propos"
         naviguerVersSection(app: app, sectionId: "À Propos")
@@ -210,8 +209,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testDecouvertePageEtNavigationFicheTechnique() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         naviguerVersSection(app: app, sectionId: "Découverte")
         
@@ -242,8 +240,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testFavorisNavigationVersFicheDetail() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // 1. Ajouter un favori depuis l'accueil en tapant sur le bouton cœur de la première ligne
         let boutonCoeur = app.buttons.matching(identifier: "boutonCoeurLigne").firstMatch
@@ -268,8 +265,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testBoutonLikeSurFicheTechnique() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Ouvrir la première voiture via son lien de carte direct
         let premiereVoiture = app.buttons.matching(identifier: "carCardLink").firstMatch
@@ -286,8 +282,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testFiltresAvancesAccueil() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Tester le filtre Électrique
         let filtreElectrique = app.buttons["filtreEnergie_Électrique"]
@@ -309,8 +304,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testOngletComparateurDuel() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         naviguerVersSection(app: app, sectionId: "Mode Duel")
         
@@ -329,8 +323,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testOngletQuizPokedex() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         naviguerVersSection(app: app, sectionId: "Pokédex Quiz")
         
@@ -358,8 +351,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testDeepLinkVoitureDuJourOuvertureFiche() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // Simuler l'ouverture de l'URL Deep Link émise par le Widget iOS
         let url = URL(string: "autodex://car?make=Porsche&model=911%20GT3%20RS&year=2024")!
@@ -376,8 +368,7 @@ final class AutodexUITests: XCTestCase {
 
     @MainActor
     func testMaCollectionAjoutSpotDemoEtSuppression() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = lancerAppConnectee()
         
         // 1. Navigation vers "Ma Collection" via le menu tiroir
         naviguerVersSection(app: app, sectionId: "Ma Collection")
