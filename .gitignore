@@ -9,7 +9,8 @@ xcuserdata/
 
 # macOS
 .DS_Store
-*/.DS_Store
+**/.DS_Store
+._*
 
 # Agent & Tools exclusion (Règle projet stricte)
 .agent/
