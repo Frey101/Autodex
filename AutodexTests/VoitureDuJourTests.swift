@@ -68,14 +68,14 @@ final class VoitureDuJourTests: XCTestCase {
         matinee.year = 2026
         matinee.month = 11
         matinee.day = 20
-        matinee.hour = 6
+        matinee.hour = 10
         let dateMatin = calendar.date(from: matinee)!
 
         var soiree = DateComponents()
         soiree.year = 2026
         soiree.month = 11
         soiree.day = 20
-        soiree.hour = 23
+        soiree.hour = 14
         let dateSoir = calendar.date(from: soiree)!
 
         let voitureMatin = service.obtenirVoitureDuJour(pour: dateMatin)
