@@ -3,24 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1BDC5C2FC9951C00BE9322 /* AutodexWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0AFB00032FC9951A00BE9322 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0AFB00022FC9951A00BE9322 /* FirebaseAuth */; };
 		0AGS00032FC9951A00BE9322 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AGS00022FC9951A00BE9322 /* GoogleSignIn */; };
 		0AGS00052FC9951A00BE9322 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */; };
-		0A1BDC5C2FC9951C00BE9322 /* AutodexWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		44B7E0D530B849B300F19507 /* AutodexWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 44B7E0D430B849B300F19507 /* AutodexWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A1BDC522FC9951C00BE9322;
-			remoteInfo = AutodexWidget;
-		};
 		0A1BDC2F2FC9951C00BE9322 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
@@ -34,6 +28,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 0A1BDC1E2FC9951A00BE9322;
 			remoteInfo = Autodex;
+		};
+		0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A1BDC522FC9951C00BE9322;
+			remoteInfo = AutodexWidget;
+		};
+		44B7E0D630B849B300F19507 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44B7E0D330B849B300F19507;
+			remoteInfo = "AutodexWatch Watch App";
+		};
+		44B7E0E430B849B400F19507 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44B7E0D330B849B300F19507;
+			remoteInfo = "AutodexWatch Watch App";
+		};
+		44B7E0EE30B849B400F19507 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A1BDC172FC9951A00BE9322 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 44B7E0D330B849B300F19507;
+			remoteInfo = "AutodexWatch Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -49,21 +71,31 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		44B7E0F730B849B400F19507 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				44B7E0D530B849B300F19507 /* AutodexWatch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */ = {isa = PBXFileReference; explicitFileType = wrapper.app-extension; includeInIndex = 0; path = AutodexWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC1F2FC9951A00BE9322 /* Autodex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Autodex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC2E2FC9951C00BE9322 /* AutodexTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutodexTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1BDC382FC9951C00BE9322 /* AutodexUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutodexUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AutodexWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		44B7E0CF30B849B300F19507 /* AutodexWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutodexWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		44B7E0D430B849B300F19507 /* AutodexWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AutodexWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		44B7E0E330B849B400F19507 /* AutodexWatch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AutodexWatch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		44B7E0ED30B849B400F19507 /* AutodexWatch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AutodexWatch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0A1BDC512FC9951C00BE9322 /* AutodexWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AutodexWidget;
-			sourceTree = "<group>";
-		};
 		0A1BDC212FC9951A00BE9322 /* Autodex */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Autodex;
@@ -79,16 +111,29 @@
 			path = AutodexUITests;
 			sourceTree = "<group>";
 		};
+		0A1BDC512FC9951C00BE9322 /* AutodexWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AutodexWidget;
+			sourceTree = "<group>";
+		};
+		44B7E0D830B849B300F19507 /* AutodexWatch Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "AutodexWatch Watch App";
+			sourceTree = "<group>";
+		};
+		44B7E0E630B849B400F19507 /* AutodexWatch Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "AutodexWatch Watch AppTests";
+			sourceTree = "<group>";
+		};
+		44B7E0F030B849B400F19507 /* AutodexWatch Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "AutodexWatch Watch AppUITests";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0A1BDC542FC9951C00BE9322 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0A1BDC1C2FC9951A00BE9322 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -113,6 +158,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0A1BDC542FC9951C00BE9322 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0D130B849B300F19507 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0E030B849B400F19507 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0EA30B849B400F19507 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -123,6 +196,9 @@
 				0A1BDC212FC9951A00BE9322 /* Autodex */,
 				0A1BDC312FC9951C00BE9322 /* AutodexTests */,
 				0A1BDC3B2FC9951C00BE9322 /* AutodexUITests */,
+				44B7E0D830B849B300F19507 /* AutodexWatch Watch App */,
+				44B7E0E630B849B400F19507 /* AutodexWatch Watch AppTests */,
+				44B7E0F030B849B400F19507 /* AutodexWatch Watch AppUITests */,
 				0A1BDC202FC9951A00BE9322 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -134,6 +210,10 @@
 				0A1BDC1F2FC9951A00BE9322 /* Autodex.app */,
 				0A1BDC2E2FC9951C00BE9322 /* AutodexTests.xctest */,
 				0A1BDC382FC9951C00BE9322 /* AutodexUITests.xctest */,
+				44B7E0CF30B849B300F19507 /* AutodexWatch.app */,
+				44B7E0D430B849B300F19507 /* AutodexWatch Watch App.app */,
+				44B7E0E330B849B400F19507 /* AutodexWatch Watch AppTests.xctest */,
+				44B7E0ED30B849B400F19507 /* AutodexWatch Watch AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -141,28 +221,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0A1BDC522FC9951C00BE9322 /* AutodexWidget */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */;
-			buildPhases = (
-				0A1BDC532FC9951C00BE9322 /* Sources */,
-				0A1BDC542FC9951C00BE9322 /* Frameworks */,
-				0A1BDC552FC9951C00BE9322 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				0A1BDC512FC9951C00BE9322 /* AutodexWidget */,
-			);
-			name = AutodexWidget;
-			packageProductDependencies = (
-			);
-			productName = AutodexWidget;
-			productReference = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		0A1BDC1E2FC9951A00BE9322 /* Autodex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A1BDC422FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "Autodex" */;
@@ -170,8 +228,8 @@
 				0A1BDC1B2FC9951A00BE9322 /* Sources */,
 				0A1BDC1C2FC9951A00BE9322 /* Frameworks */,
 				0A1BDC1D2FC9951A00BE9322 /* Resources */,
-							0A1BDC5B2FC9951C00BE9322 /* Embed Foundation Extensions */,
-);
+				0A1BDC5B2FC9951C00BE9322 /* Embed Foundation Extensions */,
+			);
 			buildRules = (
 			);
 			dependencies = (
@@ -236,6 +294,115 @@
 			productReference = 0A1BDC382FC9951C00BE9322 /* AutodexUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		0A1BDC522FC9951C00BE9322 /* AutodexWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */;
+			buildPhases = (
+				0A1BDC532FC9951C00BE9322 /* Sources */,
+				0A1BDC542FC9951C00BE9322 /* Frameworks */,
+				0A1BDC552FC9951C00BE9322 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0A1BDC512FC9951C00BE9322 /* AutodexWidget */,
+			);
+			name = AutodexWidget;
+			packageProductDependencies = (
+			);
+			productName = AutodexWidget;
+			productReference = 0A1BDC502FC9951C00BE9322 /* AutodexWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		44B7E0CE30B849B300F19507 /* AutodexWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 44B7E0FF30B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch" */;
+			buildPhases = (
+				44B7E0CD30B849B300F19507 /* Resources */,
+				44B7E0F730B849B400F19507 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				44B7E0D730B849B300F19507 /* PBXTargetDependency */,
+			);
+			name = AutodexWatch;
+			packageProductDependencies = (
+			);
+			productName = AutodexWatch;
+			productReference = 44B7E0CF30B849B300F19507 /* AutodexWatch.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		44B7E0D330B849B300F19507 /* AutodexWatch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 44B7E0FE30B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch App" */;
+			buildPhases = (
+				44B7E0D030B849B300F19507 /* Sources */,
+				44B7E0D130B849B300F19507 /* Frameworks */,
+				44B7E0D230B849B300F19507 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				44B7E0D830B849B300F19507 /* AutodexWatch Watch App */,
+			);
+			name = "AutodexWatch Watch App";
+			packageProductDependencies = (
+			);
+			productName = "AutodexWatch Watch App";
+			productReference = 44B7E0D430B849B300F19507 /* AutodexWatch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		44B7E0E230B849B400F19507 /* AutodexWatch Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 44B7E10030B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch AppTests" */;
+			buildPhases = (
+				44B7E0DF30B849B400F19507 /* Sources */,
+				44B7E0E030B849B400F19507 /* Frameworks */,
+				44B7E0E130B849B400F19507 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				44B7E0E530B849B400F19507 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				44B7E0E630B849B400F19507 /* AutodexWatch Watch AppTests */,
+			);
+			name = "AutodexWatch Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "AutodexWatch Watch AppTests";
+			productReference = 44B7E0E330B849B400F19507 /* AutodexWatch Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		44B7E0EC30B849B400F19507 /* AutodexWatch Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 44B7E10130B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch AppUITests" */;
+			buildPhases = (
+				44B7E0E930B849B400F19507 /* Sources */,
+				44B7E0EA30B849B400F19507 /* Frameworks */,
+				44B7E0EB30B849B400F19507 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				44B7E0EF30B849B400F19507 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				44B7E0F030B849B400F19507 /* AutodexWatch Watch AppUITests */,
+			);
+			name = "AutodexWatch Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "AutodexWatch Watch AppUITests";
+			productReference = 44B7E0ED30B849B400F19507 /* AutodexWatch Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -243,12 +410,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
-					0A1BDC522FC9951C00BE9322 = {
-						CreatedOnToolsVersion = 16.4;
-					};
 					0A1BDC1E2FC9951A00BE9322 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -259,6 +423,23 @@
 					0A1BDC372FC9951C00BE9322 = {
 						CreatedOnToolsVersion = 16.4;
 						TestTargetID = 0A1BDC1E2FC9951A00BE9322;
+					};
+					0A1BDC522FC9951C00BE9322 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					44B7E0CE30B849B300F19507 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					44B7E0D330B849B300F19507 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					44B7E0E230B849B400F19507 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 44B7E0D330B849B300F19507;
+					};
+					44B7E0EC30B849B400F19507 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 44B7E0D330B849B300F19507;
 					};
 				};
 			};
@@ -271,31 +452,28 @@
 			);
 			mainGroup = 0A1BDC162FC9951A00BE9322;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = 0A1BDC202FC9951A00BE9322 /* Products */;
-			projectDirPath = "";
 			packageReferences = (
 				0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 0A1BDC202FC9951A00BE9322 /* Products */;
+			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				0A1BDC1E2FC9951A00BE9322 /* Autodex */,
 				0A1BDC2D2FC9951C00BE9322 /* AutodexTests */,
 				0A1BDC372FC9951C00BE9322 /* AutodexUITests */,
-							0A1BDC522FC9951C00BE9322 /* AutodexWidget */,
-);
+				0A1BDC522FC9951C00BE9322 /* AutodexWidget */,
+				44B7E0CE30B849B300F19507 /* AutodexWatch */,
+				44B7E0D330B849B300F19507 /* AutodexWatch Watch App */,
+				44B7E0E230B849B400F19507 /* AutodexWatch Watch AppTests */,
+				44B7E0EC30B849B400F19507 /* AutodexWatch Watch AppUITests */,
+			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0A1BDC552FC9951C00BE9322 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0A1BDC1D2FC9951A00BE9322 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -317,53 +495,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.0.0;
-			};
-		};
-		0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		0AFB00022FC9951A00BE9322 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		0AGS00022FC9951A00BE9322 /* GoogleSignIn */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
-			productName = GoogleSignIn;
-		};
-		0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
-			productName = GoogleSignInSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
-
-/* Begin PBXSourcesBuildPhase section */
-		0A1BDC532FC9951C00BE9322 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+		0A1BDC552FC9951C00BE9322 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		44B7E0CD30B849B300F19507 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0D230B849B300F19507 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0E130B849B400F19507 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0EB30B849B400F19507 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
 		0A1BDC1B2FC9951A00BE9322 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -385,14 +554,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0A1BDC532FC9951C00BE9322 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0D030B849B300F19507 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0DF30B849B400F19507 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		44B7E0E930B849B400F19507 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0A1BDC5A2FC9951C00BE9322 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A1BDC522FC9951C00BE9322 /* AutodexWidget */;
-			targetProxy = 0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */;
-		};
 		0A1BDC302FC9951C00BE9322 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0A1BDC1E2FC9951A00BE9322 /* Autodex */;
@@ -403,61 +595,29 @@
 			target = 0A1BDC1E2FC9951A00BE9322 /* Autodex */;
 			targetProxy = 0A1BDC392FC9951C00BE9322 /* PBXContainerItemProxy */;
 		};
+		0A1BDC5A2FC9951C00BE9322 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A1BDC522FC9951C00BE9322 /* AutodexWidget */;
+			targetProxy = 0A1BDC592FC9951C00BE9322 /* PBXContainerItemProxy */;
+		};
+		44B7E0D730B849B300F19507 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44B7E0D330B849B300F19507 /* AutodexWatch Watch App */;
+			targetProxy = 44B7E0D630B849B300F19507 /* PBXContainerItemProxy */;
+		};
+		44B7E0E530B849B400F19507 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44B7E0D330B849B300F19507 /* AutodexWatch Watch App */;
+			targetProxy = 44B7E0E430B849B400F19507 /* PBXContainerItemProxy */;
+		};
+		44B7E0EF30B849B400F19507 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 44B7E0D330B849B300F19507 /* AutodexWatch Watch App */;
+			targetProxy = 44B7E0EE30B849B400F19507 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0A1BDC572FC9951C00BE9322 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "AutodexWidget-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0A1BDC582FC9951C00BE9322 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "AutodexWidget-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		0A1BDC402FC9951C00BE9322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -580,14 +740,14 @@
 		0A1BDC432FC9951C00BE9322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
-				INFOPLIST_FILE = "Autodex-Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Autodex-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -609,14 +769,14 @@
 		0A1BDC442FC9951C00BE9322 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
-				INFOPLIST_FILE = "Autodex-Info.plist";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Autodex/Autodex.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Autodex-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -703,18 +863,241 @@
 			};
 			name = Release;
 		};
+		0A1BDC572FC9951C00BE9322 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AutodexWidget-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0A1BDC582FC9951C00BE9322 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AutodexWidget/AutodexWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AutodexWidget-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.Autodex.AutodexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		44B7E0F530B849B400F19507 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_KEY_CFBundleDisplayName = AutodexWatch;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.AutodexWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		44B7E0F630B849B400F19507 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_KEY_CFBundleDisplayName = AutodexWatch;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.AutodexWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		44B7E0F830B849B400F19507 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AutodexWatch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.AutodexWatch.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		44B7E0F930B849B400F19507 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AutodexWatch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.autodex.AutodexWatch.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		44B7E0FA30B849B400F19507 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dev.autodex.AutodexWatch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutodexWatch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AutodexWatch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		44B7E0FB30B849B400F19507 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dev.autodex.AutodexWatch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AutodexWatch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AutodexWatch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		44B7E0FC30B849B400F19507 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dev.autodex.AutodexWatch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "AutodexWatch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		44B7E0FD30B849B400F19507 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dev.autodex.AutodexWatch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "AutodexWatch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0A1BDC572FC9951C00BE9322 /* Debug */,
-				0A1BDC582FC9951C00BE9322 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		0A1BDC1A2FC9951A00BE9322 /* Build configuration list for PBXProject "Autodex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -751,7 +1134,89 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		0A1BDC562FC9951C00BE9322 /* Build configuration list for PBXNativeTarget "AutodexWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A1BDC572FC9951C00BE9322 /* Debug */,
+				0A1BDC582FC9951C00BE9322 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		44B7E0FE30B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44B7E0F830B849B400F19507 /* Debug */,
+				44B7E0F930B849B400F19507 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		44B7E0FF30B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44B7E0F530B849B400F19507 /* Debug */,
+				44B7E0F630B849B400F19507 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		44B7E10030B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44B7E0FA30B849B400F19507 /* Debug */,
+				44B7E0FB30B849B400F19507 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		44B7E10130B849B400F19507 /* Build configuration list for PBXNativeTarget "AutodexWatch Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44B7E0FC30B849B400F19507 /* Debug */,
+				44B7E0FD30B849B400F19507 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+		0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0AFB00022FC9951A00BE9322 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AFB00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		0AGS00022FC9951A00BE9322 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		0AGS00042FC9951A00BE9322 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0AGS00012FC9951A00BE9322 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0A1BDC172FC9951A00BE9322 /* Project object */;
 }
