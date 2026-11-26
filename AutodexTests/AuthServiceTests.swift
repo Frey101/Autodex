@@ -161,4 +161,21 @@ final class AuthServiceTests: XCTestCase {
         XCTAssertNil(authService.utilisateurCourant)
         XCTAssertNil(authService.messageErreur)
     }
+    
+    // MARK: - Tests Conformité CNIL / RGPD (Mot de passe)
+    func testValidationMotDePasseCNIL() {
+        // Trop court (< 12 caractères)
+        XCTAssertFalse(authService.verifierComplexiteMotDePasseCNIL("Abc123!").isEmpty)
+        // Sans majuscule
+        XCTAssertFalse(authService.verifierComplexiteMotDePasseCNIL("autodex1234!").isEmpty)
+        // Sans minuscule
+        XCTAssertFalse(authService.verifierComplexiteMotDePasseCNIL("AUTODEX1234!").isEmpty)
+        // Sans chiffre
+        XCTAssertFalse(authService.verifierComplexiteMotDePasseCNIL("AutodexSuper!").isEmpty)
+        // Sans caractère spécial
+        XCTAssertFalse(authService.verifierComplexiteMotDePasseCNIL("Autodex12345").isEmpty)
+        // Conforme CNIL (12+ car., maj, min, chiffre, spécial)
+        XCTAssertTrue(authService.verifierComplexiteMotDePasseCNIL("Autodex2026!").isEmpty)
+        XCTAssertNoThrow(try authService.validerIdentifiants(email: "tom@autodex.fr", motDePasse: "Autodex2026!"))
+    }
 }

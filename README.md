@@ -6,7 +6,7 @@
 
 ## 🚀 Fonctionnalités
 
-- **Authentification Firebase (100% Gratuite)** : Accès sécurisé avant d'entrer dans l'application avec le SDK officiel Firebase Auth (sans compte Apple payant). Support de l'inscription/connexion par Email & Mot de passe, de la connexion rapide avec Google (Gmail), de la réinitialisation de mot de passe par email, de la gestion de session persistante et de la déconnexion directe depuis le menu tiroir latéral.
+- **Authentification Firebase (100% Gratuite) & Conformité CNIL/RGPD** : Accès sécurisé avant d'entrer dans l'application avec le SDK officiel Firebase Auth (sans compte Apple payant). Support de l'inscription/connexion par Email & Mot de passe (validation stricte CNIL : min. 12 caractères, majuscule, minuscule, chiffre et caractère spécial), de la connexion rapide avec Google (Gmail), de la réinitialisation de mot de passe par email, de la gestion de session persistante et de la déconnexion directe depuis le menu tiroir latéral.
 - **Catalogue local complet** : Plus de 2 150 modèles indexés en local (données 100 % gratuites et disponibles hors-ligne).
 - **Spécifications techniques détaillées** : Moteur, puissance (ch), transmission, carrosserie et années de production.
 - **Photos réelles & Histoire Wikipédia** : Récupération dynamique et gratuite des visuels haute résolution et des résumés historiques via l'API REST de Wikipédia (nettoyage intelligent des noms de modèles, filtre strict anti-logos/pages constructeurs et repli sur la base anglophone).
@@ -87,6 +87,10 @@ AutodexWidget/                # Cible App Extension WidgetKit iOS
 ├── VoitureDuJourProvider.swift # TimelineProvider (renouvellement quotidien à minuit)
 ├── VoitureDuJourWidgetView.swift # Vues SwiftUI des formats Petit et Moyen
 └── VoitureDuJourModel.swift  # Modèle autonome et moteur de sélection hors-ligne
+
+AutodexWatch Watch App/       # Application Apple Watch autonome (watchOS)
+├── AutodexWatchApp.swift     # Point d'entrée watchOS (@main)
+└── ContentView.swift         # Voiture du jour, catalogue (recherche/filtres), favoris & Mini-Duel
 ```
 
 ---
