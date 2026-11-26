@@ -229,11 +229,11 @@ public struct AuthentificationView: View {
                     .foregroundColor(.secondary)
                     .frame(width: 20)
                 if motDePasseVisible {
-                    TextField("Mot de passe (min. 6 caractères)", text: $motDePasse)
+                    TextField("Mot de passe (min. 12 car., CNIL)", text: $motDePasse)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled(true)
                 } else {
-                    SecureField("Mot de passe (min. 6 caractères)", text: $motDePasse)
+                    SecureField("Mot de passe (min. 12 car., CNIL)", text: $motDePasse)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled(true)
                 }

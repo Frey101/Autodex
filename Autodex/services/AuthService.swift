@@ -317,11 +317,31 @@ public final class AuthService {
             throw ErreurAuth.erreurPersonnalisee(msg)
         }
         
-        if motDePasse.count < 6 {
-            let msg = "Le mot de passe doit comporter au moins 6 caractères (norme Firebase)."
-            self.messageErreur = msg
-            throw ErreurAuth.erreurPersonnalisee(msg)
+        if let erreurCNIL = verifierComplexiteMotDePasseCNIL(motDePasse).first {
+            self.messageErreur = erreurCNIL
+            throw ErreurAuth.erreurPersonnalisee(erreurCNIL)
         }
+    }
+    
+    /// Vérifie la conformité CNIL / RGPD du mot de passe (min. 12 caractères, majuscule, minuscule, chiffre, caractère spécial).
+    public func verifierComplexiteMotDePasseCNIL(_ motDePasse: String) -> [String] {
+        var erreurs: [String] = []
+        if motDePasse.count < 12 {
+            erreurs.append("Au moins 12 caractères requis (recommandation CNIL).")
+        }
+        if motDePasse.range(of: "[A-Z]", options: .regularExpression) == nil {
+            erreurs.append("Au moins une lettre majuscule requise.")
+        }
+        if motDePasse.range(of: "[a-z]", options: .regularExpression) == nil {
+            erreurs.append("Au moins une lettre minuscule requise.")
+        }
+        if motDePasse.range(of: "[0-9]", options: .regularExpression) == nil {
+            erreurs.append("Au moins un chiffre requis.")
+        }
+        if motDePasse.range(of: "[^A-Za-z0-9]", options: .regularExpression) == nil {
+            erreurs.append("Au moins un caractère spécial requis (!@#$%...).")
+        }
+        return erreurs
     }
     
     public func validerFormatEmail(_ email: String) -> Bool {
