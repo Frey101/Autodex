@@ -15,9 +15,9 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      - name: Selectionner Xcode 16
+      - name: Selectionner Xcode (dernière version disponible)
         run: |
-          XCODE_DIR=$(find /Applications -maxdepth 1 -name "Xcode_16*.app" | sort -V | tail -n 1)
+          XCODE_DIR=$(find /Applications -maxdepth 1 -name "Xcode*.app" | sort -V | tail -n 1)
           if [ -z "$XCODE_DIR" ]; then
             XCODE_DIR="/Applications/Xcode.app"
           fi
