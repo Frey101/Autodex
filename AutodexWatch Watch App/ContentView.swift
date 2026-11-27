@@ -1,6 +1,7 @@
 import SwiftUI
 import WatchKit
 
+/// Type d'énergie utilisé pour filtrer le catalogue sur Apple Watch.
 enum WatchEnergie: String, CaseIterable, Identifiable {
     case tous = "Tous"
     case hybride = "Hybride"
@@ -10,6 +11,7 @@ enum WatchEnergie: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+/// Modèle léger d'un véhicule affiché sur Apple Watch.
 struct WatchCar: Identifiable, Hashable {
     let id: String
     let marque: String
@@ -21,6 +23,7 @@ struct WatchCar: Identifiable, Hashable {
     let transmission: String
 }
 
+/// Catalogue embarqué optimisé pour consultation rapide au poignet.
 private let watchCatalogue: [WatchCar] = [
     WatchCar(id: "f80", marque: "Ferrari", modele: "F80", puissance: 1200, carburant: .hybride, annee: 2025, zeroACent: "2.15 s", transmission: "AWD"),
     WatchCar(id: "tourbillon", marque: "Bugatti", modele: "Tourbillon", puissance: 1800, carburant: .hybride, annee: 2026, zeroACent: "2.0 s", transmission: "AWD"),

@@ -1,7 +1,9 @@
 # Xcode & Apple
 build/
 DerivedData/
+.spm-cache/
 *.xcuserstate
+**/xcuserdata/
 project.xcworkspace/xcuserdata/
 *.xcuserdatad
 xcuserdata/
@@ -11,6 +13,9 @@ xcuserdata/
 .DS_Store
 **/.DS_Store
 ._*
+
+# Firebase & Secrets
+**/GoogleService-Info.plist
 
 # Agent & Tools exclusion (Règle projet stricte)
 .agent/

@@ -103,12 +103,15 @@ AutodexWatch Watch App/       # Application Apple Watch autonome (watchOS)
    cd Autodex
    ```
 
-2. **Ouvrir le projet dans Xcode** :
+2. **Configurer Firebase (requis pour l'authentification)** :
+   - Déposer votre fichier `GoogleService-Info.plist` dans le dossier `Autodex/` (ce fichier est volontairement ignoré par `.gitignore` pour ne pas exposer vos clés).
+
+3. **Ouvrir le projet dans Xcode** :
    ```bash
    open Autodex.xcodeproj
    ```
 
-3. **Lancer les tests unitaires en ligne de commande** :
+4. **Lancer les tests unitaires en ligne de commande** :
    ```bash
    xcodebuild test -project Autodex.xcodeproj -scheme Autodex -destination "platform=iOS Simulator,name=iPhone 17"
    ```
