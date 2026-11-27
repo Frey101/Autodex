@@ -95,26 +95,33 @@ AutodexWatch Watch App/       # Application Apple Watch autonome (watchOS)
 
 ---
 
-## 🔧 Installation & Lancement
+## 🔧 Installation, Configuration & Tests (Guide pour les testeurs)
 
 1. **Cloner le dépôt** :
    ```bash
    git clone https://github.com/Frey101/Autodex.git
    cd Autodex
+   git checkout dev
    ```
 
-2. **Configurer Firebase (requis pour l'authentification)** :
-   - Déposer votre fichier `GoogleService-Info.plist` dans le dossier `Autodex/` (ce fichier est volontairement ignoré par `.gitignore` pour ne pas exposer vos clés).
+2. **Configuration Firebase incluse (`GoogleService-Info.plist`)** :
+   - Le fichier `Autodex/GoogleService-Info.plist` est **volontairement conservé et suivi dans ce dépôt** afin que nos camarades et évaluateurs puissent compiler, se connecter (Email/Mot de passe et Google) et tester l'application immédiatement, sans avoir à recréer un projet sur la console Firebase.
+   - Le Bundle ID de la cible `Autodex` est aligné sur `com.iutstdie.autodex`.
 
-3. **Ouvrir le projet dans Xcode** :
+3. **Ouvrir et lancer dans Xcode** :
    ```bash
    open Autodex.xcodeproj
    ```
+   - Attendre quelques secondes la résolution automatique des packages Swift Package Manager (`FirebaseAuth`, `GoogleSignIn`).
+   - Sélectionner un simulateur iPhone récent (ex. **iPhone 16 / 17**) puis appuyer sur **`⌘R`** (Run).
+   - Au premier lancement, créer un compte ou se connecter via **Google (Gmail)** pour accéder au catalogue.
 
-4. **Lancer les tests unitaires en ligne de commande** :
-   ```bash
-   xcodebuild test -project Autodex.xcodeproj -scheme Autodex -destination "platform=iOS Simulator,name=iPhone 17"
-   ```
+4. **Lancer les tests (Unitaires, UI & Apple Watch)** :
+   - **Dans Xcode** : appuyer sur **`⌘U`** (ou menu *Product > Test*). Les tests UI utilisent l'argument `-UITestBypassAuth` pour tester directement les écrans sans bloquer sur la connexion.
+   - **En ligne de commande** :
+     ```bash
+     xcodebuild test -project Autodex.xcodeproj -scheme Autodex -destination "platform=iOS Simulator,name=iPhone 16" -only-testing:AutodexTests
+     ```
 
 ---
 
