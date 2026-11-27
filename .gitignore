@@ -14,9 +14,6 @@ xcuserdata/
 **/.DS_Store
 ._*
 
-# Firebase & Secrets
-**/GoogleService-Info.plist
-
 # Agent & Tools exclusion (Règle projet stricte)
 .agent/
 .agents/
