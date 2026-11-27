@@ -26,6 +26,9 @@ jobs:
           xcodebuild -version
 
       - name: Compilation et Tests Unitaires
+        env:
+          # xcodebuild ne transmet au process de test que les variables prefixees TEST_RUNNER_ (prefixe retire)
+          TEST_RUNNER_CI: "1"
         run: |
           SIMULATOR_NAME=$(xcrun simctl list devices available -j | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable and (.name | contains("iPhone"))) | .name' | head -n 1)
           if [ -z "$SIMULATOR_NAME" ]; then

@@ -113,9 +113,13 @@ final class DetectionVehiculeTests: XCTestCase {
         )
     }
     
-    func testPhotoReelleVoitureEstAcceptee() async {
-        // Sur un runner CI virtualisé sans Neural Engine, VNClassifyImageRequest peut ne pas classifier l'image
-        if ProcessInfo.processInfo.environment["CI"] != nil { return }
+    func testPhotoReelleVoitureEstAcceptee() async throws {
+        // Sur un runner CI virtualisé sans Neural Engine, VNClassifyImageRequest peut ne pas classifier l'image.
+        // Le workflow passe TEST_RUNNER_CI=1, exposé ici en "CI" par xcodebuild.
+        try XCTSkipIf(
+            ProcessInfo.processInfo.environment["CI"] != nil,
+            "Classification Vision non fiable sur runner CI virtualisé"
+        )
         // Chargement dynamique du visuel voiture depuis le projet
         let currentFileURL = URL(fileURLWithPath: #file)
         let projectRoot = currentFileURL.deletingLastPathComponent().deletingLastPathComponent()
