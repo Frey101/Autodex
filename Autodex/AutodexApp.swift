@@ -23,7 +23,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         #if canImport(FirebaseCore)
-        if FirebaseApp.app() == nil {
+        // GoogleService-Info.plist n'est pas versionné : sans lui, FirebaseApp.configure() lève une exception
+        // et fait planter l'application (et donc le lancement des tests) au démarrage.
+        if FirebaseApp.app() == nil,
+           Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil {
             FirebaseApp.configure()
             print("✅ FirebaseApp initialisé avec succès depuis AppDelegate")
         }
