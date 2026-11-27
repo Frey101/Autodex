@@ -288,7 +288,10 @@ public final class AuthService {
     // MARK: - Déconnexion
     public func deconnexion() {
         #if canImport(FirebaseAuth)
-        try? Auth.auth().signOut()
+        // Auth.auth() lève une exception Objective-C (non rattrapable par try?) si Firebase n'est pas configuré
+        if estConfigureFirebase {
+            try? Auth.auth().signOut()
+        }
         #endif
         #if canImport(GoogleSignIn)
         GIDSignIn.sharedInstance.signOut()
