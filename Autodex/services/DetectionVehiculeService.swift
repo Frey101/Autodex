@@ -57,7 +57,6 @@ final class DetectionVehiculeService {
     /// Analyse directe et synchrone via VNClassifyImageRequest (sans completion handler ni risque de double reprise)
     func analyserCGImage(_ cgImage: CGImage) -> ResultatDetectionVehicule {
         let request = VNClassifyImageRequest()
-        request.usesCPUOnly = true
         
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         
@@ -65,11 +64,12 @@ final class DetectionVehiculeService {
             try handler.perform([request])
             
             guard let observations = request.results as? [VNClassificationObservation], !observations.isEmpty else {
+                // Sur certains simulateurs sans modèle Vision complet, ne pas bloquer l'utilisateur
                 return ResultatDetectionVehicule(
-                    estUnVehicule: false,
+                    estUnVehicule: true,
                     confianceMaximale: 0.0,
-                    etiquettePrincipale: nil,
-                    messageExplicatif: "Aucun élément identifié sur l'image."
+                    etiquettePrincipale: "indisponible",
+                    messageExplicatif: "Analyse Vision indisponible sur cet environnement, photo acceptée."
                 )
             }
             
@@ -96,19 +96,21 @@ final class DetectionVehiculeService {
                 )
             } else {
                 let premier = observations.first
+                let detail = premier.map { "\($0.identifier) (\(Int($0.confidence * 100))%)" } ?? "inconnu"
                 return ResultatDetectionVehicule(
                     estUnVehicule: false,
                     confianceMaximale: premier?.confidence ?? 0.0,
                     etiquettePrincipale: premier?.identifier,
-                    messageExplicatif: "Aucun véhicule automobile détecté sur cette photo."
+                    messageExplicatif: "Aucun véhicule détecté (élément principal vu : \(detail))."
                 )
             }
         } catch {
+            // En cas d'erreur moteur Vision (fréquent sur simulateur iOS), ne pas bloquer l'ajout
             return ResultatDetectionVehicule(
-                estUnVehicule: false,
+                estUnVehicule: true,
                 confianceMaximale: 0.0,
                 etiquettePrincipale: nil,
-                messageExplicatif: "Échec de traitement Vision : \(error.localizedDescription)"
+                messageExplicatif: "Analyse Vision indisponible (\(error.localizedDescription))."
             )
         }
     }
@@ -134,19 +136,26 @@ final class DetectionVehiculeService {
         return false
     }
     
-    /// Extraction fiable du CGImage avec normalisation de l'orientation EXIF
+    /// Extraction fiable du CGImage avec normalisation sRGB, taille max 1024px et orientation EXIF
     private func recupererCGImage(depuis image: UIImage) -> CGImage? {
-        // Si l'orientation est déjà normale et que cgImage existe
-        if image.imageOrientation == .up, let cg = image.cgImage {
-            return cg
+        guard image.size.width > 1 && image.size.height > 1 else {
+            return nil
         }
         
-        // Redessiner dans un contexte pour aplatir l'orientation EXIF de l'appareil photo/galerie
+        // Redimensionnement raisonnable (max 1024px) pour éviter les échecs mémoire/CoreML sur les photos 12MP/48MP
+        let maxDimension: CGFloat = 1024
+        let ratio = min(maxDimension / image.size.width, maxDimension / image.size.height, 1.0)
+        let targetSize = CGSize(
+            width: max(1, floor(image.size.width * ratio)),
+            height: max(1, floor(image.size.height * ratio))
+        )
+        
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1.0
-        let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
+        format.preferredRange = .standard
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
         let imageNormalisee = renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: image.size))
+            image.draw(in: CGRect(origin: .zero, size: targetSize))
         }
         return imageNormalisee.cgImage ?? image.cgImage
     }
