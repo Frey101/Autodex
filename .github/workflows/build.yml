@@ -25,21 +25,33 @@ jobs:
           sudo xcode-select -s "$XCODE_DIR/Contents/Developer"
           xcodebuild -version
 
+      - name: Cache des packages SPM (Firebase & GoogleSignIn)
+        uses: actions/cache@v4
+        with:
+          path: .spm-cache
+          key: ${{ runner.os }}-spm-${{ hashFiles('Autodex.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
       - name: Compilation et Tests Unitaires
         run: |
-          SIMULATOR_NAME=$(xcrun simctl list devices available -j | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable and (.name | contains("iPhone"))) | .name' | head -n 1)
-          if [ -z "$SIMULATOR_NAME" ]; then
-            SIMULATOR_NAME="iPhone 16"
+          SIMULATOR_UDID=$(xcrun simctl list devices available -j | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.isAvailable and (.name | contains("iPhone"))) | .udid' | head -n 1)
+          if [ -z "$SIMULATOR_UDID" ]; then
+            echo "Aucun simulateur iPhone trouvé"
+            exit 1
           fi
-          echo "Simulateur cible: $SIMULATOR_NAME"
+          echo "Simulateur cible UDID: $SIMULATOR_UDID"
 
           xcodebuild test \
             -project Autodex.xcodeproj \
             -scheme Autodex \
-            -destination "platform=iOS Simulator,name=$SIMULATOR_NAME" \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
             -only-testing:AutodexTests \
             -configuration Debug \
             -derivedDataPath build \
+            -clonedSourcePackagesDirPath .spm-cache \
+            -skipPackagePluginValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
